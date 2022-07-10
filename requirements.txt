@@ -1,0 +1,9 @@
+selenium==3.141.0
+allure-behave
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
+pyTelegramBotAPI
+telethon
+gspread
+antigate
