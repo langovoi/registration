@@ -8,4 +8,4 @@ telethon
 gspread
 antigate
 pytz
-twocaptcha
+2captcha-python
