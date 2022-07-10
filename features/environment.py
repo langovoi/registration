@@ -76,8 +76,9 @@ def before_all(context):
 def before_feature(context, feature):
     # retry failures
     for scenario in feature.scenarios:
-        # if "flaky" in scenario.effective_tags:
-        patch_scenario_with_autoretry(scenario, max_attempts=1)
+        for tag in scenario.effective_tags:
+            if 'retry' in tag:
+                patch_scenario_with_autoretry(scenario, max_attempts=int(tag[5:]))
 
 
 def before_scenario(context, scenario):
@@ -94,10 +95,16 @@ def after_step(context, step) -> None:
                       attachment_type=allure.attachment_type.PNG)
     except Exception:
         pass
-    if step.status == 'failed':
-        bot = telebot.TeleBot(context.config['telegram']['telegram_token'])
-        bot.send_photo(chat_id=context.config['telegram']['telegram_to'], photo=context.driver.get_screenshot_as_png(),
-                       caption=f'🐞{context.page_name}\n{step.exception}')
+    if step.status == 'failed' and str(step.exception) != 'autoretry':
+            # send screenshot to telegram
+            context.bot.send_photo(chat_id=context.config['telegram']['telegram_to'],
+                                   photo=context.driver.get_screenshot_as_png(),
+                                   caption=f'Unknown exception: {step.exception}')
+            # send page_source.html to telegram
+            with open("page_source.html", "w") as f:
+                f.write(context.driver.page_source)
+            document = open('page_source.html', 'rb')
+            context.bot.send_document(chat_id=context.config['telegram']['telegram_to'], document=document)
 
 
 def after_all(context):

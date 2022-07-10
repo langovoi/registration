@@ -1,4 +1,4 @@
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone, timedelta, time
 from time import sleep
 
 from behave import step, use_step_matcher
@@ -9,6 +9,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from telethon import TelegramClient, events
 
 import pages
+from utils.datetime_utils import is_time_between
 
 use_step_matcher('re')
 
@@ -156,16 +157,21 @@ def gather_dates(context):
 
 @step("send dates")
 def send_dates(context):
-    if context.log:
-        context.bot.send_message(chat_id=context.config['telegram']['telegram_to'],
-                                 text=f'log: {context.log}')
+    message = context.log if context.log else f'{datetime.utcnow()}: No dates'
+    context.bot.send_message(chat_id=context.config['telegram']['telegram_to'],
+                                 text=message)
+    # from 02:15 to 23:45 check every 5 minutes
+    if not is_time_between(time(20, 55), time(23, 15)):
+        sleep(300)
+    else:
+        sleep(60)
+    raise RuntimeError('autoretry')
 
 
-@step("monitor")
+@step("monitor germany")
 def monitor(context):
     while True:
         try:
-            context.driver.delete_all_cookies()
             context.execute_steps(u'''
                 When open url: "https://service2.diplo.de/rktermin/extern/appointment_showMonth.do?locationCode=mins&realmId=231&categoryId=373"
                 Then page german visa is opened
@@ -186,4 +192,6 @@ def monitor(context):
                 f.write(context.driver.page_source)
             document = open('page_source.html', 'rb')
             context.bot.send_document(chat_id=context.config['telegram']['telegram_to'], document=document)
-            monitor(context)
+        finally:
+            context.driver.delete_all_cookies()
+

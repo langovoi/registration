@@ -2,6 +2,7 @@
 @regression
 Feature: Check google.com
 
+  @retry400
   Scenario: search
     When open url: "https://service2.diplo.de/rktermin/extern/appointment_showMonth.do?locationCode=mins&realmId=231&categoryId=373"
     Then page german visa is opened
@@ -13,8 +14,3 @@ Feature: Check google.com
     When gather dates
     When click on next month button
     When send dates
-
-  Scenario: endless monitor
-    When monitor
-
-
