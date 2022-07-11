@@ -6,8 +6,8 @@ Feature: Check google.com
     When open url: "https://prenotami.esteri.it/"
     Then page italy consulate is opened
     Then click on language en link
-    Then enter "kojio6ok@tut.by" in email field
-    Then enter "Khimik1971" in password field
+    Then enter "stelmashuk_vova@mail.ru" in email field
+    Then enter "visa2020!" in password field
     Then click on forward button
     Then click on language en link
     When open url: "https://prenotami.esteri.it/Services/Booking/163"
