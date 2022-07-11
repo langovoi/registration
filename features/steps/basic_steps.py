@@ -154,13 +154,15 @@ def gather_dates(context):
             'unfortunately message'):
         with open("page_source.html", "w") as f:
             f.write(context.driver.page_source)
-        telegram.send_document(
-            bot=context.bot,
-            chat_id=context.config['telegram']['telegram_to'],
-            document_name='page_source.html',
-            image=context.driver.get_screenshot_as_png(),
-            caption="Unfortunately message is not displayed or changed")
-
+        try:
+            telegram.send_document(
+                bot=context.bot,
+                chat_id=context.config['telegram']['telegram_to'],
+                document_name='page_source.html',
+                image=context.driver.get_screenshot_as_png(),
+                caption="Unfortunately message is not displayed or changed")
+        except Exception:
+            raise RuntimeError('gather dates step')
 
 @step("send dates")
 def send_dates(context):

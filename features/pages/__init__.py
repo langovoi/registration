@@ -4,6 +4,8 @@ from .google_page import GooglePage
 page_map = {
     "google.com": GooglePage,
     "german visa": GermanVisaPage,
+    "italy consulate": ItalyConsulatePage,
+    "italy embassy": ItalyEmbassyPage,
 }
 
 
