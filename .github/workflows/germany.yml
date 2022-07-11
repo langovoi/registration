@@ -2,6 +2,10 @@ name: Germany
 
 on:
   push:
+  workflow_run:
+    workflows: [ "Germany2" ]
+    types:
+      - completed
 jobs:
   build:
     runs-on: ubuntu-latest
