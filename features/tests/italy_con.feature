@@ -1,11 +1,16 @@
 # Created by Alex Kardash at 24/07/2021
 Feature: Check google.com
 
-  @monitor_italy @retry1000
+  @monitor_italy #@retry1000
   Scenario: montor germany
     When open url: "https://prenotami.esteri.it/"
-    Then page german visa is opened
-    When enter "captcha" in captcha field
+    Then page italy consulate is opened
+    Then click on language en link
+    Then enter "kojio6ok@tut.by" in email field
+    Then enter "Khimik1971" in password field
+    Then click on forward button
+    Then click on language en link
+    When open url: "https://prenotami.esteri.it/Services/Booking/163"
     When click on continue button
     When clear log
     When gather dates
