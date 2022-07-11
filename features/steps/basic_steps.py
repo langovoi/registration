@@ -7,7 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from telethon import TelegramClient, events
-from urllib3 import HTTPSConnectionPool
+from selenium.webdriver.common.alert import Alert
 
 import pages
 from utils import telegram
@@ -57,6 +57,7 @@ def enter_in(context, text, field_name, section=None):
 
 @step('select "(?P<option>.*)" in (?P<dropdown>.*)')
 def select_from_dropdown(context, option, dropdown):
+    sleep(0.5)
     context.page.select_by_text(dropdown, option)
 
 
@@ -65,6 +66,15 @@ def text_in_element_is_state(context, text, element):
     element_text = context.page.get_text(element)
     if text not in element_text:
         raise RuntimeError(f'Текст для элемента {element}: "{element_text}". Ожидаемый: {text}')
+
+
+@step('(?P<action>accept|dismiss) alert')
+def close_alert(context, action):
+    sleep(0.5)
+    if action == 'accept':
+        Alert(context.driver).accept()
+    else:
+        Alert(context.driver).dismiss()
 
 
 @step('text "(?P<text>.*)" is displayed')
@@ -138,74 +148,24 @@ def save_data(context, text):
     context.data_worksheet.insert_rows(values=[[context.time, text]], row=2)
 
 
-@step("clear log")
-def clear_log(context):
-    context.log = ''
-
-
-@step("gather dates")
-def gather_dates(context):
-    # check context
-    for date_slot in context.page.get_elements('dates section'):
-        if date_slot.text:
-            context.log = f'{context.log}\n{date_slot.text}'
-    # check Unfortunately message
-    expected_message = 'Unfortunately, there are no appointments available at this time'
-    if not context.page.is_element_displayed('unfortunately message') or expected_message not in context.page.get_text(
-            'unfortunately message'):
-        with open("page_source.html", "w") as f:
-            f.write(context.driver.page_source)
-        try:
-            telegram.send_document(
-                chat_id=context.config['telegram']['telegram_to'],
-                document_name='page_source.html',
-                image=context.driver.get_screenshot_as_png(),
-                caption="Unfortunately message is not displayed or changed")
-        except Exception:
-            raise RuntimeError('gather dates step')
-
-
 @step("send dates")
 def send_dates(context):
-    message = context.log if context.log else f'{datetime.utcnow()}: No dates'
-    telegram.send_message(message=message)
+    if 'dates' in context.values:
+        message = context.values['dates']
+        with open('page_source.html', 'w') as f:
+            f.write(context.driver.page_source)
+        telegram.send_document(
+            document_name='page_source.html',
+            image=context.driver.get_screenshot_as_png(),
+            caption=f'🟢 Dates found: {message}')
+    else:
+        telegram.send_message(message=f'{datetime.utcnow()}: Нет немецких дат')
     # from 02:15 to 23:45 check every 5 minutes
     if not is_time_between(time(20, 55), time(23, 15)):
         sleep(300)  # default: 300
     else:
         sleep(60)  # default: 60
     raise RuntimeError('autoretry')
-
-
-@step("monitor germany")
-def monitor(context):
-    while True:
-        try:
-            context.execute_steps(u'''
-                When open url: "https://service2.diplo.de/rktermin/extern/appointment_showMonth.do?locationCode=mins&realmId=231&categoryId=373"
-                Then page german visa is opened
-                When enter "captcha" in captcha field
-                When click on continue button
-                When clear log
-                When gather dates
-                When click on next month button
-                When gather dates
-                When click on next month button
-                When send dates
-            ''')
-        except Exception as e:
-            context.bot.send_photo(chat_id=context.config['telegram']['telegram_to'],
-                                   photo=context.driver.get_screenshot_as_png(),
-                                   caption=f'Unknown exception: {str(e)}')
-            with open('page_source.html', 'w') as f:
-                f.write(context.driver.page_source)
-            telegram.send_document(
-                chat_id=context.config['telegram']['telegram_to'],
-                document_name='page_source.html',
-                image=context.driver.get_screenshot_as_png(),
-                caption=f'Unknown exception: {str(e)}')
-        finally:
-            context.driver.delete_all_cookies()
 
 
 @step("get user info")

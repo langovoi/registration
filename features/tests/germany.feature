@@ -7,10 +7,9 @@ Feature: Check google.com
     Then page german visa is opened
     When enter "captcha" in captcha field
     When click on continue button
-    When clear log
-    When gather dates
+    When gather germany dates
     When click on next month button
-    When gather dates
+    When gather germany dates
     When click on next month button
     When send dates
 
