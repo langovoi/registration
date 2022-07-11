@@ -200,3 +200,11 @@ def monitor(context):
                 caption=f'Unknown exception: {str(e)}')
         finally:
             context.driver.delete_all_cookies()
+
+
+@when("get user info")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    raise NotImplementedError(u'STEP: When get user info')
