@@ -68,8 +68,6 @@ def before_all(context):
     context.config = parser
     context.values = {'start_time': datetime.utcnow()}
 
-    # telegram bots
-    context.bot = telebot.TeleBot(context.config['telegram']['telegram_token'])
     # google sheets
     # context.data_worksheet = GoogleSheets().authorize('Data')
 
