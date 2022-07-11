@@ -96,15 +96,18 @@ def after_step(context, step) -> None:
     except Exception:
         pass
     if step.status == 'failed' and str(step.exception) != 'autoretry':
-            # send screenshot to telegram
-            context.bot.send_photo(chat_id=context.config['telegram']['telegram_to'],
-                                   photo=context.driver.get_screenshot_as_png(),
-                                   caption=f'Unknown exception: {step.exception}')
-            # send page_source.html to telegram
-            with open("page_source.html", "w") as f:
-                f.write(context.driver.page_source)
-            document = open('page_source.html', 'rb')
-            context.bot.send_document(chat_id=context.config['telegram']['telegram_to'], document=document)
+            try:
+                # send screenshot to telegram
+                context.bot.send_photo(chat_id=context.config['telegram']['telegram_to'],
+                                       photo=context.driver.get_screenshot_as_png(),
+                                       caption=f'Unknown exception for {step.name}: {step.exception}')
+                # send page_source.html to telegram
+                with open("page_source.html", "w") as f:
+                    f.write(context.driver.page_source)
+                document = open('page_source.html', 'rb')
+                context.bot.send_document(chat_id=context.config['telegram']['telegram_to'], document=document)
+            except Exception as e:
+                print(f'after step failed!!: {str(e)}')
 
 
 def after_all(context):
