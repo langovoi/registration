@@ -7,6 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from telethon import TelegramClient, events
+from urllib3 import HTTPSConnectionPool
 
 import pages
 from utils import telegram
@@ -164,11 +165,11 @@ def gather_dates(context):
         except Exception:
             raise RuntimeError('gather dates step')
 
+
 @step("send dates")
 def send_dates(context):
     message = context.log if context.log else f'{datetime.utcnow()}: No dates'
-    context.bot.send_message(chat_id=context.config['telegram']['telegram_to'],
-                             text=message)
+    context.bot.send_message(chat_id=context.config['telegram']['telegram_to'], text=message)
     # from 02:15 to 23:45 check every 5 minutes
     if not is_time_between(time(20, 55), time(23, 15)):
         sleep(300)  # default: 300
