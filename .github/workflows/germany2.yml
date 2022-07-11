@@ -1,7 +1,6 @@
 name: Germany2
 
 on:
-  push:
   workflow_run:
     workflows: [ "Germany" ]
     types:
