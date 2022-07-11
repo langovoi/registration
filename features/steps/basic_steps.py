@@ -164,7 +164,7 @@ def send_dates(context):
                              text=message)
     # from 02:15 to 23:45 check every 5 minutes
     if not is_time_between(time(20, 55), time(23, 15)):
-        sleep(10)  # default: 300
+        sleep(300)  # default: 300
     else:
         sleep(60)  # default: 60
     raise RuntimeError('autoretry')
