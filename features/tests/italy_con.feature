@@ -10,11 +10,9 @@ Feature: Check google.com
     Then enter "visa2020!" in password field
     Then click on forward button
     Then click on language en link
-    When open url: "https://prenotami.esteri.it/Services/Booking/163"
-    When click on continue button
+    When open url: "https://prenotami.esteri.it/Services"
+    When enter "Schengen" in search field
+    When click on book schengen button
     When clear log
     When gather dates
-    When click on next month button
-    When gather dates
-    When click on next month button
     When send dates

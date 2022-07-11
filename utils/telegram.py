@@ -22,7 +22,7 @@ def send_message(message):
             bot = telebot.TeleBot(config['telegram']['telegram_token'])
             bot.send_message(chat_id=config['telegram']['telegram_to'], text=message)
             break
-        except HTTPSConnectionPool:
+        except Exception:
             sleep(10)
             bot = telebot.TeleBot(config['telegram']['telegram_token'])
             bot.send_message(chat_id=config['telegram']['telegram_to'], text=message)
