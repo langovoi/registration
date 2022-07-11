@@ -70,7 +70,6 @@ def before_all(context):
 
     # telegram bots
     context.bot = telebot.TeleBot(context.config['telegram']['telegram_token'])
-    context.bot.polling(none_stop=True, timeout=123)
     context.log = ''
     # google sheets
     # context.data_worksheet = GoogleSheets().authorize('Data')
@@ -105,7 +104,6 @@ def after_step(context, step) -> None:
             with open("page_source.html", "w") as f:
                 f.write(context.driver.page_source)
             telegram.send_document(
-                bot=context.bot,
                 chat_id=context.config['telegram']['telegram_to'],
                 document_name='page_source.html',
                 image=context.driver.get_screenshot_as_png(),

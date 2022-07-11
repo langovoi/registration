@@ -157,7 +157,6 @@ def gather_dates(context):
             f.write(context.driver.page_source)
         try:
             telegram.send_document(
-                bot=context.bot,
                 chat_id=context.config['telegram']['telegram_to'],
                 document_name='page_source.html',
                 image=context.driver.get_screenshot_as_png(),
@@ -169,7 +168,7 @@ def gather_dates(context):
 @step("send dates")
 def send_dates(context):
     message = context.log if context.log else f'{datetime.utcnow()}: No dates'
-    context.bot.send_message(chat_id=context.config['telegram']['telegram_to'], text=message)
+    telegram.send_message(message=message)
     # from 02:15 to 23:45 check every 5 minutes
     if not is_time_between(time(20, 55), time(23, 15)):
         sleep(300)  # default: 300
@@ -201,7 +200,6 @@ def monitor(context):
             with open('page_source.html', 'w') as f:
                 f.write(context.driver.page_source)
             telegram.send_document(
-                bot=context.bot,
                 chat_id=context.config['telegram']['telegram_to'],
                 document_name='page_source.html',
                 image=context.driver.get_screenshot_as_png(),
