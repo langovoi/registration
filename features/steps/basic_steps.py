@@ -54,6 +54,11 @@ def enter_in(context, text, field_name, section=None):
         context.page.type_in(field_name, text)
 
 
+@step('select "(?P<option>.*)" in (?P<dropdown>.*)')
+def select_from_dropdown(context, option, dropdown):
+    context.page.select_by_text(dropdown, option)
+
+
 @step('text "(?P<text>.*)" in (?P<element>.*) is displayed')
 def text_in_element_is_state(context, text, element):
     element_text = context.page.get_text(element)
@@ -72,7 +77,7 @@ def text_is_state(context, text):
 def init_screen(context, page_name):
     """Instantiating verifies that we're on that page"""
     page_class = pages.factory(page_name)
-    context.page = page_class(context.driver)
+    context.page = page_class(context)
 
 
 @step('open url: "(?P<url>.*)"')
@@ -153,7 +158,7 @@ def gather_dates(context):
             bot=context.bot,
             chat_id=context.config['telegram']['telegram_to'],
             document_name='page_source.html',
-            image_name=context.driver.get_screenshot_as_png(),
+            image=context.driver.get_screenshot_as_png(),
             caption="Unfortunately message is not displayed or changed")
 
 
@@ -196,13 +201,13 @@ def monitor(context):
                 bot=context.bot,
                 chat_id=context.config['telegram']['telegram_to'],
                 document_name='page_source.html',
-                image_name=context.driver.get_screenshot_as_png(),
+                image=context.driver.get_screenshot_as_png(),
                 caption=f'Unknown exception: {str(e)}')
         finally:
             context.driver.delete_all_cookies()
 
 
-@when("get user info")
+@step("get user info")
 def step_impl(context):
     """
     :type context: behave.runner.Context

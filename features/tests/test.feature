@@ -21,7 +21,18 @@ Feature: Check google.com
     When enter "captcha" in captcha field
     When click on continue button
     # select date and time
-    When click on "appointment button"
-    When click on "available time button"
+    When click on appointment button
     # fill form
-    When fill form
+    When enter "{surname}" in surname field
+    When enter "{name}" in name field
+    When enter "{email}" in email field
+    When enter "{email}" in confirm email field
+    When select "{number_of_applicants}" in "applicants number dropdown"
+    When enter "{passport_number}" in passport number field
+    When enter "{other_applicants_info}" in other applicants field
+    When enter "{aim}" in aim field
+    When enter "{phone_number}" in phone number field
+    When click on confirm checkbox
+    When enter "captcha" in captcha field
+    When click on save button
+    When click on confirm time link

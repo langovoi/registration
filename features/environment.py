@@ -108,7 +108,7 @@ def after_step(context, step) -> None:
                 bot=context.bot,
                 chat_id=context.config['telegram']['telegram_to'],
                 document_name='page_source.html',
-                image_name=context.driver.get_screenshot_as_png(),
+                image=context.driver.get_screenshot_as_png(),
                 caption=str(step.exception))
         except Exception as e:
             print(f'after step failed!!: {str(e)}')

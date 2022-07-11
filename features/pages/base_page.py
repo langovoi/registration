@@ -6,13 +6,15 @@ from selenium.common.exceptions import StaleElementReferenceException, TimeoutEx
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 
 class BasePage:
 
-    def __init__(self, driver):
-        self.driver = driver
+    def __init__(self, context):
+        self.driver = context.driver
+        self.context = context
         self._verify_page()
 
     def _verify_page(self):
@@ -38,6 +40,13 @@ class BasePage:
     def type_in(self, element_name, text):
         self.get_element(element_name).clear()
         self.get_element(element_name).send_keys(text)
+
+    def select_by_text(self, element_name, text):
+        select = Select(self.get_element(element_name))
+        try:
+            select.select_by_visible_text(text)
+        except (TimeoutException, NoSuchElementException):
+            select.select_by_value(text)
 
     def get_text(self, element_name):
         return self.get_element(element_name).text
