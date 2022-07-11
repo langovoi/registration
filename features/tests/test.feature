@@ -2,7 +2,7 @@
 @regression
 Feature: Check google.com
 
-  @retry400
+  @retry1000
   Scenario: search
     When open url: "https://service2.diplo.de/rktermin/extern/appointment_showMonth.do?locationCode=mins&realmId=231&categoryId=373"
     Then page german visa is opened

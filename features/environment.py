@@ -1,6 +1,9 @@
 import configparser
+from datetime import datetime
 
 from sys import platform
+
+from utils import dt, telegram
 from utils.gsheets import GoogleSheets
 
 import allure
@@ -63,7 +66,7 @@ def before_all(context):
     parser = configparser.ConfigParser()
     parser.read('behave.ini')
     context.config = parser
-    context.values = {}
+    context.values = {'start_time': datetime.utcnow()}
 
     # telegram bot
     context.bot = telebot.TeleBot(context.config['telegram']['telegram_token'])
@@ -75,6 +78,7 @@ def before_all(context):
 
 def before_feature(context, feature):
     # retry failures
+    print('Feature started:', feature.name)
     for scenario in feature.scenarios:
         for tag in scenario.effective_tags:
             if 'retry' in tag:
@@ -83,12 +87,12 @@ def before_feature(context, feature):
 
 def before_scenario(context, scenario):
     # context.driver.delete_all_cookies()
-    context.values = {}
     print(f'Scenario started: {scenario.name}')
     context.driver.delete_all_cookies()
 
 
 def after_step(context, step) -> None:
+    print('step started:', step.name)
     try:
         allure.attach(context.driver.get_screenshot_as_png(),
                       name=f'screenshot',
@@ -96,18 +100,18 @@ def after_step(context, step) -> None:
     except Exception:
         pass
     if step.status == 'failed' and str(step.exception) != 'autoretry':
-            try:
-                # send screenshot to telegram
-                context.bot.send_photo(chat_id=context.config['telegram']['telegram_to'],
-                                       photo=context.driver.get_screenshot_as_png(),
-                                       caption=f'Unknown exception for {step.name}: {step.exception}')
-                # send page_source.html to telegram
-                with open("page_source.html", "w") as f:
-                    f.write(context.driver.page_source)
-                document = open('page_source.html', 'rb')
-                context.bot.send_document(chat_id=context.config['telegram']['telegram_to'], document=document)
-            except Exception as e:
-                print(f'after step failed!!: {str(e)}')
+        try:
+            # send page_source.html to telegram
+            with open("page_source.html", "w") as f:
+                f.write(context.driver.page_source)
+            telegram.send_document(
+                bot=context.bot,
+                chat_id=context.config['telegram']['telegram_to'],
+                document_name='page_source.html',
+                image_name=context.driver.get_screenshot_as_png(),
+                caption=str(step.exception))
+        except Exception as e:
+            print(f'after step failed!!: {str(e)}')
 
 
 def after_all(context):

@@ -9,7 +9,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 from telethon import TelegramClient, events
 
 import pages
-from utils.datetime_utils import is_time_between
+from utils import telegram
+from utils.dt import is_time_between
 
 use_step_matcher('re')
 
@@ -146,25 +147,26 @@ def gather_dates(context):
     expected_message = 'Unfortunately, there are no appointments available at this time'
     if not context.page.is_element_displayed('unfortunately message') or expected_message not in context.page.get_text(
             'unfortunately message'):
-        context.bot.send_photo(chat_id=context.config['telegram']['telegram_to'],
-                               photo=context.driver.get_screenshot_as_png(),
-                               caption=f'Unfortunately message is not displayed or changed')
         with open("page_source.html", "w") as f:
             f.write(context.driver.page_source)
-        document = open('page_source.html', 'rb')
-        context.bot.send_document(chat_id=context.config['telegram']['telegram_to'], document=document)
+        telegram.send_document(
+            bot=context.bot,
+            chat_id=context.config['telegram']['telegram_to'],
+            document_name='page_source.html',
+            image_name=context.driver.get_screenshot_as_png(),
+            caption="Unfortunately message is not displayed or changed")
 
 
 @step("send dates")
 def send_dates(context):
     message = context.log if context.log else f'{datetime.utcnow()}: No dates'
     context.bot.send_message(chat_id=context.config['telegram']['telegram_to'],
-                                 text=message)
+                             text=message)
     # from 02:15 to 23:45 check every 5 minutes
     if not is_time_between(time(20, 55), time(23, 15)):
-        sleep(300)
+        sleep(10)  # default: 300
     else:
-        sleep(60)
+        sleep(60)  # default: 60
     raise RuntimeError('autoretry')
 
 
@@ -188,10 +190,13 @@ def monitor(context):
             context.bot.send_photo(chat_id=context.config['telegram']['telegram_to'],
                                    photo=context.driver.get_screenshot_as_png(),
                                    caption=f'Unknown exception: {str(e)}')
-            with open("page_source.html", "w") as f:
+            with open('page_source.html', 'w') as f:
                 f.write(context.driver.page_source)
-            document = open('page_source.html', 'rb')
-            context.bot.send_document(chat_id=context.config['telegram']['telegram_to'], document=document)
+            telegram.send_document(
+                bot=context.bot,
+                chat_id=context.config['telegram']['telegram_to'],
+                document_name='page_source.html',
+                image_name=context.driver.get_screenshot_as_png(),
+                caption=f'Unknown exception: {str(e)}')
         finally:
             context.driver.delete_all_cookies()
-

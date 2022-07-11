@@ -2,9 +2,15 @@
 #
 # data_worksheet = GoogleSheets().authorize('Data')
 # print(data_worksheet.get('A1'))
-from datetime import timezone, time, datetime
+from datetime import timezone, time, datetime, timedelta
+from time import sleep
 
-from utils.datetime_utils import is_time_between
+from utils.dt import is_time_between
 
-print()
-print(datetime.utcnow().time())
+
+
+def is_current_time_different(current_time, mins) -> bool:
+    return current_time < datetime.utcnow() - timedelta(seconds=mins)
+
+
+print(datetime.utcnow())

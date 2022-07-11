@@ -3,10 +3,11 @@ name: Test
 on:
   push:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '*/30 * * * *'
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     strategy:
       matrix:
         tag: ["regression"]
