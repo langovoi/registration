@@ -73,7 +73,7 @@ def before_all(context):
 
     context.log = ''
     # google sheets
-    context.data_worksheet = GoogleSheets().authorize('Data')
+    # context.data_worksheet = GoogleSheets().authorize('Data')
 
 
 def before_feature(context, feature):
