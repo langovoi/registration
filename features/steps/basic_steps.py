@@ -159,7 +159,7 @@ def send_dates(context):
             image=context.driver.get_screenshot_as_png(),
             caption=f'🟢 Dates found: {message}')
     else:
-        telegram.send_message(message=f'{datetime.utcnow()}: Нет немецких дат')
+        telegram.send_message(message='Нет немецких дат')
     # from 02:15 to 23:45 check every 5 minutes
     if not is_time_between(time(20, 55), time(23, 15)):
         sleep(300)  # default: 300

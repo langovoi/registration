@@ -35,3 +35,14 @@ def gather_dates(context):
                 caption="Unfortunately message is not displayed or changed")
         except Exception:
             raise RuntimeError('gather dates step')
+
+
+@step("send italy dates")
+def send_dates(context):
+    with open('page_source.html', 'w') as f:
+        f.write(context.driver.page_source)
+    telegram.send_document(
+        document_name='page_source.html',
+        image=context.driver.get_screenshot_as_png(),
+        caption=f'🇮🇹 Итальянские даты найдены 🇮🇹')
+    raise RuntimeError('autoretry')

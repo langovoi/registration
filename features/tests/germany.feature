@@ -2,7 +2,7 @@
 Feature: Check google.com
 
   @monitor_germany @retry1000
-  Scenario: montor germany
+  Scenario: monitor germany
     When open url: "https://service2.diplo.de/rktermin/extern/appointment_showMonth.do?locationCode=mins&realmId=231&categoryId=373"
     Then page german visa is opened
     When enter "captcha" in captcha field
