@@ -3,13 +3,11 @@ from datetime import datetime
 
 from sys import platform
 
-from utils import dt, telegram
-from utils.gsheets import GoogleSheets
+from utils import telegram
 
 import allure
 from selenium import webdriver
 from behave.contrib.scenario_autoretry import patch_scenario_with_autoretry
-import telebot
 
 
 # context attributes on https://behave.readthedocs.io/en/latest/context_attributes.html#user-attributes
@@ -100,10 +98,7 @@ def after_step(context, step) -> None:
             # send page_source.html to telegram
             with open("page_source.html", "w") as f:
                 f.write(context.driver.page_source)
-            telegram.send_document(
-                document_name='page_source.html',
-                image=context.driver.get_screenshot_as_png(),
-                caption=str(step.exception))
+            telegram.send_document(context, caption=f'{step.name}: {step.exception}')
         except Exception as e:
             print(f'after step failed!!: {str(e)}')
 

@@ -5,7 +5,6 @@ Feature: Check google.com
   Scenario: monitor italy
     When open url: "https://prenotami.esteri.it/"
     Then page italy consulate is opened
-    Then click on language en link
     Then enter "stelmashuk_vova@mail.ru" in email field
     Then enter "Visa2020!" in password field
     Then click on login button

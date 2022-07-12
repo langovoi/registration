@@ -154,10 +154,7 @@ def send_dates(context):
         message = context.values['dates']
         with open('page_source.html', 'w') as f:
             f.write(context.driver.page_source)
-        telegram.send_document(
-            document_name='page_source.html',
-            image=context.driver.get_screenshot_as_png(),
-            caption=f'🟢 Dates found: {message}')
+        telegram.send_document(context, caption=f'🟢 Dates found: {message}')
     else:
         telegram.send_message(message='Нет немецких дат')
     # from 02:15 to 23:45 check every 5 minutes
