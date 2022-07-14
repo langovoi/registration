@@ -21,8 +21,6 @@ behave.ini,f/5/f52618c500a3740e794ddd0f7e1801c7c88f1740
 utils/gmail.py,c/f/cfc9ce4bd18aab684abe94310bf769994a3640e2
 J
 features/pages/__init__.py,5/2/52b133a7b37c91109be4cdf96a6a58af2848c109
-V
-&.github/workflows/italy_consulate2.yml,b/5/b5ffb5da6923ddc055bf32a1ca7dcc2814d38ff0
 ;
 utils/dt.py,0/2/02d95c9715faae252fa07d48a739609e3952e82c
 V

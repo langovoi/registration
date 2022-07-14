@@ -3,11 +3,11 @@ name: Germany2
 on:
   push:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '* */6 * * *'
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 355
     strategy:
       matrix:
         tag: [ "monitor_germany" ]
