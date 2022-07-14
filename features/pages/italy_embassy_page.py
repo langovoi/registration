@@ -20,7 +20,7 @@ class ItalyEmbassyPage(BasePage):
     FIELD_NAME = By.NAME, 'firstname'
     FIELD_EMAIL = By.NAME, 'email'
     FIELD_CONFIRM_EMAIL = By.NAME, 'emailrepeat'
-    DROPDOWN_APLICANTS_NUMBER = By.XPATH, '//select[@id="appointment_newAppointmentForm_fields_0__content"]'
+    DROPDOWN_APPLICANTS_NUMBER = By.XPATH, '//select[@id="appointment_newAppointmentForm_fields_0__content"]'
     FIELD_PASSPORT_NUMBER = By.XPATH, '//input[@id="appointment_newAppointmentForm_fields_1__content"]'
     FIELD_OTHER_PARTICIPANTS = By.XPATH, '//input[@id="appointment_newAppointmentForm_fields_2__content"]'
     FIELD_AIM = By.XPATH, '//input[@id="appointment_newAppointmentForm_fields_3__content"]'

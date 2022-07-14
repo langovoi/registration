@@ -58,7 +58,7 @@ def before_all(context):
     # -- Remote driver
     # context.driver = webdriver.Remote(command_executor='http://67.207.88.128:4444/wd/hub', desired_capabilities=caps)
 
-    context.driver.implicitly_wait(10)
+    context.driver.implicitly_wait(0)
     context.driver.maximize_window()
     # read config
     parser = configparser.ConfigParser()
@@ -82,6 +82,7 @@ def before_feature(context, feature):
 def before_scenario(context, scenario):
     # context.driver.delete_all_cookies()
     print(f'Scenario started: {scenario.name}')
+    context.values['dates'] = []
     context.driver.delete_all_cookies()
 
 
@@ -96,8 +97,6 @@ def after_step(context, step) -> None:
     if step.status == 'failed' and str(step.exception) != 'autoretry':
         try:
             # send page_source.html to telegram
-            with open("page_source.html", "w") as f:
-                f.write(context.driver.page_source)
             telegram.send_document(context, caption=f'{step.name}: {step.exception}')
         except Exception as e:
             print(f'after step failed!!: {str(e)}')

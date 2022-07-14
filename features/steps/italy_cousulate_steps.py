@@ -14,8 +14,6 @@ def gather_dates(context):
     expected_message = 'Unfortunately, there are no appointments available at this time'
     if not context.page.is_element_displayed('unfortunately message') or expected_message not in context.page.get_text(
             'unfortunately message'):
-        with open("page_source.html", "w") as f:
-            f.write(context.driver.page_source)
         try:
             telegram.send_document(context, caption="Unfortunately message is not displayed or changed")
         except Exception:

@@ -64,9 +64,10 @@ class BasePage:
     def get_element(self, element_name, timeout=5):
         locator = self.get_element_by_name(element_name)
         expected_condition = ec.presence_of_element_located(locator)
-        return WebDriverWait(self.driver, timeout).until(
+        result = WebDriverWait(self.driver, timeout).until(
             expected_condition,
             message=f'Не могу найти {element_name} в течение {timeout} сек')
+        return result
 
     def get_elements(self, element_name, timeout=5):
         locator = self.get_element_by_name(element_name)

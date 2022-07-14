@@ -157,12 +157,12 @@ def send_dates(context):
         telegram.send_document(context, caption=f'🟢 Dates found: {message}')
     else:
         telegram.send_message(message='Нет немецких дат')
-    # from 02:15 to 23:45 check every 5 minutes
-    if not is_time_between(time(20, 55), time(23, 15)):
-        sleep(300)  # default: 300
-    else:
-        sleep(60)  # default: 60
-    raise RuntimeError('autoretry')
+    # # from 02:15 to 23:45 check every 5 minutes
+    # if not is_time_between(time(20, 55), time(23, 15)):
+    #     sleep(300)  # default: 300
+    # else:
+    #     sleep(60)  # default: 60
+    # raise RuntimeError('autoretry')
 
 
 @step("get user info")

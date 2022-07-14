@@ -10,6 +10,9 @@ config = parser
 
 
 def send_document(context, caption, document_name='page_source.html', ):
+    if document_name == 'page_source.html':
+        with open("page_source.html", "w") as f:
+            f.write(context.driver.page_source)
     image = context.driver.get_screenshot_as_png()
     bot = telebot.TeleBot(config['telegram']['telegram_token'])
     chat_id = config['telegram']['telegram_to']
