@@ -9,8 +9,6 @@ B
 utils/gsheets.json,a/0/a05e05a6d7d469ecebe127a7ddc3f80e409a9ea2
 @
 utils/gsheets.py,f/1/f1cb52265d7fb3c3a5c0b4ba920ad62679286180
-@
-utils/captcha.py,e/b/eb8d387ad6c97eded47b0a004c61621b09ea5b93
 :
 
 .gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
@@ -23,9 +21,5 @@ J
 features/pages/__init__.py,5/2/52b133a7b37c91109be4cdf96a6a58af2848c109
 ;
 utils/dt.py,0/2/02d95c9715faae252fa07d48a739609e3952e82c
-V
-&features/pages/italy_consulate_page.py,7/5/756130472d76ef3befefd394d236cec63259a494
-V
-&features/tests/italy_consulate.feature,7/2/728dc353760896a06ef530714455aa03fb8ab6c5
 @
 requirements.txt,1/9/19359a61ae2446b51b549167b014da2fcf265768

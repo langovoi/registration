@@ -9,7 +9,7 @@ parser.read('behave.ini')
 config = parser
 
 
-def send_document(context, caption, document_name='page_source.html', ):
+def send_document(context, caption, document_name='page_source.html'):
     if document_name == 'page_source.html':
         with open("page_source.html", "w") as f:
             f.write(context.driver.page_source)
@@ -18,6 +18,13 @@ def send_document(context, caption, document_name='page_source.html', ):
     chat_id = config['telegram']['telegram_to']
     bot.send_photo(chat_id=chat_id, photo=image)
     bot.send_document(chat_id=chat_id, document=open(document_name, "rb"), caption=caption)
+    bot.stop_bot()
+
+
+def send_image(image_name, caption):
+    bot = telebot.TeleBot(config['telegram']['telegram_token'])
+    chat_id = config['telegram']['telegram_to']
+    bot.send_photo(chat_id=chat_id, photo=image_name, caption=caption)
     bot.stop_bot()
 
 

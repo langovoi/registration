@@ -9,6 +9,7 @@ Feature: Check google.com
     Then enter "Visa2020!" in password field
     Then click on login button
     When click on book tab
+    
     When click on search field
     When enter "Schengen" in search field
     When click on book schengen button

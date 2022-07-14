@@ -1,3 +1,5 @@
+import re
+
 from selenium.webdriver.common.by import By
 
 from features.pages.base_page import BasePage
@@ -9,7 +11,7 @@ from utils import captcha
 class GermanVisaPage(BasePage):
     IMAGE_CAPTCHA = By.XPATH, '//captcha/div'
     FIELD_CAPTCHA = By.NAME, 'captchaText'
-    BUTTON_CONTINUE = By.XPATH, '//input[@id="appointment_captcha_month_appointment_showMonth" or @id="appointment_newAppointmentForm_appointment_addAppointment"]'
+    BUTTON_CONTINUE = By.XPATH, '//input[@id="appointment_captcha_day_appointment_showDay" or @id="appointment_captcha_month_appointment_showMonth" or @id="appointment_newAppointmentForm_appointment_addAppointment"]'
     BUTTON_NEXT_MONTH = By.XPATH, '//img[@src="images/go-next.gif"]/..'
     MESSAGE_ERROR = By.ID, 'message'
     MESSAGE_UNFORTUNATELY = By.XPATH, '//div[@id="content"]/div/h2[1]'
@@ -53,7 +55,7 @@ class GermanVisaPage(BasePage):
                     available_times = self.driver.find_elements_by_xpath(
                         '//div/a[contains(@href, "openingPeriodId=")]/..')
                     for time in available_times:
-                        slots = self.get_text(time).split()[-1]
+                        slots = re.findall("\d+", time.text)[0]
                         if int(slots) >= int(self.context.values['number_of_appointments']):
                             time.find_element_by_xpath('//a').click()
                             break

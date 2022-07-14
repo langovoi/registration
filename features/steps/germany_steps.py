@@ -14,7 +14,6 @@ def gather_dates(context):
     gather_all_dates(context, number_of_months=3)
     # if dates - register
     if 'dates' in context.values and context.values['dates']:
-        telegram.send_document(context, caption=f'Появились даты для Германии: context.values["dates"]')
         telegram.send_message(f'Начинаю регистрировать:\n{context.values["available_users"]}')
     else:
         raise RuntimeError('autoretry')
@@ -23,9 +22,12 @@ def gather_dates(context):
 def gather_all_dates(context, number_of_months: int):
     for _ in range(number_of_months):
         for date_slot in context.page.get_elements('dates section'):
-            if date_slot.text:
+            if date_slot.text and date_slot.text.split('\n')[0].split()[1] != '':
                 context.values['dates'].append(date_slot.text.split('\n')[0].split()[1])
+                telegram.send_document(context,
+                                       caption=f"🇩🇪 Появились даты для Германии:{context.values['dates']} 🇩🇪")
         context.page.click_on('next month button')
+        context.page.enter_captcha()
         if context.page.is_element_displayed('captcha field', timeout=1):
             context.page.type_in('captcha', 'captcha field')
     # get dates from api
@@ -73,7 +75,10 @@ def register_germany(context):
     # [{'email': 'barkar.nastya@bk.ru', 'password': 'Viza2020!', 'surname': 'LISKOVICH', 'name': 'ALINA', 'date_from': '09/06/2022', 'date_to': '30/07/2022', 'dates': ['14.07.2022']}, {'email': 'germanvisa@mail.ru', 'password': 'Visa2020!', 'surname': 'SAFONAVA', 'name': 'TATSIANA', 'date_from': '', 'date_to': '15/08/2022', 'dates': ['14.07.2022']}, {'email': 'masha.list.66@mail.ru', 'password': 'Vl6689563*', 'surname': 'SHPAKAVA', 'name': 'MARYIA', 'date_from': '05/06/2022', 'date_to': '24/08/2022', 'dates': ['14.07.2022']}, {'email': 'igor.epshteyn@bk.ru', 'password': 'Viza2020!', 'surname': 'ASTRAUSKENE', 'name': 'LARYSA', 'date_from': '20/06/2022', 'date_to': '15/08/2022', 'dates': ['14.07.2022']}]
     users = context.values['available_users']
     for user in users:
-        register_user(context, users[user])
+        try:
+            register_user(context, users[user])
+        except Exception:
+            pass
     # # register all users
     # with Pool(processes=3) as p:
     #     p.map(merge_names, names)
@@ -108,8 +113,14 @@ def register_user(context, user):
                 context.page.click_on('confirm checkbox')
                 context.page.click_on('captcha field')
                 context.page.enter_captcha()
-                telegram.send_document(context, caption=f'🇩🇪 {user[0]["surname"]} {user[0]["name"]} записан на {date}')
-                context.page.click_on('confirm appointments link')
+                if context.page.is_element_displayed('confirm appointments link', timeout=1):
+                    context.page.click_on('confirm appointments link')
+                    telegram.send_document(
+                        context, caption=f'🇩🇪 {user[0]["surname"]} {user[0]["name"]} записан на {date}')
+                else:
+                    telegram.send_document(
+                        context,
+                        caption=f'Не удалось зарегистрировать пользователя, после ввода данных: {user[0]["surname"]} {user[0]["name"]} на {date}')
                 success = True
                 break
             except Exception:
