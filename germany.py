@@ -1,6 +1,7 @@
 import re
 from datetime import datetime
 from time import sleep
+from sys import platform
 
 import requests
 from bs4 import BeautifulSoup
@@ -56,7 +57,16 @@ from utils import captcha, telegram
 
 class Germany():
     def __init__(self, termin, category, users_dict=None):
-        self.driver = webdriver.Chrome()
+        args = ['headless', 'window-size=1920,1080'] if platform != 'darwin' else []
+        caps = {
+            'browserName': 'chrome',
+            'goog:chromeOptions': {
+                'args': args
+            }
+        }
+
+        # -- Local driver
+        self.driver = webdriver.Chrome(desired_capabilities=caps)
         self.s = requests.Session()
         self.termin = termin
         self.category = category
