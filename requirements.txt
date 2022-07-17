@@ -9,3 +9,9 @@ gspread
 antigate
 pytz
 2captcha-python
+bs4
+TwoCaptcha
+configparser
+requests
+beautifulsoup4
+behave

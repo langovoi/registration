@@ -1,0 +1,231 @@
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<base href="https://service2.diplo.de/rktermin/" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=9; IE=10; IE=11" />
+	<title>
+		RK-Termin - Kategorie
+	</title>	
+	<link rel="stylesheet" type="text/css" href="style_css/reset.css" />	
+	<link rel="stylesheet" type="text/css" media="screen" href="style_css/screen.css" />	
+	<link rel="stylesheet" type="text/css" media="print" href="style_css/print.css" />	
+	<link rel="stylesheet" type="text/css" media="screen" href="style_css/rktermin.css" />
+	
+	<!--[if gte IE 7]><link rel="stylesheet" type="text/css" media="screen" href="style_css/ie7.css" /><![endif]-->	
+	<!--[if gte IE 6]><link rel="stylesheet" type="text/css" media="screen" href="style_css/ie6.css" /><![endif]-->	
+	<!--[if lte IE 5.5000]><link rel="stylesheet" type="text/css" media="screen" href="style_css/ie5.css" /><![endif]-->	
+
+
+	<link rel="stylesheet" type="text/css" href="css/redmond/jquery-ui-1.11.4.custom.min.css" />
+	<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script> 
+	<script type="text/javascript" src="js/jquery-ui-1.11.4.custom.min.js"></script> 
+		
+</head>
+<body>
+<div id="global">
+
+	<div id="header">
+	
+		<div id="logo">
+			<img src="style_images/auswaertiges-amt-logo-220x120.gif" alt="Auswärtiges Amt" />
+		</div>
+		<div id="logo-app" style="background-image:  url('images/auswaertigesamt.gif'); min-height: 54px; width: 78%;">
+			&nbsp;
+		</div>
+		<div id="nav-main" style="min-height: 28px;">
+		
+
+<ul>
+	<li></li>
+</ul>
+		</div>		
+	
+	</div> <!-- end: #header -->			
+
+	
+	<div id="main" class="l-s">
+			
+		<div id="content">
+		
+			<div class="wrapper">	
+			
+
+<div style="font-size: 14pt; font-weight: bold; margin-bottom: 1em;">
+
+</div>
+
+
+
+
+
+
+        
+<form id="appointment_captcha_month" name="appointment_captcha_month" onsubmit="startCommitRequest();" action="/rktermin/extern/appointment_showMonth.do" method="post" class="top">
+
+<div>
+
+
+<captcha>
+<div id="_814158099" style="background:white url('data:image/jpg;base64,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') no-repeat scroll left top;width:350px;height:50px;margin:2em;display:block;">&nbsp;</div>
+</captcha>
+
+ 
+
+
+<div class="input submit left">
+<input type="submit" value="Load another picture" id="appointment_captcha_month_refreshcaptcha" name="action:appointment_refreshCaptchamonth"/>
+
+</div>
+</div>
+<div id="wwgrp_appointment_captcha_month_captchaText" class="input text s">
+<div id="wwlbl_appointment_captcha_month_captchaText" class="wwlbl">
+<label for="appointment_captcha_month_captchaText" class="label">        Please enter here the text you see in the picture above:
+</label></div> 
+<div id="wwctrl_appointment_captcha_month_captchaText" >
+<input type="text" name="captchaText" value="" id="appointment_captcha_month_captchaText" class="input text s" onkeypress="checkKey(event)"/></div> </div>
+
+<input type="hidden" name="rebooking" value="" id="appointment_captcha_month_rebooking"/>
+<input type="hidden" name="token" value="" id="appointment_captcha_month_token"/>
+<input type="hidden" name="lastname" value="" id="appointment_captcha_month_lastname"/>
+<input type="hidden" name="firstname" value="" id="appointment_captcha_month_firstname"/>
+<input type="hidden" name="email" value="" id="appointment_captcha_month_email"/>
+<input type="hidden" name="locationCode" value="mins" id="appointment_captcha_month_locationCode"/>
+<input type="hidden" name="realmId" value="231" id="appointment_captcha_month_realmId"/>
+<input type="hidden" name="categoryId" value="373" id="appointment_captcha_month_categoryId"/>
+<input type="hidden" name="openingPeriodId" value="" id="appointment_captcha_month_openingPeriodId"/>
+<input type="hidden" name="date" value="" id="appointment_captcha_month_date"/>
+<input type="hidden" name="dateStr" value="" id="appointment_captcha_month_dateStr"/>
+
+	
+	
+	
+	
+    <script type="text/javascript">
+            function checkKey(event){                   
+                if(event.keyCode == 13){
+                    document.appointment_captcha_month.action="extern/appointment_showMonth.do";
+                    document.appointment_captcha_month.submit();
+                    event.preventDefault();
+                }
+            }
+      </script>
+	
+
+
+<div class="input submit left">
+	<input type="submit" value="Continue" id="appointment_captcha_month_appointment_showMonth" name="action:appointment_showMonth"/>
+<input type="submit" value="Cancel" id="appointment_captcha_month_choose_category" name="action:choose_category"/>
+</div>      
+
+
+</form>
+
+
+
+
+
+
+
+
+<script language="javascript" type="text/javascript">
+
+$(function() {
+	$("#commit-request").dialog({
+		resizable : false,
+		height : 200,
+		width: 350,
+		modal : true,
+		autoOpen: false, 
+		buttons : {
+			/* none */
+		},
+		close: function( event, ui ) {
+			$('#commit-request').dialog('open');
+		}
+	});
+ 	$( "#commit-request-progressbar" ).progressbar({
+	  value: false
+	});
+});
+
+function startCommitRequest(event) {
+	
+	$("#commit-request").css('cursor', 'progress');
+	
+	setTimeout("innerStartCommitRequest()", 500);
+
+	return true;
+	
+}
+
+function innerStartCommitRequest() {
+	$('#commit-request').dialog('open');
+}
+
+</script>
+
+
+
+<div id="commit-request" title="In Bearbeitung ... ">
+	<p>
+		<span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0; margin-bottom: 100px"></span>
+		<span id="question">
+			<b>this may take a few moments ...</b><br />Your request is being processed ... please wait ... refreshing this page will delay your booking.
+		</span>
+		
+	</p>
+	<div id="commit-request-progressbar" style="background: #7192b6;">
+	
+		<div style="background: rgba(0,0,0,0) url('images/indet.gif'); opacity:0.25; height:2em;">
+			&nbsp;
+		</div>
+	
+	</div>
+</div>
+			</div>
+			
+			<div class="bottom"></div>
+			
+		</div>
+		
+		<div id="context">
+		
+			<div class="wrapper">
+				&nbsp;
+			</div>
+			
+		</div>
+		
+	</div> <!-- end: #main -->
+	<div id="footer">
+		
+
+
+
+<div style="min-height: 15px;">
+	<ul>
+		<li>RK-Termin&nbsp;1.2.37.5</li>
+		<li style="margin-left: 5em;">
+			
+				<a href="extern/dsgvo.do?request_locale=en"
+				target="_blank"
+					title="Information on data protection and instructions for use"><img
+					src="images/flags/gb.png"
+					alt="Information on data protection and instructions for use"
+					title="Information on data protection and instructions for use" />&nbsp; Information
+					on data protection and instructions for use</a>
+			     </li>
+	</ul>
+</div>
+
+
+
+	</div>
+</div>
+</body>
+</html>

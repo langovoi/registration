@@ -21,5 +21,15 @@ J
 features/pages/__init__.py,5/2/52b133a7b37c91109be4cdf96a6a58af2848c109
 ;
 utils/dt.py,0/2/02d95c9715faae252fa07d48a739609e3952e82c
-@
-requirements.txt,1/9/19359a61ae2446b51b549167b014da2fcf265768
+G
+features/environment.py,7/8/78ffc5f4f9d48b0011828b5fd8038b961d68c587
+W
+'features/steps/italy_cousulate_steps.py,9/a/9aefe254f2cd52dd750f40b4bc914439f30b3a80
+V
+&features/pages/italy_consulate_page.py,7/5/756130472d76ef3befefd394d236cec63259a494
+M
+features/steps/basic_steps.py,b/6/b63a8cfee97d08479d60dda09dc41f1a3515c913
+A
+utils/telegram.py,c/d/cdbb092b35fbdaf723f65b293b3d945238fee458
+K
+features/pages/base_page.py,c/a/cabef8aef0f0782bfdd300c57df2ab619e6dbf04

@@ -1,7 +1,6 @@
 name: Germany2
 
 on:
-  push:
   schedule:
     - cron: '* */6 * * *'
 jobs:
@@ -41,7 +40,7 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            🟢 GERMANY2 JOB IS STARTED 🟢
+            🟢 GERMANY JOB IS STARTED 🟢
       - name: Test with behave
         run: |
           behave --no-skipped -f allure_behave.formatter:AllureFormatter -o allure-results --tags=${{ matrix.tag }}
@@ -52,4 +51,4 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            🐞 GERMANY2 JOB IS STOPPED 🐞
+            🐞 GERMANY JOB IS STOPPED 🐞
