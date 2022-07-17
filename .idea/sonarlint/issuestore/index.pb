@@ -21,8 +21,6 @@ J
 features/pages/__init__.py,5/2/52b133a7b37c91109be4cdf96a6a58af2848c109
 ;
 utils/dt.py,0/2/02d95c9715faae252fa07d48a739609e3952e82c
-G
-features/environment.py,7/8/78ffc5f4f9d48b0011828b5fd8038b961d68c587
 W
 'features/steps/italy_cousulate_steps.py,9/a/9aefe254f2cd52dd750f40b4bc914439f30b3a80
 V
@@ -37,8 +35,6 @@ T
 $features/pages/italy_embassy_page.py,b/c/bc370a81ef44d9f1800cf356bab5dd68764ab041
 ?
 cookietest.json,7/5/752937e25d4a9e0b2b1954a9bd0ba7f62607231f
-@
-requirements.txt,1/9/19359a61ae2446b51b549167b014da2fcf265768
 ;
 cookies.pkl,e/d/eda7d9bd35b13c2e77df86dee8b63c3cfe6a8433
 R

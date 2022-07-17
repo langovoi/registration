@@ -15,3 +15,4 @@ configparser
 requests
 beautifulsoup4
 behave
+lxml
