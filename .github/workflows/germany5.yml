@@ -44,7 +44,7 @@ jobs:
             🟢 GERMANY JOB IS STARTED 🟢
       - name: Test with behave
         run: |
-          python test.py
+          python3 test.py
       - name: send custom message
         if: always()
         uses: appleboy/telegram-action@master
