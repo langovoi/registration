@@ -126,13 +126,13 @@ class Germany():
                 break
             else:
                 if "background:white url('data:image/jpg" in html:
-                    telegram.send_doc(f'⭕ Captcha: Неверный код {code}. Попытка {i+1}', str(soup))
+                    # telegram.send_doc(f'⭕ Captcha: Неверный код {code}. Попытка {i+1}', str(soup))
                     soup = BeautifulSoup(html,"lxml")
                     image = soup.select("captcha > div")
                     image= image[0]['style'].split("url('")[1].split("')")[0]
                     code = captcha.get_code(image)
                 else:
-                    telegram.send_doc(html, '⭕ Ошибка, капча не отображается')
+                    telegram.send_doc('⭕ Ошибка, капча не отображается', str(html))
                 sleep(10) # if captcha
         else:
             raise RuntimeError(f'⭕ Не разгадал капчу с 10 попыток для категории {self.categories[str(self.category)]}')
