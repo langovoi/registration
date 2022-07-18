@@ -113,7 +113,7 @@ class Germany():
     def get_dates(self):
         date_slots = []
         code, soup = self.open_login_page()
-        for i in range(10):
+        for _ in range(10):
             html = self.get_appointments('https://service2.diplo.de/rktermin/extern/appointment_showMonth.do', code, self.session_id)
             if 'Unfortunately' in html:
                 telegram.send_message(f"Германия {self.categories[self.category]}: нет дат")
@@ -150,7 +150,7 @@ class Germany():
                     for time in time_slots:
                         if int(time[0]) >= len(family):
                             self.register_national(family, date, time[1])
-                            break # register user
+
 
     def open_register_page(self, date, time):
         cookies = {'JSESSIONID': f'{self.session_id}', 'KEKS': f'{self.termin[0]}',}
@@ -184,7 +184,6 @@ class Germany():
             'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}', 'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Speichern',}
         r = self.s.post('https://service2.diplo.de/rktermin/extern/appointment_addAppointment.do', cookies=cookies, headers=headers, data=data)
         soup = BeautifulSoup(r.text,"lxml")
-        print(f'Успешно зарегистрировало на {date}: {family}')
-        print(f'{soup}')
+        telegram.send_doc(caption=f'🟢 🇩🇪 Успешно зарегистрирован: {family[0]["surname"]} {family[0]["name"]}({family[0]["email"]}) на дату: {date}:{time}', html=str(soup))
 
     # register_users(family_list, date_slots)
