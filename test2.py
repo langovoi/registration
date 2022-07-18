@@ -1,44 +1,17 @@
-import requests
+from time import sleep
 
-cookies = {
-    'JSESSIONID': '602CFC7CED97E4587781470672DBC603',
-    'KEKS': 'TERMIN325',
-}
+from germany import Germany
 
-headers = {
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-    'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8',
-    'Cache-Control': 'max-age=0',
-    'Connection': 'keep-alive',
-    # Requests sorts cookies= alphabetically
-    # 'Cookie': 'JSESSIONID=602CFC7CED97E4587781470672DBC603; KEKS=TERMIN325',
-    'Origin': 'https://service2.diplo.de',
-    'Referer': 'https://service2.diplo.de/rktermin/extern/appointment_showMonth.do',
-    'Sec-Fetch-Dest': 'document',
-    'Sec-Fetch-Mode': 'navigate',
-    'Sec-Fetch-Site': 'same-origin',
-    'Sec-Fetch-User': '?1',
-    'Upgrade-Insecure-Requests': '1',
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
-    'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"macOS"',
-}
+users_dict = [
+    {"status": 0, "reason": "Посещение родственников/друзей/знакомых", "surname": "Hvzodzeu", "name": "Yauheni",
+     "email": "kojio6ok@tut.by",
+     "passport_number": "MP4140001", "birth_day": "10/10/1985", "passport_issued": "13/04/2021",
+     "passport_expired": "13/4/2031", "issued_by": "MIA", "phone_number": "375296090090", "nationality": "Belarus",
+     "travel_date": "05/11/2022", "date_from": "13/07/2022", "date_to": "25/10/2022", "family": "1"}]
 
-data = {
-    'captchaText': '574ex6',
-    'rebooking': 'false',
-    'token': '',
-    'lastname': '',
-    'firstname': '',
-    'email': '',
-    'locationCode': 'mins',
-    'realmId': '231',
-    'categoryId': '373',
-    'openingPeriodId': '',
-    'date': '',
-    'dateStr': '',
-}
 
-response = requests.post('https://service2.diplo.de/rktermin/extern/appointment_showMonth.do', cookies=cookies, headers=headers, data=data)
-response
+g = Germany(['TERMIN325', 'TERMIN340'], '375', users_dict)
+date_slots = g.get_dates()
+family_list = g.get_users_with_dates(date_slots)
+g.register_users(family_list, date_slots)
+

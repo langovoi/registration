@@ -27,34 +27,21 @@ category = '375'
 
 # status:0
 users_dict = [
-    {"status": 0, "reason": "Посещение родственников/друзей/знакомых", "surname": "IVANTSOV", "name": "VALERY",
-     "email": "sash.kardash@gmail.ru",
-     "passport_number": "AB2680952", "birth_day": "07/06/2001", "passport_issued": "13/04/2021",
-     "passport_expired": "13/4/2031", "issued_by": "MIA", "phone_number": "375295497118", "nationality": "Belarus",
-     "travel_date": "05/11/2022", "date_from": "13/07/2022", "date_to": "25/10/2022", "family": "1"},
-    {"status": 0, "reason": "Посещение родственников/друзей/знакомых", "surname": "NOVIKAU", "name": "ALIAKSANDR",
-     "email": "n-pestretsov@mail.ru",
-     "passport_number": "BM2183681", "birth_day": "02/02/1989", "passport_issued": "05/04/2022",
-     "passport_expired": "5/4/2032", "issued_by": "MIA", "phone_number": "375295023120", "nationality": "Belarus",
-     "travel_date": "05/11/2022", "date_from": "13/07/2022", "date_to": "25/10/2022", "family": "1"},
-    {"status": 0, "reason": "Посещение родственников/друзей/знакомых", "surname": "BAKUNOVICH", "name": "DZMITRY",
-     "email": "dobrushin.2021@mail.ru",
-     "passport_number": "PD0039632", "birth_day": "18/11/1972", "passport_issued": "29/08/2017",
-     "passport_expired": "29/08/2027", "issued_by": "MIA", "phone_number": "375336374028",
-     "nationality": "Belarus", "travel_date": "05/11/2022", "date_from": "13/10/2022", "date_to": "25/08/2022",
-     "family": "3"},
-    {"status": 0, "reason": "Посещение родственников/друзей/знакомых", "surname": "TRAFIMCHYK", "name": "MARYIAEVIALINA",
-     "email": "yevgeniya.chekulova@mail.ru", "passport_number": "MC3428596", "birth_day": "08/07/2010",
-     "passport_issued": "20/08/2020",
-     "passport_expired": "20/08/2030", "issued_by": "MIA", "phone_number": "375333582710",
-     "nationality": "Belarus", "travel_date": "05/11/2022", "date_from": "13/07/2022", "date_to": "25/10/2022",
-     "family": "4"},
-    {"status": 0, "reason": "Посещение родственников/друзей/знакомых", "surname": "HUSAK", "name": "LIZAVETA",
-     "email": "karolina.rytik.rytko@mail.ru",
-     "passport_number": "MP4280922", "birth_day": "15/03/2011", "passport_issued": "15/09/2027",
-     "passport_expired": "15/09/2027", "issued_by": "MIA", "phone_number": "375291205453",
-     "nationality": "Belarus", "travel_date": "05/11/2022", "date_from": "13/07/2022", "date_to": "25/10/2022",
-     "family": "5"}]
+    {"status": 0, "reason": "Посещение родственников/друзей/знакомых", "surname": "Hvzodzeu", "name": "Yauheni",
+     "email": "kojio6ok@tut.by",
+     "passport_number": "MP4140001", "birth_day": "10/10/1985", "passport_issued": "13/04/2021",
+     "passport_expired": "13/4/2031", "issued_by": "MIA", "phone_number": "375296090090", "nationality": "Belarus",
+     "travel_date": "05/11/2022", "date_from": "13/07/2022", "date_to": "25/10/2022", "family": "1"}]
+
+
+def get_session_id(url):
+    s = requests.Session()
+    headers = { 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8', 'Connection': 'keep-alive',
+                'Referer': f'{url}','Sec-Fetch-Dest': 'document','Sec-Fetch-Mode': 'navigate','Sec-Fetch-Site': 'same-origin','Sec-Fetch-User': '?1','Upgrade-Insecure-Requests': '1','User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36','sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"','sec-ch-ua-mobile': '?0','sec-ch-ua-platform': '"macOS"',
+    }
+    s.get(url, headers=headers)
+    return s.cookies.get_dict()['JSESSIONID']
+
 
 def get_catpcha_code(url):
     driver.get(url)
@@ -118,6 +105,9 @@ for i in range(10):
         break
     elif "background:white url('data:image/jpg" in html:
         sleep(1) # if captcha
+    else:
+        print('Капча не разгадана')
+        print(html)
 else:
     raise RuntimeError('Не разгадал капчу за 10 попыток')
 
@@ -171,4 +161,4 @@ def register_national(family, date, time):
     soup = BeautifulSoup(r.text,"lxml")
     print(soup)
 
-# register_users(family_list)
+register_users(family_list)

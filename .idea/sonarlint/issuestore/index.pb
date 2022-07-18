@@ -27,21 +27,13 @@ V
 &features/pages/italy_consulate_page.py,7/5/756130472d76ef3befefd394d236cec63259a494
 M
 features/steps/basic_steps.py,b/6/b63a8cfee97d08479d60dda09dc41f1a3515c913
-K
-features/pages/base_page.py,c/a/cabef8aef0f0782bfdd300c57df2ab619e6dbf04
-@
-utils/captcha.py,e/b/eb8d387ad6c97eded47b0a004c61621b09ea5b93
 T
 $features/pages/italy_embassy_page.py,b/c/bc370a81ef44d9f1800cf356bab5dd68764ab041
 ?
 cookietest.json,7/5/752937e25d4a9e0b2b1954a9bd0ba7f62607231f
 ;
 cookies.pkl,e/d/eda7d9bd35b13c2e77df86dee8b63c3cfe6a8433
-R
-"features/pages/german_visa_page.py,b/d/bdd774f27494516b8e825a28a9326827d475514f
 ?
 hh_success.html,4/c/4cf4c767e69bd76db8bc7b8efec5515ee66f7372
 N
 features/tests/germany.feature,3/9/39b34ab8b6b636e37c43cbb8b69d15d698a924e3
-8
-test2.py,2/a/2a41da11c987266d7c39b70a05e3cc3cba268c18
