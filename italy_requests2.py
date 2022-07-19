@@ -26,17 +26,19 @@ browser.addheaders = [('User-agent',
 browser.set_handle_refresh(False)
 
 url = 'https://prenotami.esteri.it/Home'
-browser.open(url)
+html = browser.open(url).read()
+print(html.decode('utf-8'))
 browser.select_form(nr=0)  # This is login-password form -> nr = number = 0
 browser.form['Email'] = 'kojio6ok@tut.by'
 browser.form['Password'] = 'Khimik1971'
-browser.submit()
+html = browser.submit().read()
+print(html.decode('utf-8'))
 
 browser.follow_link(url='/Services')
 
 url = 'https://prenotami.esteri.it/Services/Booking/163'
-browser.open(url)
-
+html = browser.open(url).read()
+print(html.decode('utf-8'))
 browser.select_form(nr=1)
 add_control = browser.form.find_control(name='PrivacyCheck', id='PrivacyCheck')
 add_control.value = True

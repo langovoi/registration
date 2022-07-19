@@ -38,6 +38,11 @@ class BasePage:
             self.get_clickable_element(element_name).click()
 
     def type_in(self, element_name, text):
+        try:
+            self.hover_element(element_name)
+            self.get_clickable_element(element_name).click()
+        except Exception:
+            pass
         self.get_element(element_name).clear()
         self.get_element(element_name).send_keys(text)
 
@@ -60,6 +65,9 @@ class BasePage:
             except Exception:
                 return (By.XPATH, f'//*[text()="{element}"]|//*[@value="{element}"]')
         return element
+
+    def switch_to_frame(self, frame):
+        return WebDriverWait(self.driver, 10).until(ec.frame_to_be_available_and_switch_to_it(frame))
 
     def get_element(self, element_name, timeout=5):
         locator = self.get_element_by_name(element_name)

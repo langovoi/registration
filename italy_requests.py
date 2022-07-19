@@ -25,7 +25,7 @@ browser.addheaders = [('User-agent',
                        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36')]
 browser.set_handle_refresh(False)
 
-url = 'https://prenotami.esteri.it/Home'
+url = 'https://pastel.diplomatie.gouv.fr/rdvinternet/html-4.02.00/frameset/frameset.html?lcid=1&sgid=196&suid=1'
 browser.open(url)
 browser.select_form(nr=0)  # This is login-password form -> nr = number = 0
 browser.form['Email'] = 'kojio6ok@tut.by'

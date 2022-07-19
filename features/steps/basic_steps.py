@@ -16,6 +16,12 @@ from utils.dt import is_time_between
 use_step_matcher('re')
 
 
+@step('wait element (?P<element_name>[^"]*?)(?: in "(?P<section>[^"]*?)")?')
+def wait_element(context, element_name, section=None):
+    while True:
+        if context.page.is_element_displayed(element_name):
+            break
+
 @step('click on (?P<element_name>[^"]*?)(?: in "(?P<section>[^"]*?)")?')
 def click_on(context, element_name, section=None):
     sleep(0.5)

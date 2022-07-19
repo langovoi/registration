@@ -1,3 +1,4 @@
+from .french_visa_page import FrenchVisaPage
 from .german_visa_page import GermanVisaPage
 from .google_page import GooglePage
 from .italy_consulate_page import ItalyConsulatePage
@@ -8,6 +9,7 @@ page_map = {
     "german visa": GermanVisaPage,
     "italy consulate": ItalyConsulatePage,
     "italy embassy": ItalyEmbassyPage,
+    "french visa": FrenchVisaPage,
 }
 
 

@@ -17,7 +17,7 @@ class ItalyConsulatePage(BasePage):
     TAB_BOOK = By.XPATH, '//a[contains(@href, "/Services")]'
     FIELD_SEARCH = By.ID, 'myInputTextField'
     BUTTON_BOOK_SCHENGEN = By.XPATH, '//a[contains(@href, "/Services/Booking/1090")]'
-    BUTTON_BOOK_STYDY = By.XPATH, '//a[contains(@href, "/Services/Booking/163")]'
+    BUTTON_BOOK_STUDY = By.XPATH, '//a[contains(@href, "/Services/Booking/163")]'
     DIALOG_NO_DATES = By.XPATH, '//div[@role="dialog"]'
     BUTTON_CLOSE_DIALOG = By.XPATH, '//div[@role="dialog"]//button'
     CHECKBOX_PRIVACY = By.NAME, 'PrivacyCheck'

@@ -8,13 +8,14 @@ from utils import telegram
 import allure
 from selenium import webdriver
 from behave.contrib.scenario_autoretry import patch_scenario_with_autoretry
-
-
 # context attributes on https://behave.readthedocs.io/en/latest/context_attributes.html#user-attributes
 
 
 def before_all(context):
     args = ['headless', 'window-size=1920,1080'] if platform != 'darwin' else []
+    prefs = {"profile.managed_default_content_settings.images": 2}
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_experimental_option("prefs", prefs)
     caps = {
         # -- Chrome Selenoid options
         'browserName': 'chrome',
@@ -53,7 +54,7 @@ def before_all(context):
     '''
 
     # -- Local driver
-    context.driver = webdriver.Chrome(desired_capabilities=caps)
+    context.driver = webdriver.Chrome(chrome_options=chrome_options, desired_capabilities=caps)
 
     # -- Remote driver
     # context.driver = webdriver.Remote(command_executor='http://67.207.88.128:4444/wd/hub', desired_capabilities=caps)
