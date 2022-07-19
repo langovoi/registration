@@ -36,8 +36,6 @@ V
 login.html,8/0/8069a16aaa89aa2f982404b0d2c7244c6e283111
 @
 utils/captcha.py,e/b/eb8d387ad6c97eded47b0a004c61621b09ea5b93
-7
-test.py,a/3/a36e355ddb203d7d4133221f339dc406cb9f480f
 A
 utils/telegram.py,c/d/cdbb092b35fbdaf723f65b293b3d945238fee458
 U
