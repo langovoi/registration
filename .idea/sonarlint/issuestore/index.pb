@@ -60,8 +60,6 @@ B
 italy_requests2.py,4/7/47f7bfc48fa698d940276953e1396c6adaa96b1b
 B
 run_french_scan.py,8/8/88f7cc78b4221d9dcea3ca3225e90cf257b666ac
-@
-requirements.txt,1/9/19359a61ae2446b51b549167b014da2fcf265768
 A
 run_italy_scan.py,3/9/39b6d909fcf81808c9edbdb6bb9c2c04568f4006
 V

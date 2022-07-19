@@ -54,9 +54,9 @@ def register_german_visa(termin, category, reason):
 while True:
     try:
         # National
-        termin = ['TERMIN325', 'TERMIN340']
-        category = '375'
-        register_german_visa(termin, category, 'National')
+        # termin = ['TERMIN325', 'TERMIN340']
+        # category = '375'
+        # register_german_visa(termin, category, 'National')
 
         # Schengen
         termin = ['TERMIN325', 'TERMIN327']
@@ -70,4 +70,3 @@ while True:
         sleep(300)
     except Exception as e:
         telegram.send_message(f'⭕ Germany job failed: {str(e)}')
-        sleep(60)
