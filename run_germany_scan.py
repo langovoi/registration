@@ -67,9 +67,7 @@ while True:
         termin = ['TERMIN325', 'TERMIN327']
         category = '2845'
         register_german_visa(termin, category, 'Tourism')
-
-
-        sleep(60)
+        sleep(300)
     except Exception as e:
         telegram.send_message(f'⭕ Germany job failed: {str(e)}')
         sleep(60)
