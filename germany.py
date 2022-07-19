@@ -17,42 +17,14 @@ from utils import captcha, telegram
 
 # Tourism
 # termin = ['TERMIN325', 'TERMIN327']
-# category = '373'
+# category = '2845'
 
 # status:0
-# users_dict = [
-#     {"status": 0, "reason": "Посещение родственников/друзей/знакомых", "surname": "IVANTSOV", "name": "VALERY",
-#      "email": "sash.kardash@gmail.ru",
-#      "passport_number": "AB2680952", "birth_day": "07/06/2001", "passport_issued": "13/04/2021",
-#      "passport_expired": "13/4/2031", "issued_by": "MIA", "phone_number": "375295497118", "nationality": "Belarus",
-#      "travel_date": "05/11/2022", "date_from": "13/07/2022", "date_to": "25/10/2022", "family": "1"},
-#     {"status": 0, "reason": "Посещение родственников/друзей/знакомых", "surname": "NOVIKAU", "name": "ALIAKSANDR",
-#      "email": "n-pestretsov@mail.ru",
-#      "passport_number": "BM2183681", "birth_day": "02/02/1989", "passport_issued": "05/04/2022",
-#      "passport_expired": "5/4/2032", "issued_by": "MIA", "phone_number": "375295023120", "nationality": "Belarus",
-#      "travel_date": "05/11/2022", "date_from": "13/07/2022", "date_to": "25/10/2022", "family": "1"},
-#     {"status": 0, "reason": "Посещение родственников/друзей/знакомых", "surname": "BAKUNOVICH", "name": "DZMITRY",
-#      "email": "dobrushin.2021@mail.ru",
-#      "passport_number": "PD0039632", "birth_day": "18/11/1972", "passport_issued": "29/08/2017",
-#      "passport_expired": "29/08/2027", "issued_by": "MIA", "phone_number": "375336374028",
-#      "nationality": "Belarus", "travel_date": "05/11/2022", "date_from": "13/10/2022", "date_to": "25/08/2022",
-#      "family": "3"},
-#     {"status": 0, "reason": "Посещение родственников/друзей/знакомых", "surname": "TRAFIMCHYK", "name": "MARYIAEVIALINA",
-#      "email": "yevgeniya.chekulova@mail.ru", "passport_number": "MC3428596", "birth_day": "08/07/2010",
-#      "passport_issued": "20/08/2020",
-#      "passport_expired": "20/08/2030", "issued_by": "MIA", "phone_number": "375333582710",
-#      "nationality": "Belarus", "travel_date": "05/11/2022", "date_from": "13/07/2022", "date_to": "25/10/2022",
-#      "family": "4"},
-#     {"status": 0, "reason": "Посещение родственников/друзей/знакомых", "surname": "HUSAK", "name": "LIZAVETA",
-#      "email": "karolina.rytik.rytko@mail.ru",
-#      "passport_number": "MP4280922", "birth_day": "15/03/2011", "passport_issued": "15/09/2027",
-#      "passport_expired": "15/09/2027", "issued_by": "MIA", "phone_number": "375291205453",
-#      "nationality": "Belarus", "travel_date": "05/11/2022", "date_from": "13/07/2022", "date_to": "25/10/2022",
-#      "family": "5"}]
+
 
 
 class Germany():
-    def __init__(self, termin, category, users_dict=None):
+    def __init__(self, termin, category, users_dict):
         self.s = requests.Session()
         self.session_id = ''
         self.termin = termin
@@ -99,7 +71,7 @@ class Germany():
                 date_from = datetime.strptime(user['date_from'] if user['date_from'] else '01/01/2022', '%d/%m/%Y')
                 date_to = datetime.strptime(user['date_to'] if user['date_to'] else '01/01/3000', '%d/%m/%Y')
                 actual_date = datetime.strptime(date, '%d.%m.%Y')
-                if date_from < actual_date <= date_to:
+                if date_from <= actual_date <= date_to:
                     self.users_dict[i].setdefault("dates", []).append(date)
         available_users = [d for d in self.users_dict if 'dates' in d]
         family_list = {}
@@ -137,20 +109,27 @@ class Germany():
         else:
             raise RuntimeError(f'⭕ Не разгадал капчу с 10 попыток для категории {self.categories[str(self.category)]}')
         return date_slots
-        # family_list = self.get_users_with_dates(date_slots)
 
     def register_users(self, family_list, date_slots): # get time and register
+        success_families_list = []
         for index, family in family_list.items(): # check each user
             for date in date_slots:
+                is_registered = False
                 if date in family[0]['dates']: # get available time
                     response = self.get_time(date)
                     soup = BeautifulSoup(response.text, "lxml")
                     element = soup.find_all("div", {'style': 'margin-left: 20%;'})
                     time_slots = [[re.findall("\d+", link.text)[0], link.find("a")['href'].split('=')[-1]] for link in element if link.find("a")]
                     for time in time_slots:
-                        if int(time[0]) >= len(family):
-                            self.register_national(family, date, time[1])
-
+                        success_users_list = self.fill_fields(family, date, time[1])
+                        for member in success_users_list:
+                            success_families_list.append(member)
+                        if success_users_list:
+                            is_registered = True
+                            break
+                    if is_registered:
+                        break
+        return success_families_list
 
     def open_register_page(self, date, time):
         cookies = {'JSESSIONID': f'{self.session_id}', 'KEKS': f'{self.termin[0]}',}
@@ -162,9 +141,9 @@ class Germany():
         image= image[0]['style'].split("url('")[1].split("')")[0]
         return captcha.get_code(image), soup
 
-    def register_national(self, family, date, time):
+    def fill_fields(self, family, date, time):
         code, html = self.open_register_page(date, time)
-
+        telegram.send_doc(caption=f'🟢 🇩🇪 Германия {self.categories[self.category]}: Регистрирую ({date}:{time}): {family[0]["surname"]} {family[0]["name"]}({family[0]["email"]})', html=str(html))
         additional_users = ''
         if len(family) > 1:
             for additional_user in family[1:]:
@@ -183,7 +162,12 @@ class Germany():
             'captchaText': f'{code}',
             'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}', 'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Speichern',}
         r = self.s.post('https://service2.diplo.de/rktermin/extern/appointment_addAppointment.do', cookies=cookies, headers=headers, data=data)
-        soup = BeautifulSoup(r.text,"lxml")
-        telegram.send_doc(caption=f'🟢 🇩🇪 Успешно зарегистрирован: {family[0]["surname"]} {family[0]["name"]}({family[0]["email"]}) на дату: {date}:{time}', html=str(soup))
-
-    # register_users(family_list, date_slots)
+        html = BeautifulSoup(r.text,"lxml")
+        success_user_list = []
+        if 'fields[0].content' in html:
+            telegram.send_doc(caption=f'⭕ 🇩🇪 Германия {self.categories[self.category]}: не смог зарегистрировать ({date}:{time}): {family[0]["surname"]} {family[0]["name"]}({family[0]["email"]})', html=str(html))
+        else:
+            for member in family:
+                success_user_list.append(member)
+            telegram.send_doc(caption=f'🟢 🇩🇪 Успешно зарегистрирован: {family[0]["surname"]} {family[0]["name"]}({family[0]["email"]}) на дату: {date}:{time}', html=str(html))
+        return success_user_list

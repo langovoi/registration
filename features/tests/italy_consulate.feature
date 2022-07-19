@@ -5,8 +5,8 @@ Feature: Check google.com
   Scenario: monitor italy
     When open url: "https://prenotami.esteri.it/"
     Then page italy consulate is opened
-#    Then enter "stelmashuk_vova@mail.ru" in email field
-#    Then enter "Visa2020!" in password field
+    Then enter "stelmashuk_vova@mail.ru" in email field
+    Then enter "Visa2020!" in password field
     # нужно в ручную нажать кнопку Login
     When wait element book tab
     When click on book tab

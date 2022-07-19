@@ -152,10 +152,9 @@ def get_available_time(context, user):
     available_times = context.driver.find_elements_by_xpath('//div/a[contains(@href, "openingPeriodId=")]/..')
     times = []
     for time in available_times:
-        if int(re.findall("\d+", time.text)[0]) >= len(user):
-            link = re.findall("href=\"(.*?)\"", time.get_attribute('innerHTML'))[0][::1].replace("&amp;", "&")
-            # 'extern/appointment_showForm.do?locationCode=mins&amp;realmId=231&amp;categoryId=373&amp;dateStr=27.09.2022&amp;openingPeriodId=8809'
-            times.append(link)
+        link = re.findall("href=\"(.*?)\"", time.get_attribute('innerHTML'))[0][::1].replace("&amp;", "&")
+        # 'extern/appointment_showForm.do?locationCode=mins&amp;realmId=231&amp;categoryId=373&amp;dateStr=27.09.2022&amp;openingPeriodId=8809'
+        times.append(link)
     return times
 
 
