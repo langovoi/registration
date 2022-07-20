@@ -171,7 +171,7 @@ class Germany():
     def fill_fields(self, family, date, time):
         code, html = self.open_register_page(date, time)
         time_text = html.find("div", {'style': 'font-weight: bold;'})
-        telegram.send_doc(caption=f'🟢 🇩🇪 Германия {self.categories[self.category]}: Регистрирую ({date}:{time}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})', html=str(html))
+        telegram.send_doc(caption=f'🟢 🇩🇪 Германия {self.categories[self.category]}: Регистрирую ({time_text}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})', html=str(html))
         additional_users = ''
         if len(family) > 1:
             for additional_user in family[1:]:
@@ -186,7 +186,7 @@ class Germany():
                     'fields[1].content': f'{family[0]["vc_passport"]}', 'fields[1].definitionId': '941', 'fields[1].index': '1',
                     'fields[2].content': f'{additional_users}', 'fields[2].definitionId': '942', 'fields[2].index': '2',
                     'fields[3].content': f'{family[0]["vc_type"]}', 'fields[3].definitionId': '943', 'fields[3].index': '3',
-                    'fields[4].content': f'{family[0]["vc_phone"]}', 'fields[4].definitionId': '944', 'fields[4].index': '4',
+                    'fields[4].content': f'{family[0]["vc_phone"].replace("+", "")}', 'fields[4].definitionId': '944', 'fields[4].index': '4',
                     'fields[5].content': 'true', '__checkbox_fields[5].content': 'true', 'fields[5].definitionId': '945', 'fields[5].index': '5',
                     'captchaText': f'{code}',
                     'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}', 'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Speichern',}
@@ -194,7 +194,7 @@ class Germany():
             data = {'lastname': f'{family[0]["vc_surname"]}', 'firstname': f'{family[0]["vc_name"]}', 'email': f'{family[0]["vc_mail"]}', 'emailrepeat': f'{family[0]["vc_mail"]}',
                     'fields[0].content': f'{family[0]["vc_birth"]}', 'fields[0].definitionId': '2005', 'fields[0].index': '0',
                     'fields[1].content': f'{family[0]["vc_passport"]}', 'fields[1].definitionId': '854', 'fields[1].index': '1',
-                    'fields[2].content': f'{family[0]["vc_phone"]}', 'fields[2].definitionId': '856', 'fields[2].index': '2',
+                    'fields[2].content': f'{family[0]["vc_phone"].replace("+", "")}', 'fields[2].definitionId': '856', 'fields[2].index': '2',
                     'fields[3].content': f'{additional_users}', 'fields[3].definitionId': '860', 'fields[3].index': '3',
                     'fields[4].content': f'{len(family)}', 'fields[4].definitionId': '858', 'fields[4].index': '4',
                     'fields[5].content': {inviting if inviting  else "hotel"}, 'fields[5].definitionId': '2007', 'fields[5].index': '5',
@@ -206,7 +206,7 @@ class Germany():
                     'numVisitors': f'{len(family)}',
                     'fields[0].content': f'{family[0]["vc_birth"]}', 'fields[0].definitionId': '10777', 'fields[0].index': '0',
                     'fields[1].content': f'{family[0]["vc_passport"]}', 'fields[1].definitionId': '10779', 'fields[1].index': '1',
-                    'fields[2].content': f'{family[0]["vc_phone"]}', 'fields[2].definitionId': '10782', 'fields[2].index': '2',
+                    'fields[2].content': f'{family[0]["vc_phone"].replace("+", "")}', 'fields[2].definitionId': '10782', 'fields[2].index': '2',
                     'fields[3].content': f'{additional_users}', 'fields[3].definitionId': '10783', 'fields[3].index': '3',
                     'fields[4].content': f'{len(family)}', 'fields[4].definitionId': '10784', 'fields[4].index': '4',
                     'fields[5].content': {inviting if inviting else "hotel"}, 'fields[5].definitionId': '10785', 'fields[5].index': '5',
@@ -216,12 +216,13 @@ class Germany():
         r = self.s.post('https://service2.diplo.de/rktermin/extern/appointment_addAppointment.do', cookies=cookies, headers=headers, data=data)
         html = BeautifulSoup(r.text,"lxml")
         success_user_list = []
-        if html.find("select", {"name" : "fields[0].content"}):
+        if html.find("captcha"):
             telegram.send_doc(caption=f'⭕ 🇩🇪 Германия {self.categories[self.category]}: не смог зарегистрировать ({date}:{time}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})', html=str(html))
         else:
             for member in family:
                 success_user_list.append(member)
             telegram.send_doc(caption=f'🟢 🇩🇪 Успешно записан: {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]}) на {str(time_text.text)}', html=str(html))
             self.s.auth()
-            self.s.post(url=sys.argv[2], params={"vc_status": "4"})
+            for user in family:
+                self.s.post(url=f'{sys.argv[2]}/{user["id"]}', params={"vc_status": "4"})
         return success_user_list
