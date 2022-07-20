@@ -107,7 +107,7 @@ class Germany():
         for _ in range(10):
             html = self.get_appointments('https://service2.diplo.de/rktermin/extern/appointment_showMonth.do', code, self.session_id)
             if 'Unfortunately' in html:
-                telegram.send_message(f"Германия {self.categories[self.category]}: нет дат")
+                # telegram.send_message(f"Германия {self.categories[self.category]}: нет дат")
                 break
             elif 'Termine sind verfügbar' in html or 'Запись на прием возможна' in html or 'Please select a date' in html:
                 soup = BeautifulSoup(html, "lxml")
