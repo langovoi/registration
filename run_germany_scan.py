@@ -1,7 +1,7 @@
 import json
-import os
 import re
 from time import sleep
+import sys
 
 import requests
 from bs4 import BeautifulSoup
@@ -12,8 +12,8 @@ from utils import telegram
 
 def get_germany_users(vc_type):
     s = requests.Session()
-    s.auth = ('rest_user', os.environ['REST_PASSWORD'])
-    users = s.get(os.environ['GERMANY_REST_URL'])
+    s.auth = ('rest_user', sys.argv[1])
+    users = s.get(sys.argv[2])
     users = [user for user in json.loads(users.text) if user["vc_type"] == vc_type]
     for i, user in enumerate(users):
         if 'vc_status' not in user or user['vc_status'] != 1:

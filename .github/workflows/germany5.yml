@@ -46,9 +46,7 @@ jobs:
         run: |
           REST_PASSWORD=${{ secrets.REST_PASSWORD }}
           GERMANY_REST_URL=${{ secrets.GERMANY_REST_URL }}
-          python3 -c 'import os;print(os.environ['REST_PASSWORD'])
-          python3 -c 'import os;print(os.environ['GERMANY_REST_URL'])
-          python3 run_germany_scan.py
+          python3 run_germany_scan.py "$REST_PASSWORD" "$GERMANY_REST_URL"
       - name: send custom message
         if: always()
         uses: appleboy/telegram-action@master
