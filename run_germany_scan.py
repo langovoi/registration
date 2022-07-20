@@ -54,7 +54,7 @@ def register_german_visa(termin, category, users_dict):
     return g.users_dict
 
 
-n_user_dict = get_germany_users('Inviting')
+n_user_dict = get_germany_users('National')
 s_user_dict = get_germany_users('Inviting')
 t_user_dict = get_germany_users('Tourism')
 
