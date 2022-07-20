@@ -39,7 +39,7 @@ def register_german_visa(termin, category, users_dict):
             family_list = g.get_users_with_dates(date_slots)
             telegram.send_message(
                 f'🇩🇪 Подходящие клиенты: {[[(user["vc_passport"], user["vc_surname"], user["vc_name"]) for user in family_list[family]] for family in family_list]}')
-            return # remove
+            return g.users_dict
             success_families_list = g.register_users(family_list, date_slots)
             # check status = 1 and update user_dict with only not registered users(status = 0)
             for i, user in enumerate(ready_to_register_users):
