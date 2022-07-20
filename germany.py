@@ -188,8 +188,8 @@ class Germany():
             'fields[5].content': 'true', '__checkbox_fields[5].content': 'true', 'fields[5].definitionId': '945', 'fields[5].index': '5',
             'captchaText': f'{code}',
             'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}', 'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Speichern',}
-        # r = self.s.post('https://service2.diplo.de/rktermin/extern/appointment_addAppointment.do', cookies=cookies, headers=headers, data=data)
-        # html = BeautifulSoup(r.text,"lxml")
+        r = self.s.post('https://service2.diplo.de/rktermin/extern/appointment_addAppointment.do', cookies=cookies, headers=headers, data=data)
+        html = BeautifulSoup(r.text,"lxml")
         success_user_list = []
         if html.find("select", {"name" : "fields[0].content"}):
             telegram.send_doc(caption=f'⭕ 🇩🇪 Германия {self.categories[self.category]}: не смог зарегистрировать ({date}:{time}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})', html=str(html))
