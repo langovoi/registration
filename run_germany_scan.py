@@ -12,8 +12,8 @@ from utils import telegram
 
 def get_germany_users(vc_type):
     s = requests.Session()
-    s.auth = ('rest_user', sys.argv[0])
-    users = s.get(sys.argv[1])
+    s.auth = ('rest_user', sys.argv[1])
+    users = s.get(sys.argv[2])
     users = [user for user in json.loads(users.text) if user["vc_type"] == vc_type]
     for i, user in enumerate(users):
         if 'vc_status' not in user or user['vc_status'] != 1:
@@ -61,9 +61,9 @@ t_user_dict = get_germany_users('Tourism')
 while True:
     try:
         # National
-        termin = ['TERMIN325', 'TERMIN340']
-        category = '375'
-        n_user_dict = register_german_visa(termin, category, users_dict=n_user_dict)
+        # termin = ['TERMIN325', 'TERMIN340']
+        # category = '375'
+        # n_user_dict = register_german_visa(termin, category, users_dict=n_user_dict)
 
         # Schengen
         termin = ['TERMIN325', 'TERMIN327']
