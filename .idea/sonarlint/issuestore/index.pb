@@ -34,10 +34,6 @@ V
 :
 
 login.html,8/0/8069a16aaa89aa2f982404b0d2c7244c6e283111
-@
-utils/captcha.py,e/b/eb8d387ad6c97eded47b0a004c61621b09ea5b93
-A
-utils/telegram.py,c/d/cdbb092b35fbdaf723f65b293b3d945238fee458
 U
 %.github/workflows/italy_consulate.yml,0/1/016cbff3fa3737e223077d07794c207065a469ef
 M
@@ -66,3 +62,11 @@ R
 "features/pages/german_visa_page.py,b/d/bdd774f27494516b8e825a28a9326827d475514f
 N
 features/tests/germany.feature,3/9/39b34ab8b6b636e37c43cbb8b69d15d698a924e3
+V
+&features/tests/italy_consulate.feature,7/2/728dc353760896a06ef530714455aa03fb8ab6c5
+O
+features/steps/germany_steps.py,6/4/644c122253a0f8a0a231d5eb0f7a45526c79902a
+I
+page_source 10.48.35.html,3/2/327bda2307dafd5efb3287d19c6d2418894159c5
+@
+requirements.txt,1/9/19359a61ae2446b51b549167b014da2fcf265768
