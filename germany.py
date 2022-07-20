@@ -1,4 +1,5 @@
 import re
+import sys
 from datetime import datetime
 from time import sleep
 
@@ -96,7 +97,6 @@ class Germany():
                 if date_from <= actual_date <= date_to:
                     if not ('dates' in user and date in user['dates']):
                         self.users_dict[i].setdefault("dates", []).append(date)
-
         available_users = [d for d in self.users_dict if 'dates' in d]
         family_list = {}
         for user in available_users:
@@ -169,8 +169,8 @@ class Germany():
         return captcha.get_code(image), soup
 
     def fill_fields(self, family, date, time):
-        code, soup = self.open_register_page(date, time)
-        time_text = soup.find("div", {'style': 'font-weight: bold;'})
+        code, html = self.open_register_page(date, time)
+        time_text = html.find("div", {'style': 'font-weight: bold;'})
         telegram.send_doc(caption=f'🟢 🇩🇪 Германия {self.categories[self.category]}: Регистрирую ({date}:{time}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})', html=str(html))
         additional_users = ''
         if len(family) > 1:
@@ -222,4 +222,6 @@ class Germany():
             for member in family:
                 success_user_list.append(member)
             telegram.send_doc(caption=f'🟢 🇩🇪 Успешно записан: {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]}) на {str(time_text.text)}', html=str(html))
+            self.s.auth()
+            self.s.post(url=sys.argv[2], params={"vc_status": "4"})
         return success_user_list
