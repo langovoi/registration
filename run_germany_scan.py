@@ -26,20 +26,17 @@ def register_german_visa(termin, category, users_dict):
     ready_to_register_users = [user for user in g.users_dict if user['vc_status'] == 0]
     date_slots = g.get_dates()
     if date_slots:
-
-        # get registration page
-        response = g.get_time(date_slots[0])
-        soup = BeautifulSoup(response.text, "lxml")
-        element = soup.find_all("div", {'style': 'margin-left: 20%;'})
-        time_slots = [[re.findall("\d+", link.text)[0], link.find("a")['href'].split('=')[-1]] for link in element if link.find("a")]
-        code, html = g.open_register_page(date_slots[0], time_slots[0][1])
-        telegram.send_doc(caption='!!!!!!!!!!!!!!!!!!!!!!!! Страниц регистрации: ', html=str(html))
-
+        # # get registration page
+        # response = g.get_time(date_slots[0])
+        # soup = BeautifulSoup(response.text, "lxml")
+        # element = soup.find_all("div", {'style': 'margin-left: 20%;'})
+        # time_slots = [[re.findall("\d+", link.text)[0], link.find("a")['href'].split('=')[-1]] for link in element if link.find("a")]
+        # code, html = g.open_register_page(date_slots[0], time_slots[0][1])
+        # telegram.send_doc(caption='!!!!!!!!!!!!!!!!!!!!!!!! Страниц регистрации: ', html=str(html))
         if ready_to_register_users:
             family_list = g.get_users_with_dates(date_slots)
             telegram.send_message(
                 f'🇩🇪 Подходящие клиенты: {[[(user["vc_passport"], user["vc_surname"], user["vc_name"]) for user in family_list[family]] for family in family_list]}')
-            return g.users_dict
             success_families_list = g.register_users(family_list, date_slots)
             # check status = 1 and update user_dict with only not registered users(status = 0)
             for i, user in enumerate(ready_to_register_users):

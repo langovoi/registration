@@ -178,16 +178,39 @@ class Germany():
                 additional_users = user if not additional_users else f'{additional_users}, {user}'
         cookies = {'JSESSIONID': f'{self.session_id}', 'KEKS': f'{self.termin[0]}',}
         headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Accept-Language': 'en-US,en;q=0.9', 'Cache-Control': 'max-age=0', 'Connection': 'keep-alive', 'Origin': 'https://service2.diplo.de', 'Referer': 'https://service2.diplo.de/rktermin/extern/appointment_showForm.do', 'Sec-Fetch-Dest': 'document', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-User': '?1', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', 'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"macOS"',}
-        data = {
-            'lastname': f'{family[0]["vc_surname"]}', 'firstname': f'{family[0]["vc_name"]}', 'email': f'{family[0]["vc_mail"]}', 'emailrepeat': f'{family[0]["vc_mail"]}',
-            'fields[0].content': f'{len(family)}', 'fields[0].definitionId': '940', 'fields[0].index': '0',
-            'fields[1].content': f'{family[0]["vc_passport"]}', 'fields[1].definitionId': '941', 'fields[1].index': '1',
-            'fields[2].content': f'{additional_users}', 'fields[2].definitionId': '942', 'fields[2].index': '2',
-            'fields[3].content': f'{family[0]["vc_type"]}', 'fields[3].definitionId': '943', 'fields[3].index': '3',
-            'fields[4].content': f'{family[0]["vc_phone"]}', 'fields[4].definitionId': '944', 'fields[4].index': '4',
-            'fields[5].content': 'true', '__checkbox_fields[5].content': 'true', 'fields[5].definitionId': '945', 'fields[5].index': '5',
-            'captchaText': f'{code}',
-            'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}', 'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Speichern',}
+        if self.category == '375':
+            data = {'lastname': f'{family[0]["vc_surname"]}', 'firstname': f'{family[0]["vc_name"]}', 'email': f'{family[0]["vc_mail"]}', 'emailrepeat': f'{family[0]["vc_mail"]}',
+                    'fields[0].content': f'{len(family)}', 'fields[0].definitionId': '940', 'fields[0].index': '0',
+                    'fields[1].content': f'{family[0]["vc_passport"]}', 'fields[1].definitionId': '941', 'fields[1].index': '1',
+                    'fields[2].content': f'{additional_users}', 'fields[2].definitionId': '942', 'fields[2].index': '2',
+                    'fields[3].content': f'{family[0]["vc_type"]}', 'fields[3].definitionId': '943', 'fields[3].index': '3',
+                    'fields[4].content': f'{family[0]["vc_phone"]}', 'fields[4].definitionId': '944', 'fields[4].index': '4',
+                    'fields[5].content': 'true', '__checkbox_fields[5].content': 'true', 'fields[5].definitionId': '945', 'fields[5].index': '5',
+                    'captchaText': f'{code}',
+                    'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}', 'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Speichern',}
+        elif self.category == '373':
+            data = {'lastname': f'{family[0]["vc_surname"]}', 'firstname': f'{family[0]["vc_name"]}', 'email': f'{family[0]["vc_mail"]}', 'emailrepeat': f'{family[0]["vc_mail"]}',
+                    'fields[0].content': f'{family[0]["vc_birth"]}', 'fields[0].definitionId': '2005', 'fields[0].index': '0',
+                    'fields[1].content': f'{family[0]["vc_passport"]}', 'fields[1].definitionId': '854', 'fields[1].index': '1',
+                    'fields[2].content': f'{family[0]["vc_phone"]}', 'fields[2].definitionId': '856', 'fields[2].index': '2',
+                    'fields[3].content': f'{additional_users}', 'fields[3].definitionId': '860', 'fields[3].index': '3',
+                    'fields[4].content': f'{len(family)}', 'fields[4].definitionId': '858', 'fields[4].index': '4',
+                    'fields[5].content': f'{family[0]["vc_inviting"]}', 'fields[5].definitionId': '2007', 'fields[5].index': '5',
+                    'fields[6].content': 'Посещение родственников/друзей/знакомых', 'fields[6].definitionId': '855', 'fields[6].index': '6',
+                    'captchaText': f'{code}',
+                    'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}', 'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Submit',}
+        else: # elif self.category == '2845':
+            data = {'lastname': f'{family[0]["vc_surname"]}', 'firstname': f'{family[0]["vc_name"]}', 'email': f'{family[0]["vc_mail"]}', 'emailrepeat': f'{family[0]["vc_mail"]}',
+                    'numVisitors': f'{len(family)}',
+                    'fields[0].content': f'{family[0]["vc_birth"]}', 'fields[0].definitionId': '10777', 'fields[0].index': '0',
+                    'fields[1].content': f'{family[0]["vc_passport"]}', 'fields[1].definitionId': '10779', 'fields[1].index': '1',
+                    'fields[2].content': f'{family[0]["vc_phone"]}', 'fields[2].definitionId': '10782', 'fields[2].index': '2',
+                    'fields[3].content': f'{additional_users}', 'fields[3].definitionId': '10783', 'fields[3].index': '3',
+                    'fields[4].content': f'{len(family)}', 'fields[4].definitionId': '10784', 'fields[4].index': '4',
+                    'fields[5].content': f'{family[0]["vc_inviting"]}', 'fields[5].definitionId': '10785', 'fields[5].index': '5',
+                    'captchaText': {code},
+                    'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}',
+                    'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Submit',}
         r = self.s.post('https://service2.diplo.de/rktermin/extern/appointment_addAppointment.do', cookies=cookies, headers=headers, data=data)
         html = BeautifulSoup(r.text,"lxml")
         success_user_list = []
