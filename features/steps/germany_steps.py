@@ -180,6 +180,6 @@ def monitor(context):
                                    caption=f'Unknown exception: {str(e)}')
             with open('page_source.html', 'w') as f:
                 f.write(context.driver.page_source)
-            telegram.send_document(context, caption=f'Unknown exception: {str(e)}')
+            telegram.send_document(context, caption=f'Unknown exception: {str(e)}: {sys.exc_info}')
         finally:
             context.driver.delete_all_cookies()

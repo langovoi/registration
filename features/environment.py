@@ -1,4 +1,5 @@
 import configparser
+import sys
 from datetime import datetime
 
 from sys import platform
@@ -100,7 +101,7 @@ def after_step(context, step) -> None:
             # send page_source.html to telegram
             telegram.send_document(context, caption=f'{step.name}: {step.exception}')
         except Exception as e:
-            print(f'after step failed!!: {str(e)}')
+            print(f'after step failed!!: {str(e)}: {sys.exc_info}')
 
 
 def after_all(context):
