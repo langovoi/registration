@@ -27,8 +27,6 @@ $features/pages/italy_embassy_page.py,b/c/bc370a81ef44d9f1800cf356bab5dd68764ab
 cookietest.json,7/5/752937e25d4a9e0b2b1954a9bd0ba7f62607231f
 ;
 cookies.pkl,e/d/eda7d9bd35b13c2e77df86dee8b63c3cfe6a8433
-?
-hh_success.html,4/c/4cf4c767e69bd76db8bc7b8efec5515ee66f7372
 V
 &.github/workflows/italy_consulate2.yml,b/5/b5ffb5da6923ddc055bf32a1ca7dcc2814d38ff0
 :
@@ -44,12 +42,8 @@ K
 features/pages/base_page.py,c/a/cabef8aef0f0782bfdd300c57df2ab619e6dbf04
 M
 features/steps/basic_steps.py,b/6/b63a8cfee97d08479d60dda09dc41f1a3515c913
-G
-features/environment.py,7/8/78ffc5f4f9d48b0011828b5fd8038b961d68c587
 R
 "features/pages/french_visa_page.py,e/4/e40bd383afbd426107b844ae79d71ee9f4a74db8
-A
-italy_requests.py,5/2/52395a9a8f36ae6b85174843a330f6a661654f3b
 B
 italy_requests2.py,4/7/47f7bfc48fa698d940276953e1396c6adaa96b1b
 B
@@ -64,9 +58,11 @@ N
 features/tests/germany.feature,3/9/39b34ab8b6b636e37c43cbb8b69d15d698a924e3
 V
 &features/tests/italy_consulate.feature,7/2/728dc353760896a06ef530714455aa03fb8ab6c5
-O
-features/steps/germany_steps.py,6/4/644c122253a0f8a0a231d5eb0f7a45526c79902a
 I
 page_source 10.48.35.html,3/2/327bda2307dafd5efb3287d19c6d2418894159c5
 @
 requirements.txt,1/9/19359a61ae2446b51b549167b014da2fcf265768
+O
+features/steps/germany_steps.py,6/4/644c122253a0f8a0a231d5eb0f7a45526c79902a
+G
+features/environment.py,7/8/78ffc5f4f9d48b0011828b5fd8038b961d68c587
