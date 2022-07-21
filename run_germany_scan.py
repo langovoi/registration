@@ -1,5 +1,6 @@
 import json
 import re
+import traceback
 from time import sleep
 import sys
 
@@ -57,4 +58,4 @@ while True:
         register_german_visa(termin, category, users_dict=get_germany_users('Tourism'))
         sleep(300)
     except Exception as e:
-        telegram.send_message(f'⭕ Germany job failed: {str(e)}: {sys.exc_info()[2]}')
+        telegram.send_message(f'⭕ Germany job failed: {str(e)}: {traceback.print_tb(e.__traceback__)}')

@@ -1,10 +1,8 @@
 import re
-import sys
+import traceback
 from datetime import datetime
-from time import sleep
 
 from behave import step, use_step_matcher
-from selenium.webdriver import ActionChains
 
 from utils import telegram
 
@@ -181,6 +179,6 @@ def monitor(context):
                                    caption=f'Unknown exception: {str(e)}')
             with open('page_source.html', 'w') as f:
                 f.write(context.driver.page_source)
-            telegram.send_document(context, caption=f'Unknown exception: {str(e)}: {sys.exc_info()[2]}')
+            telegram.send_document(context, caption=f'Unknown exception: {str(e)}: {traceback.print_tb(e.__traceback__)}')
         finally:
             context.driver.delete_all_cookies()
