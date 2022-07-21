@@ -1,4 +1,5 @@
 import re
+import sys
 from datetime import datetime
 from time import sleep
 
@@ -180,6 +181,6 @@ def monitor(context):
                                    caption=f'Unknown exception: {str(e)}')
             with open('page_source.html', 'w') as f:
                 f.write(context.driver.page_source)
-            telegram.send_document(context, caption=f'Unknown exception: {str(e)}: {sys.exc_info}')
+            telegram.send_document(context, caption=f'Unknown exception: {str(e)}: {sys.exc_info()[2]}')
         finally:
             context.driver.delete_all_cookies()
