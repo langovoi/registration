@@ -10,4 +10,3 @@ def get_code(file_name: str) -> str:
         return str(TwoCaptcha(API_KEY).normal(file_name)['code'])
     except Exception:
         telegram.send_image('visa_captcha.png', caption='Не смог решить капчу')
-        raise RuntimeError('Не смог решить капчу')
