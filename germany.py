@@ -123,7 +123,7 @@ class Germany():
                     image= image[0]['style'].split("url('")[1].split("')")[0]
                     code = captcha.get_code(image)
                 else:
-                    telegram.send_doc('⭕ Ошибка, капча не отображается', str(html))
+                    telegram.send_doc('⭕ Ошибка, капча не отображается', html)
                 sleep(10) # if captcha
         else:
             raise RuntimeError(f'⭕ Не разгадал капчу с 10 попыток для категории {self.categories[str(self.category)]}')
