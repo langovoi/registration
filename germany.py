@@ -178,7 +178,7 @@ class Germany():
                     self.s.post(url=f'{sys.argv[2]}/{user["id"]}', params={"vc_status": "4"})
                 success = True
                 break
-            elif len(error := html.find("div", {"class": "global-error"})):
+            elif error := html.find("div", {"class": "global-error"}):
                 if "The entered text was wrong" in error.text:
                     image = html.select("captcha > div")
                     image= image[0]['style'].split("url('")[1].split("')")[0]
