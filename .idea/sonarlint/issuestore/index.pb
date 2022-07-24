@@ -1,6 +1,4 @@
 
-B
-behave-parallel.py,6/f/6f5579d617b01c408ba9fbd3bb5f0cf8103bcfd7
 M
 features/pages/google_page.py,d/4/d4630912d3aa3c6851e8f66d74ec451367664019
 9
@@ -48,19 +46,17 @@ B
 italy_requests2.py,4/7/47f7bfc48fa698d940276953e1396c6adaa96b1b
 B
 run_french_scan.py,8/8/88f7cc78b4221d9dcea3ca3225e90cf257b666ac
-A
-run_italy_scan.py,3/9/39b6d909fcf81808c9edbdb6bb9c2c04568f4006
 V
 &features/pages/italy_consulate_page.py,7/5/756130472d76ef3befefd394d236cec63259a494
 R
 "features/pages/german_visa_page.py,b/d/bdd774f27494516b8e825a28a9326827d475514f
 N
 features/tests/germany.feature,3/9/39b34ab8b6b636e37c43cbb8b69d15d698a924e3
-V
-&features/tests/italy_consulate.feature,7/2/728dc353760896a06ef530714455aa03fb8ab6c5
 I
 page_source 10.48.35.html,3/2/327bda2307dafd5efb3287d19c6d2418894159c5
 @
 requirements.txt,1/9/19359a61ae2446b51b549167b014da2fcf265768
 <
 captcha.json,8/6/8643f14cbe8f6d9ce2f46cbd7ed7f79ddecdb9b3
+O
+features/steps/germany_steps.py,6/4/644c122253a0f8a0a231d5eb0f7a45526c79902a

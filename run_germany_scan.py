@@ -16,7 +16,7 @@ def get_germany_users(vc_type):
     s.auth = ('rest_user', sys.argv[1])
     users = s.get(sys.argv[2])
     users = [user for user in json.loads(users.text) if user["vc_type"] == vc_type]
-    return users
+    return users  # test users [{'id': '1', 'vc_status': '2', 'vc_city': 'Schengenvisa', 'vc_type': 'Inviting', 'vc_mail': 'sash.kardash@gmail.com', 'vc_inviting': 'Grigory Fray', 'vc_passport': 'MP8338818', 'vc_birth': '1965-10-16', 'vc_passport_from': '2021-07-20', 'vc_passport_to': '2031-07-20', 'vc_passport_by': 'MIA', 'vc_name': 'Valery', 'vc_surname': 'Vetlitcky', 'vc_phone': '+375256062209', 'vc_date_first_travel': '2022-08-15', 'vc_date_from': '2022-07-24', 'vc_date_to': '', 'vc_with': '0', 'vc_comment': '', 'vc_first': '1', 'vc_today': '1', 'vc_before_visit': '0'}, {'id': '3', 'vc_status': '2', 'vc_city': 'Schengenvisa', 'vc_type': 'Inviting', 'vc_mail': 'sash.kardash@gmail.com', 'vc_inviting': 'Grigory Fray', 'vc_passport': 'MP8338818', 'vc_birth': '1965-10-16', 'vc_passport_from': '2021-07-20', 'vc_passport_to': '2031-07-20', 'vc_passport_by': 'MIA', 'vc_name': 'Valery', 'vc_surname': 'Vetlitcky', 'vc_phone': '+375256062209', 'vc_date_first_travel': '2022-08-15', 'vc_date_from': '2022-07-24', 'vc_date_to': '', 'vc_with': '0', 'vc_comment': '', 'vc_first': '1', 'vc_today': '1', 'vc_before_visit': '0'}]
 
 
 def register_german_visa(termin, category, users_dict):
@@ -43,19 +43,19 @@ def register_german_visa(termin, category, users_dict):
 while True:
     try:
         # National
-        # termin = ['TERMIN325', 'TERMIN340']
-        # category = '375'
-        # register_german_visa(termin, category, users_dict=get_germany_users('National'))
-
-        # Schengen
-        termin = ['TERMIN325', 'TERMIN327']
-        category = '373'
+        termin = ['TERMIN325', 'TERMIN340']
+        category = '375'
         register_german_visa(termin, category, users_dict=get_germany_users('Inviting'))
 
-        # Tourism
-        termin = ['TERMIN325', 'TERMIN327']
-        category = '2845'
-        register_german_visa(termin, category, users_dict=get_germany_users('Tourism'))
+        # Schengen
+        # termin = ['TERMIN325', 'TERMIN327']
+        # category = '373'
+        # register_german_visa(termin, category, users_dict=get_germany_users('Inviting'))
+        #
+        # # Tourism
+        # termin = ['TERMIN325', 'TERMIN327']
+        # category = '2845'
+        # register_german_visa(termin, category, users_dict=get_germany_users('Tourism'))
         sleep(300)
     except Exception as e:
         telegram.send_message(f'⭕ Germany job failed: {str(e)}: {traceback.print_tb(e.__traceback__)}')
