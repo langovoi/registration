@@ -43,19 +43,19 @@ def register_german_visa(termin, category, users_dict):
 while True:
     try:
         # National
-        termin = ['TERMIN325', 'TERMIN340']
-        category = '375'
-        register_german_visa(termin, category, users_dict=get_germany_users('Inviting'))
+        # termin = ['TERMIN325', 'TERMIN340']
+        # category = '375'
+        # register_german_visa(termin, category, users_dict=get_germany_users('Inviting'))
 
         # Schengen
-        # termin = ['TERMIN325', 'TERMIN327']
-        # category = '373'
-        # register_german_visa(termin, category, users_dict=get_germany_users('Inviting'))
-        #
-        # # Tourism
-        # termin = ['TERMIN325', 'TERMIN327']
-        # category = '2845'
-        # register_german_visa(termin, category, users_dict=get_germany_users('Tourism'))
+        termin = ['TERMIN325', 'TERMIN327']
+        category = '373'
+        register_german_visa(termin, category, users_dict=get_germany_users('Inviting'))
+
+        # Tourism
+        termin = ['TERMIN325', 'TERMIN327']
+        category = '2845'
+        register_german_visa(termin, category, users_dict=get_germany_users('Tourism'))
         sleep(300)
     except Exception as e:
         telegram.send_message(f'⭕ Germany job failed: {str(e)}: {traceback.print_tb(e.__traceback__)}')
