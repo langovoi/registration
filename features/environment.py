@@ -104,7 +104,7 @@ def after_step(context, step) -> None:
             telegram.send_document(context, caption=f'{step.name}: {step.exception}')
         except Exception as e:
             sleep(30)
-            print(f'after step failed!!: {str(e)}: {traceback.print_tb(e.__traceback__)}')
+            print(f'after step failed!!: {str(e)}: {traceback.format_exc()}')
 
 
 def after_all(context):

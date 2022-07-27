@@ -8,7 +8,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from germany import Germany
-from utils import telegram
+from utils import telegram, captcha
 
 
 def get_germany_users(vc_type):
@@ -21,7 +21,9 @@ def get_germany_users(vc_type):
 
 def register_german_visa(termin, category, users_dict):
     g = Germany(termin=termin, category=category, users_dict=users_dict)
-    date_slots = g.get_dates()
+    # get captcha from login_page
+    code = g.open_login_page_get_captcha_code()
+    date_slots = g.open_appointments_page_and_get_dates(code)
     if date_slots and g.users_dict:
         # # get registration page
         # response = g.get_time(date_slots[0])
@@ -58,4 +60,4 @@ while True:
         register_german_visa(termin, category, users_dict=get_germany_users('Tourism'))
         sleep(300)
     except Exception as e:
-        telegram.send_message(f'⭕ Germany job failed: {str(e)}: {traceback.print_tb(e.__traceback__)}')
+        telegram.send_message(f'⭕ Germany job failed: {str(e)}: {traceback.format_exc()}')

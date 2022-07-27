@@ -39,38 +39,60 @@ class Germany():
         self.users_dict = users_dict
         self.categories = {'373': "Шенген", '2845': "Туризм", '375': "Национальная"}
 
-    def open_login_page(self):
-        self.session_id = get_session_id(f'https://service2.diplo.de/rktermin/extern/appointment_showMonth.do?locationCode=mins&realmId=231&categoryId={self.category}')
-        # login page
-        cookies = {'JSESSIONID': f'JSESSIONID={self.session_id}','KEKS': f'{self.termin[0]}',}
-        headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8', 'Cache-Control': 'max-age=0', 'Connection': 'keep-alive', 'Sec-Fetch-Dest': 'document', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Site': 'none', 'Sec-Fetch-User': '?1', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', 'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"macOS"',}
-        params = {'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}',}
-        r = self.s.get('https://service2.diplo.de/rktermin/extern/appointment_showMonth.do', params=params, cookies=cookies, headers=headers)
+    def open_login_page_get_captcha_code(self):
+        html_login_page = code = ''
+        for _ in range(3):
+            self.session_id = get_session_id(f'https://service2.diplo.de/rktermin/extern/appointment_showMonth.do?locationCode=mins&realmId=231&categoryId={self.category}')
+            # login page
+            cookies = {'JSESSIONID': f'JSESSIONID={self.session_id}','KEKS': f'{self.termin[0]}',}
+            headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8', 'Cache-Control': 'max-age=0', 'Connection': 'keep-alive', 'Sec-Fetch-Dest': 'document', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Site': 'none', 'Sec-Fetch-User': '?1', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', 'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"macOS"',}
+            params = {'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}',}
+            html_login_page = self.s.get('https://service2.diplo.de/rktermin/extern/appointment_showMonth.do', params=params, cookies=cookies, headers=headers).text
+            if captcha.is_captcha_displayed(html_login_page):
+                code = captcha.get_code(html_login_page)
+                break
+        else:
+            telegram.send_doc(f'Не смог разгадать капчу с 3 раз. code: {code}', html_login_page)
+            raise RuntimeError(f'Не смог разгадать капчу с 3 раз. code: {code}')
+        return code
 
-        soup = BeautifulSoup(r.text,"lxml")
-        image = soup.select("captcha > div")
-        image= image[0]['style'].split("url('")[1].split("')")[0]
-        return captcha.get_code(image), soup
-
-    def get_appointments(self, url, code, session_id):
-        cookies = {'JSESSIONID': f'{session_id}','KEKS': f'{self.termin[1]}',}
-        headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Accept-Language': 'en-US,en;q=0.9', 'Cache-Control': 'max-age=0', 'Connection': 'keep-alive', 'Origin': 'https://service2.diplo.de', 'Referer': f'https://service2.diplo.de/rktermin/extern/appointment_showMonth.do;jsessionid={session_id}', 'Sec-Fetch-Dest': 'document', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-User': '?1', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', 'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"macOS"',}
-        data = {'captchaText': f'{code}', 'rebooking': 'false', 'token': '', 'lastname': '', 'firstname': '', 'email': '', 'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': '', 'date': '','dateStr': '', 'action:appointment_showMonth': 'Continue',}
-        return self.s.post(url, cookies=cookies, headers=headers, data=data).text
+    def open_appointments_page_and_get_dates(self, code):
+        date_slots = []
+        for _ in range(3):
+            cookies = {'JSESSIONID': f'{self.session_id}','KEKS': f'{self.termin[1]}',}
+            headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Accept-Language': 'en-US,en;q=0.9', 'Cache-Control': 'max-age=0', 'Connection': 'keep-alive', 'Origin': 'https://service2.diplo.de', 'Referer': f'https://service2.diplo.de/rktermin/extern/appointment_showMonth.do;jsessionid={self.session_id}', 'Sec-Fetch-Dest': 'document', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-User': '?1', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', 'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"macOS"',}
+            data = {'captchaText': f'{code}', 'rebooking': 'false', 'token': '', 'lastname': '', 'firstname': '', 'email': '', 'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': '', 'date': '','dateStr': '', 'action:appointment_showMonth': 'Continue',}
+            html = self.s.post('https://service2.diplo.de/rktermin/extern/appointment_showMonth.do', cookies=cookies, headers=headers, data=data).text
+            if 'Unfortunately' in html:
+                # telegram.send_message(f"Германия {self.categories[self.category]}: нет дат")
+                break
+            elif 'Termine sind verfügbar' in html or 'Запись на прием возможна' in html or 'Please select a date' in html:
+                soup = BeautifulSoup(html, "lxml")
+                element = soup.find_all("div", {'style': 'margin-left: 20%;'})
+                date_slots = [link.find("a")['href'].split('=')[-1] for link in element]
+                telegram.send_message(f'🇩🇪 Германия {self.categories[str(self.category)]}: {date_slots}')
+                break
+            else:
+                if captcha.is_captcha_displayed(html):
+                    # telegram.send_doc(f'⭕ Captcha: Неверный код {code}. Попытка {i+1}', str(soup))
+                    code = captcha.get_code(html)
+                else:
+                    telegram.send_doc('⭕ Ошибка, капча не отображается', html)
+                sleep(10) # if captcha
+        else:
+            raise RuntimeError(f'⭕ Не разгадал капчу с 3 попыток для категории {self.categories[str(self.category)]}')
+        return date_slots
 
     def get_time(self, date):
+        # try first time without code
         cookies = {'JSESSIONID': f'{self.session_id}', 'KEKS': f'{self.termin[1]}',}
         headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8', 'Connection': 'keep-alive', 'Referer': 'https://service2.diplo.de/rktermin/extern/appointment_showMonth.do', 'Sec-Fetch-Dest': 'document', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-User': '?1', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', 'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"macOS"',}
         params = {'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'dateStr': f'{date}',}
         r = self.s.get('https://service2.diplo.de/rktermin/extern/appointment_showDay.do', params=params, cookies=cookies, headers=headers)
-
         # check if captcha
         for _ in range(3):
-            soup = BeautifulSoup(r.text, "lxml")
-            if soup.find("captcha"):
-                image = soup.select("captcha > div")
-                image= image[0]['style'].split("url('")[1].split("')")[0]
-                code = captcha.get_code(image)
+            if captcha.is_captcha_displayed(r.text):
+                code = captcha.get_code(r.text)
                 headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8', 'Cache-Control': 'max-age=0', 'Connection': 'keep-alive', 'Origin': 'https://service2.diplo.de', 'Referer': f'https://service2.diplo.de/rktermin/extern/appointment_showDay.do?locationCode=mins&realmId=231&categoryId={self.category}&dateStr=f{date}', 'Sec-Fetch-Dest': 'document', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-User': '?1', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', 'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"','sec-ch-ua-mobile': '?0','sec-ch-ua-platform': '"macOS"',}
                 data = {'captchaText': f'{code}', 'rebooking': '', 'token': '', 'lastname': '', 'firstname': '', 'email': '', 'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': '', 'date': f'{date}', 'dateStr': f'{date}',}
                 r = self.s.post('https://service2.diplo.de/rktermin/extern/appointment_showDay.do', cookies=cookies, headers=headers, data=data)
@@ -78,7 +100,10 @@ class Germany():
                 break
         else:
             telegram.send_doc('Не разгадал капчу с 3 раз', r.text)
-        return r
+        soup = BeautifulSoup(r.text, "lxml")
+        element = soup.find_all("div", {'style': 'margin-left: 20%;'})
+        time_slots = [[re.findall("\d+", link.text)[0], link.find("a")['href'].split('=')[-1]] for link in element if link.find("a")]
+        return time_slots
 
     def get_users_with_dates(self, dates_list):
         for date in dates_list:
@@ -101,99 +126,66 @@ class Germany():
                     family_list[user['vc_with']] = user
         return family_list
 
-    def get_dates(self):
-        date_slots = []
-        code, soup = self.open_login_page()
-        for _ in range(10):
-            html = self.get_appointments('https://service2.diplo.de/rktermin/extern/appointment_showMonth.do', code, self.session_id)
-            if 'Unfortunately' in html:
-                # telegram.send_message(f"Германия {self.categories[self.category]}: нет дат")
-                break
-            elif 'Termine sind verfügbar' in html or 'Запись на прием возможна' in html or 'Please select a date' in html:
-                soup = BeautifulSoup(html, "lxml")
-                element = soup.find_all("div", {'style': 'margin-left: 20%;'})
-                date_slots = [link.find("a")['href'].split('=')[-1] for link in element]
-                telegram.send_message(f'🇩🇪 Германия {self.categories[str(self.category)]}: {date_slots}')
-                break
-            else:
-                if "background:white url('data:image/jpg" in html:
-                    # telegram.send_doc(f'⭕ Captcha: Неверный код {code}. Попытка {i+1}', str(soup))
-                    soup = BeautifulSoup(html,"lxml")
-                    image = soup.select("captcha > div")
-                    image= image[0]['style'].split("url('")[1].split("')")[0]
-                    code = captcha.get_code(image)
-                else:
-                    telegram.send_doc('⭕ Ошибка, капча не отображается', html)
-                sleep(10) # if captcha
-        else:
-            raise RuntimeError(f'⭕ Не разгадал капчу с 10 попыток для категории {self.categories[str(self.category)]}')
-        return date_slots
-
     def register_users(self, family_list, date_slots): # get time and register
         for index, family in family_list.items(): # check each user
             for date in date_slots:
                 is_registered = False
                 if date in family[0]['dates']: # get available time
-                    response = self.get_time(date)
-                    soup = BeautifulSoup(response.text, "lxml")
-                    element = soup.find_all("div", {'style': 'margin-left: 20%;'})
-                    time_slots = [[re.findall("\d+", link.text)[0], link.find("a")['href'].split('=')[-1]] for link in element if link.find("a")]
+                    time_slots = self.get_time(date)
                     for time in time_slots:
-                        is_registered = self.register_family(family, date, time[1])
-                        break
+                        code, soup = self.open_register_page(date, time[1])
+                        is_registered = self.register_family(family, date, time[1], code, soup)
+                        if is_registered:
+                            break
                     if is_registered:
                         break
 
     def open_register_page(self, date, time):
-        soup = None
-        image = None
+        code = soup = None
         for _ in range(3):
-            try:
-                cookies = {'JSESSIONID': f'{self.session_id}', 'KEKS': f'{self.termin[1]}',}
-                headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8', 'Connection': 'keep-alive', 'Referer': f'https://service2.diplo.de/rktermin/extern/appointment_showDay.do?locationCode=mins&realmId=231&categoryId={self.category}&dateStr={date}', 'Sec-Fetch-Dest': 'document', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-User': '?1', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', 'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"macOS"',}
-                params = {'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'dateStr': f'{date}', 'openingPeriodId': f'{time}',}
-                r = self.s.get('https://service2.diplo.de/rktermin/extern/appointment_showForm.do', params=params, cookies=cookies, headers=headers)
-                soup = BeautifulSoup(r.text,"lxml")
-                image = soup.select("captcha > div")
-                image= image[0]['style'].split("url('")[1].split("')")[0]
-                if len(soup.find("div", {'style': 'font-weight: bold;'})):
-                    break
-            except Exception:
-                pass
-
+            cookies = {'JSESSIONID': f'{self.session_id}', 'KEKS': f'{self.termin[1]}',}
+            headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8', 'Connection': 'keep-alive', 'Referer': f'https://service2.diplo.de/rktermin/extern/appointment_showDay.do?locationCode=mins&realmId=231&categoryId={self.category}&dateStr={date}', 'Sec-Fetch-Dest': 'document', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-User': '?1', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', 'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"macOS"',}
+            params = {'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'dateStr': f'{date}', 'openingPeriodId': f'{time}',}
+            r = self.s.get('https://service2.diplo.de/rktermin/extern/appointment_showForm.do', params=params, cookies=cookies, headers=headers)
+            if 'An error occured while processing your appointment.' in r.text:
+                telegram.send_doc('An error occured while processing your appointment.', r.text)
+                raise RuntimeError('An error occured while processing your appointment.')
+            code = captcha.get_code(r.text)
+            soup = BeautifulSoup(r.text,"lxml")
+            if len(soup.find("div", {'style': 'font-weight: bold;'})):
+                break
         else:
             telegram.send_doc('⭕ Германия: не смог найти поле email', str(soup))
-        return captcha.get_code(image), soup
+        return code, soup
 
-    def register_family(self, family, date, time):
-        code, html = self.open_register_page(date, time)
-        time_text = html.find("div", {'style': 'font-weight: bold;'}).text.strip().replace('\n', ' ').replace('\t\t\t\t', ' ')
+    def register_family(self, family, date, time, code, soup):
+        time_text = soup.find("div", {'style': 'font-weight: bold;'}).text.strip().replace('\n', ' ').replace('\t\t\t\t', ' ')
         telegram.send_message(f'🟢 🇩🇪 Германия {self.categories[self.category]}: Регистрирую ({time_text.rstrip()}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})')
         success = False
         for _ in range(3):
             html = self.fill_fields(family, date, time, code)
-            if not (html.find("captcha") or html.find("div", {"class": "global-error"})):
+            soup = BeautifulSoup(html, "lxml")
+            if not (soup.find("captcha") or soup.find("div", {"class": "global-error"})):
                 telegram.send_doc(caption=f'🟢 🇩🇪 Германия: Успешно записан: {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]}) на {str(time_text)}', html=str(html))
                 for user in family:
                     self.s.post(url=f'{sys.argv[2]}/{user["id"]}', params={"vc_status": "4"})
                 success = True
                 break
-            elif error := html.find("div", {"class": "global-error"}):
+            elif error := soup.find("div", {"class": "global-error"}):
                 if "The entered text was wrong" in error.text:
-                    image = html.select("captcha > div")
-                    image= image[0]['style'].split("url('")[1].split("')")[0]
-                    code = captcha.get_code(image)
+                    code = captcha.get_code(str(soup))
                 elif "This entry needs to be unique" in error.text:
                     telegram.send_doc(
-                        caption=f'⭕ 🇩🇪 Германия: {self.categories[self.category]}: Уже зарегистрирован ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})\nОшибка: {error.text.strip()}', html=str(html))
+                        caption=f'⭕ 🇩🇪 Германия: {self.categories[self.category]}: Уже зарегистрирован ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})\nОшибка: {error.text.strip()}', html=str(soup))
                     success = True
                 else:
                     telegram.send_doc(
-                        caption=f'⭕ 🇩🇪 Германия {self.categories[self.category]}: Неизвестная ошибка для: ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})\nОшибка: {error.text.strip()}', html=str(html))
+                        caption=f'⭕ 🇩🇪 Германия {self.categories[self.category]}: Неизвестная ошибка для: ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})\nОшибка: {error.text.strip()}', html=str(soup))
                     success = False
                     break
+            else:
+                telegram.send_doc('Неизвестная ошибка после ввода всех данных', str(soup))
         return success
-
 
     def fill_fields(self, family, date, time, code):
         additional_users = ''
@@ -238,5 +230,5 @@ class Germany():
                     'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}',
                     'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Submit',}
         r = self.s.post('https://service2.diplo.de/rktermin/extern/appointment_addAppointment.do', cookies=cookies, headers=headers, data=data)
-        return BeautifulSoup(r.text,"lxml")
+        return r.text
 
