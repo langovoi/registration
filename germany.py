@@ -49,7 +49,7 @@ class Germany():
             params = {'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}',}
             html_login_page = self.s.get('https://service2.diplo.de/rktermin/extern/appointment_showMonth.do', params=params, cookies=cookies, headers=headers).text
             if captcha.is_captcha_displayed(html_login_page):
-                code = captcha.get_code(html_login_page, 'login page')
+                code = captcha.get_code(html_login_page, f'login {self.category}')
                 break
         else:
             telegram.send_doc(f'Не смог разгадать капчу с 3 раз. code: {code}', html_login_page)
@@ -75,7 +75,7 @@ class Germany():
             else:
                 if captcha.is_captcha_displayed(html):
                     # telegram.send_doc(f'⭕ Captcha: Неверный код {code}. Попытка {i+1}', str(soup))
-                    code = captcha.get_code(html, 'appointments page')
+                    code = captcha.get_code(html, f'appointments {self.category}')
                 else:
                     telegram.send_doc('⭕ Ошибка, капча не отображается', html)
                 sleep(10) # if captcha
@@ -92,7 +92,7 @@ class Germany():
         # check if captcha
         for _ in range(3):
             if captcha.is_captcha_displayed(r.text):
-                code = captcha.get_code(r.text, 'time page')
+                code = captcha.get_code(r.text, f'time page {self.category}')
                 headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8', 'Cache-Control': 'max-age=0', 'Connection': 'keep-alive', 'Origin': 'https://service2.diplo.de', 'Referer': f'https://service2.diplo.de/rktermin/extern/appointment_showDay.do?locationCode=mins&realmId=231&categoryId={self.category}&dateStr=f{date}', 'Sec-Fetch-Dest': 'document', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-User': '?1', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', 'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"','sec-ch-ua-mobile': '?0','sec-ch-ua-platform': '"macOS"',}
                 data = {'captchaText': f'{code}', 'rebooking': '', 'token': '', 'lastname': '', 'firstname': '', 'email': '', 'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': '', 'date': f'{date}', 'dateStr': f'{date}',}
                 r = self.s.post('https://service2.diplo.de/rktermin/extern/appointment_showDay.do', cookies=cookies, headers=headers, data=data)
@@ -150,7 +150,7 @@ class Germany():
             if 'An error occured while processing your appointment.' in r.text:
                 telegram.send_doc('An error occured while processing your appointment.', r.text)
                 raise RuntimeError('An error occured while processing your appointment.')
-            code = captcha.get_code(r.text, 'register page')
+            code = captcha.get_code(r.text, f'registration {self.category}')
             soup = BeautifulSoup(r.text,"lxml")
             if len(soup.find("div", {'style': 'font-weight: bold;'})):
                 break
@@ -173,7 +173,7 @@ class Germany():
                 break
             elif error := soup.find("div", {"class": "global-error"}):
                 if "The entered text was wrong" in error.text:
-                    code = captcha.get_code(str(soup), 'error fill fields')
+                    code = captcha.get_code(str(soup), 'failed registration {self.category}')
                 elif "This entry needs to be unique" in error.text:
                     telegram.send_doc(
                         caption=f'⭕ 🇩🇪 Германия: {self.categories[self.category]}: Уже зарегистрирован ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})\nОшибка: {error.text.strip()}', html=str(soup))

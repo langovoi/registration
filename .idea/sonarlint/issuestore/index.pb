@@ -48,8 +48,6 @@ B
 run_french_scan.py,8/8/88f7cc78b4221d9dcea3ca3225e90cf257b666ac
 V
 &features/pages/italy_consulate_page.py,7/5/756130472d76ef3befefd394d236cec63259a494
-N
-features/tests/germany.feature,3/9/39b34ab8b6b636e37c43cbb8b69d15d698a924e3
 I
 page_source 10.48.35.html,3/2/327bda2307dafd5efb3287d19c6d2418894159c5
 @

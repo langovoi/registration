@@ -10,7 +10,7 @@ API_KEY = "8a00f7c0d525e77ea27b8430ce1810f6"
 
 
 def get_code(html: str, page='not set') -> str:
-    logging.info(f'captcha page {page}')
+    logging.warning(f'captcha page {page}')
     soup = BeautifulSoup(html, "lxml")
     image = soup.select("captcha > div")
     image = image[0]['style'].split("url('")[1].split("')")[0]
