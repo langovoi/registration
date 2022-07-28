@@ -163,7 +163,6 @@ class Germany():
 
     def register_family(self, family, date, time, code, soup):
         time_text = soup.find("div", {'style': 'font-weight: bold;'}).text.strip().replace('\n', ' ').replace('\t\t\t\t', ' ')
-        telegram.send_message(f'🟢 🇩🇪 Германия {self.categories[self.category]}: Регистрирую ({time_text.rstrip()}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})')
         success = False
         for _ in range(3):
             html = self.fill_fields(family, date, time, code)
@@ -178,6 +177,8 @@ class Germany():
                 if "The entered text was wrong" in error.text:
                     code = captcha.get_code(str(soup), 'failed registration {self.category}')
                 elif "This entry needs to be unique" in error.text:
+                    for user in family:
+                        self.s.post(url=f'{sys.argv[2]}/{user["id"]}', params={"vc_status": "4"})
                     telegram.send_doc(
                         caption=f'⭕ 🇩🇪 Германия: {self.categories[self.category]}: Уже зарегистрирован ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})\nОшибка: {error.text.strip()}', html=str(soup))
                     success = True
