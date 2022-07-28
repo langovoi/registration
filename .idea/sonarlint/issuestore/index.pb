@@ -48,8 +48,6 @@ B
 run_french_scan.py,8/8/88f7cc78b4221d9dcea3ca3225e90cf257b666ac
 V
 &features/pages/italy_consulate_page.py,7/5/756130472d76ef3befefd394d236cec63259a494
-R
-"features/pages/german_visa_page.py,b/d/bdd774f27494516b8e825a28a9326827d475514f
 N
 features/tests/germany.feature,3/9/39b34ab8b6b636e37c43cbb8b69d15d698a924e3
 I
@@ -58,5 +56,3 @@ I
 requirements.txt,1/9/19359a61ae2446b51b549167b014da2fcf265768
 <
 captcha.json,8/6/8643f14cbe8f6d9ce2f46cbd7ed7f79ddecdb9b3
-O
-features/steps/germany_steps.py,6/4/644c122253a0f8a0a231d5eb0f7a45526c79902a

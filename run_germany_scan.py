@@ -1,5 +1,4 @@
 import json
-import re
 import traceback
 from time import sleep
 import sys
