@@ -35,7 +35,7 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            🟢 ${{ matrix.name || format('{0} ({1})') }} JOB IS STARTED 🟢
+            🟢 GERMANY JOB IS STARTED 🟢
       - name: Test with behave
         run: |
           REST_PASSWORD=${{ secrets.REST_PASSWORD }}
@@ -48,4 +48,4 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            🐞 ${{ matrix.name || format('{0} ({1})') }} JOB IS STOPPED 🐞
+            🐞 GERMANY JOB IS STOPPED 🐞

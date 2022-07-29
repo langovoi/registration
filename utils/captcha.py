@@ -1,4 +1,6 @@
+import base64
 import logging
+from binascii import a2b_base64
 from datetime import datetime
 from time import sleep, strftime, gmtime
 
@@ -15,6 +17,7 @@ def get_code(html: str, page='not set') -> str:
     soup = BeautifulSoup(html, "lxml")
     image = soup.select("captcha > div")
     image = image[0]['style'].split("url('")[1].split("')")[0]
+    binary_data = a2b_base64(image.split(',')[1])
     try:
         return str(TwoCaptcha(API_KEY).normal(image)['code'])
     except Exception as e:
