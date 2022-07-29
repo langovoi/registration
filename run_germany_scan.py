@@ -4,10 +4,9 @@ from time import sleep
 import sys
 
 import requests
-from bs4 import BeautifulSoup
 
 from germany import Germany
-from utils import telegram, captcha
+from utils import telegram
 
 
 def get_germany_users(vc_type):
