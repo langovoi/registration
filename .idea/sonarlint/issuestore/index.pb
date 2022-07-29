@@ -42,8 +42,6 @@ R
 "features/pages/french_visa_page.py,e/4/e40bd383afbd426107b844ae79d71ee9f4a74db8
 B
 italy_requests2.py,4/7/47f7bfc48fa698d940276953e1396c6adaa96b1b
-B
-run_french_scan.py,8/8/88f7cc78b4221d9dcea3ca3225e90cf257b666ac
 V
 &features/pages/italy_consulate_page.py,7/5/756130472d76ef3befefd394d236cec63259a494
 I
