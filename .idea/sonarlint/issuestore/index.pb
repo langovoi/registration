@@ -19,8 +19,6 @@ behave.ini,f/5/f52618c500a3740e794ddd0f7e1801c7c88f1740
 utils/dt.py,0/2/02d95c9715faae252fa07d48a739609e3952e82c
 W
 'features/steps/italy_cousulate_steps.py,9/a/9aefe254f2cd52dd750f40b4bc914439f30b3a80
-T
-$features/pages/italy_embassy_page.py,b/c/bc370a81ef44d9f1800cf356bab5dd68764ab041
 ?
 cookietest.json,7/5/752937e25d4a9e0b2b1954a9bd0ba7f62607231f
 ;

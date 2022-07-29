@@ -25,6 +25,7 @@ def send_document(context, caption, document_name='page_source.html'):
 
 
 def send_doc(caption, html):
+    # html: r.text or str(soup)
     try:
         with open("page_source.html", "w") as f:
             f.write(html)

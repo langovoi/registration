@@ -25,8 +25,14 @@ def get_code(html: str, page='not set') -> str:
             telegram.send_message(f'Ошибка TwoCaptcha: {str(e)}')
 
 
-
 def is_captcha_displayed(html: str):
     soup = BeautifulSoup(html, "lxml")
     image = soup.select("captcha > div")
-    return True if image else False
+    try:
+        image = image[0]['style'].split("url('")[1].split("')")[0]
+        result = True
+    except IndexError:
+        image = image[0]['style'].split("url('")[1].split("')")[0]
+        telegram.send_doc("Не могу найти картинку капчи", str(soup))
+        result = False
+    return result
