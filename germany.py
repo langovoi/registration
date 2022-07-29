@@ -1,10 +1,14 @@
+import logging
 import re
 import sys
 from datetime import datetime
 from time import sleep
 
+import firebase_admin
 import requests
 from bs4 import BeautifulSoup
+from firebase_admin import credentials, db
+
 from utils import captcha, telegram
 
 
@@ -45,7 +49,9 @@ class Germany():
 
     def open_login_page_get_captcha_code(self):
         html_login_page = code = ''
+        logging.warning('open login page')
         for _ in range(3):
+            logging.warning(f'{_ + 1} try')
             self.session_id = get_session_id(f'https://service2.diplo.de/rktermin/extern/appointment_showMonth.do?locationCode=mins&realmId=231&categoryId={self.category}')
             # login page
             cookies = {'JSESSIONID': f'JSESSIONID={self.session_id}','KEKS': f'{self.termin[0]}',}
@@ -58,10 +64,12 @@ class Germany():
         else:
             telegram.send_doc(f'Не смог разгадать капчу с 3 раз. code: {code}', html_login_page)
             raise RuntimeError(f'Не смог разгадать капчу с 3 раз. code: {code}')
+        logging.warning('code is found')
         return code
 
     def open_appointments_page_and_get_dates(self, code):
         date_slots = []
+        logging.warning('open appointments page')
         for _ in range(3):
             cookies = {'JSESSIONID': f'{self.session_id}','KEKS': f'{self.termin[1]}',}
             headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Accept-Language': 'en-US,en;q=0.9', 'Cache-Control': 'max-age=0', 'Connection': 'keep-alive', 'Origin': 'https://service2.diplo.de', 'Referer': f'https://service2.diplo.de/rktermin/extern/appointment_showMonth.do;jsessionid={self.session_id}', 'Sec-Fetch-Dest': 'document', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-User': '?1', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', 'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"macOS"',}

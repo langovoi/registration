@@ -36,6 +36,12 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
             🟢 GERMANY JOB IS STARTED 🟢
+      - name: create-json
+        id: create-json
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "captcha.json"
+          json: ${{ secrets.DB_KEY }}
       - name: Test with behave
         run: |
           REST_PASSWORD=${{ secrets.REST_PASSWORD }}
