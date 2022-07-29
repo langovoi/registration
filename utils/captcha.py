@@ -47,6 +47,7 @@ def get_code(html: str, page='not set') -> str:
             logging.warning(f'12')
         except Exception as e:
             logging.warning(f'13')
+            logging.warning(f'captcha error')
             if 'ERROR_ZERO_BALANCE' in str(e):
                 telegram.send_message(f'Ошибка TwoCaptcha: Timeout 5 минут: {str(e)}')
                 sleep(300)
