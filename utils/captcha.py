@@ -63,7 +63,6 @@ def is_captcha_displayed(html: str):
         image = image[0]['style'].split("url('")[1].split("')")[0]
         result = True
     except IndexError:
-        image = image[0]['style'].split("url('")[1].split("')")[0]
         telegram.send_doc("Не могу найти картинку капчи", str(soup))
         result = False
     return result
