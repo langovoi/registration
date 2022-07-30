@@ -53,6 +53,7 @@ def get_code(html: str, page='not set') -> str:
                 sleep(300)
             else:
                 telegram.send_message(f'Ошибка TwoCaptcha: {str(e)}')
+            code = None
     return code
 
 
