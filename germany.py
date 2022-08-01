@@ -1,3 +1,4 @@
+import json
 import logging
 import re
 import sys
@@ -34,17 +35,30 @@ def get_session_id(url):
     if 'JSESSIONID' in s.cookies.get_dict():
         return s.cookies.get_dict()['JSESSIONID']
     else:
-        telegram.send_doc('JSESSIONID не найден', r.text)
-        raise RuntimeError('JSESSIONID не найден')
+        if 'The server is currently busy' in r.text:
+            telegram.send_doc('The server is currently busy', r.text)
+            return None
+        else:
+            error_message = 'JSESSIONID не найден'
+            telegram.send_doc(error_message, r.text)
+            raise RuntimeError(error_message)
+
+
+def get_germany_users(vc_type):
+    s = requests.Session()
+    s.auth = ('rest_user', sys.argv[1])
+    users = s.get(sys.argv[2])
+    users = [user for user in json.loads(users.text) if user["vc_type"] == vc_type]
+    return users  # test users [{'id': '1', 'vc_status': '2', 'vc_city': 'Schengenvisa', 'vc_type': 'Inviting', 'vc_mail': 'sash.kardash@gmail.com', 'vc_inviting': 'Grigory Fray', 'vc_passport': 'MP8338818', 'vc_birth': '1965-10-16', 'vc_passport_from': '2021-07-20', 'vc_passport_to': '2031-07-20', 'vc_passport_by': 'MIA', 'vc_name': 'Valery', 'vc_surname': 'Vetlitcky', 'vc_phone': '+375256062209', 'vc_date_first_travel': '2022-08-15', 'vc_date_from': '2022-07-24', 'vc_date_to': '', 'vc_with': '0', 'vc_comment': '', 'vc_first': '1', 'vc_today': '1', 'vc_before_visit': '0'}, {'id': '3', 'vc_status': '2', 'vc_city': 'Schengenvisa', 'vc_type': 'Inviting', 'vc_mail': 'sash.kardash@gmail.com', 'vc_inviting': 'Grigory Fray', 'vc_passport': 'MP8338818', 'vc_birth': '1965-10-16', 'vc_passport_from': '2021-07-20', 'vc_passport_to': '2031-07-20', 'vc_passport_by': 'MIA', 'vc_name': 'Valery', 'vc_surname': 'Vetlitcky', 'vc_phone': '+375256062209', 'vc_date_first_travel': '2022-08-15', 'vc_date_from': '2022-07-24', 'vc_date_to': '', 'vc_with': '0', 'vc_comment': '', 'vc_first': '1', 'vc_today': '1', 'vc_before_visit': '0'}]
 
 
 class Germany():
-    def __init__(self, termin, category, users_dict):
+    def __init__(self, termin, category, vc_type):
         self.s = requests.Session()
         self.session_id = ''
         self.termin = termin
         self.category = category
-        self.users_dict = users_dict
+        self.users_dict = get_germany_users(vc_type)
         self.categories = {'373': "Шенген", '2845': "Туризм", '375': "Национальная"}
 
     def open_login_page_get_captcha_code(self):
@@ -96,7 +110,7 @@ class Germany():
                         telegram.send_doc('⭕ Ошибка, не смог решить капчу', html)
                 else:
                     telegram.send_doc('⭕ Ошибка, капча не отображается', html)
-                sleep(10) # if captcha
+                sleep(10)  # if captcha
         else:
             raise RuntimeError(f'⭕ Не разгадал капчу с 3 попыток для категории {self.categories[str(self.category)]}')
         return date_slots
@@ -127,13 +141,16 @@ class Germany():
                 telegram.send_doc('Не разгадал капчу с 3 раз', r.text)
         soup = BeautifulSoup(r.text, "lxml")
         element = soup.find_all("div", {'style': 'margin-left: 20%;'})
-        time_slots = [[re.findall("\d+", link.text)[0], link.find("a")['href'].split('=')[-1]] for link in element if link.find("a")]
+        time_slots = [[re.findall("\d+", link.text)[0], link.find("a")['href'].split('=')[-1]] for link in element if
+                      link.find("a")]
         return time_slots
 
-    def get_users_with_dates(self, dates_list):
+    def get_users_with_dates(self, dates_list, vc_type):
+        self.users_dict = get_germany_users(vc_type)
         for date in dates_list:
             for i, user in enumerate(self.users_dict):
-                date_from = datetime.strptime(user['vc_date_from'] if user['vc_date_from'] else '2022-01-01', '%Y-%m-%d')
+                date_from = datetime.strptime(user['vc_date_from'] if user['vc_date_from'] else '2022-01-01',
+                                              '%Y-%m-%d')
                 date_to = datetime.strptime(user['vc_date_to'] if user['vc_date_to'] else '3000-01-01', '%Y-%m-%d')
                 actual_date = datetime.strptime(date, '%d.%m.%Y')
                 if date_from <= actual_date <= date_to:
@@ -151,11 +168,12 @@ class Germany():
                     family_list[user['vc_with']] = user
         return family_list
 
-    def register_users(self, family_list, date_slots): # get time and register
-        for index, family in family_list.items(): # check each user
+    def register_users(self, date_slots, vc_type):  # get time and register
+        family_list = self.get_users_with_dates(date_slots, vc_type)
+        for index, family in family_list.items():  # check each user
             for date in date_slots:
                 is_registered = False
-                if date in family[0]['dates']: # get available time
+                if date in family[0]['dates']:  # get available time
                     time_slots = self.get_time(date)
                     for time in time_slots:
                         code, soup = self.open_register_page(date, time[1])
@@ -182,7 +200,7 @@ class Germany():
                 params = {'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'dateStr': f'{date}', 'openingPeriodId': f'{time}',}
                 r = self.s.get('https://service2.diplo.de/rktermin/extern/appointment_showForm.do', params=params, cookies=cookies, headers=headers)
                 code = captcha.get_code(r.text, f'registration 2 {self.category}')
-            soup = BeautifulSoup(r.text,"lxml")
+            soup = BeautifulSoup(r.text, "lxml")
             if len(soup.find("div", {'style': 'font-weight: bold;'})):
                 break
         else:
@@ -263,4 +281,3 @@ class Germany():
                     'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Submit',}
         r = self.s.post('https://service2.diplo.de/rktermin/extern/appointment_addAppointment.do', cookies=cookies, headers=headers, data=data)
         return r.text
-
