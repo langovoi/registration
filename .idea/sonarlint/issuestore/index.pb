@@ -17,10 +17,6 @@ behave.ini,f/5/f52618c500a3740e794ddd0f7e1801c7c88f1740
 utils/gmail.py,c/f/cfc9ce4bd18aab684abe94310bf769994a3640e2
 W
 'features/steps/italy_cousulate_steps.py,9/a/9aefe254f2cd52dd750f40b4bc914439f30b3a80
-V
-&.github/workflows/italy_consulate2.yml,b/5/b5ffb5da6923ddc055bf32a1ca7dcc2814d38ff0
-U
-%.github/workflows/italy_consulate.yml,0/1/016cbff3fa3737e223077d07794c207065a469ef
 M
 features/tests/france.feature,1/6/16f0411ddd5c6741a4d30d5cb56e437a3da01514
 R
@@ -29,12 +25,8 @@ V
 &features/pages/italy_consulate_page.py,7/5/756130472d76ef3befefd394d236cec63259a494
 V
 &features/tests/italy_consulate.feature,7/2/728dc353760896a06ef530714455aa03fb8ab6c5
-G
-features/environment.py,7/8/78ffc5f4f9d48b0011828b5fd8038b961d68c587
 N
 features/tests/germany.feature,3/9/39b34ab8b6b636e37c43cbb8b69d15d698a924e3
-B
-run_french_scan.py,8/8/88f7cc78b4221d9dcea3ca3225e90cf257b666ac
 D
 italy/italy_login.py,9/3/93ae7907f7ad7e63c2894f9caa47b1be56a2f004
 T
