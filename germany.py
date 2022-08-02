@@ -8,7 +8,7 @@ from time import sleep
 import requests
 from bs4 import BeautifulSoup
 
-from utils import captcha, telegram
+from utils import captcha, telegram, users
 
 
 # National
@@ -42,21 +42,13 @@ def get_session_id(url):
             raise RuntimeError(error_message)
 
 
-def get_germany_users(vc_type):
-    s = requests.Session()
-    s.auth = ('rest_user', sys.argv[1])
-    users = s.get(sys.argv[2])
-    users = [user for user in json.loads(users.text) if user["vc_type"] == vc_type]
-    return users  # test users [{'id': '1', 'vc_status': '2', 'vc_city': 'Schengenvisa', 'vc_type': 'Inviting', 'vc_mail': 'sash.kardash@gmail.com', 'vc_inviting': 'Grigory Fray', 'vc_passport': 'MP8338818', 'vc_birth': '1965-10-16', 'vc_passport_from': '2021-07-20', 'vc_passport_to': '2031-07-20', 'vc_passport_by': 'MIA', 'vc_name': 'Valery', 'vc_surname': 'Vetlitcky', 'vc_phone': '+375256062209', 'vc_date_first_travel': '2022-08-15', 'vc_date_from': '2022-07-24', 'vc_date_to': '', 'vc_with': '0', 'vc_comment': '', 'vc_first': '1', 'vc_today': '1', 'vc_before_visit': '0'}, {'id': '3', 'vc_status': '2', 'vc_city': 'Schengenvisa', 'vc_type': 'Inviting', 'vc_mail': 'sash.kardash@gmail.com', 'vc_inviting': 'Grigory Fray', 'vc_passport': 'MP8338818', 'vc_birth': '1965-10-16', 'vc_passport_from': '2021-07-20', 'vc_passport_to': '2031-07-20', 'vc_passport_by': 'MIA', 'vc_name': 'Valery', 'vc_surname': 'Vetlitcky', 'vc_phone': '+375256062209', 'vc_date_first_travel': '2022-08-15', 'vc_date_from': '2022-07-24', 'vc_date_to': '', 'vc_with': '0', 'vc_comment': '', 'vc_first': '1', 'vc_today': '1', 'vc_before_visit': '0'}]
-
-
 class Germany():
     def __init__(self, termin, category, vc_type):
         self.s = requests.Session()
         self.session_id = ''
         self.termin = termin
         self.category = category
-        self.users_dict = get_germany_users(vc_type)
+        self.users_dict = users.get_users(vc_type)
         self.categories = {'373': "Шенген", '2845': "Туризм", '375': "Национальная"}
 
     def open_login_page_get_captcha_code(self):
@@ -144,7 +136,7 @@ class Germany():
         return time_slots
 
     def get_users_with_dates(self, dates_list, vc_type):
-        self.users_dict = get_germany_users(vc_type)
+        self.users_dict = users.get_users(vc_type)
         for date in dates_list:
             for i, user in enumerate(self.users_dict):
                 date_from = datetime.strptime(user['vc_date_from'] if user['vc_date_from'] else '2022-01-01',
@@ -214,7 +206,7 @@ class Germany():
             if not (soup.find("captcha") or soup.find("div", {"class": "global-error"})):
                 telegram.send_doc(caption=f'🟢 🇩🇪 Германия: Успешно записан: {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]}) на {str(time_text)}', html=str(html))
                 for user in family:
-                    self.s.post(url=f'{sys.argv[2]}/{user["id"]}', params={"vc_status": "4"})
+                    users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='4')
                 success = True
                 break
             elif error := soup.find("div", {"class": "global-error"}):
@@ -222,7 +214,7 @@ class Germany():
                     code = captcha.get_code(str(soup), f'The entered text was wrong {self.category}')
                 elif "This entry needs to be unique" in error.text:
                     for user in family:
-                        self.s.post(url=f'{sys.argv[2]}/{user["id"]}', params={"vc_status": "4"})
+                        users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='4')
                     telegram.send_doc(
                         caption=f'⭕ 🇩🇪 Германия: {self.categories[self.category]}: Уже зарегистрирован ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})\nОшибка: {error.text.strip()}', html=str(soup))
                     success = True
