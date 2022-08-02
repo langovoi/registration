@@ -1,3 +1,4 @@
+import sys
 import traceback
 from time import sleep
 from germany import Germany
@@ -30,20 +31,9 @@ def register_german_visa(termin, category, vc_type):
 
 while True:
     try:
-        # National
-        # termin = ['TERMIN325', 'TERMIN340']
-        # category = '375'
-        # register_german_visa(termin, category, 'Inviting')
-
-        # Schengen
-        termin = ['TERMIN325', 'TERMIN327']
-        category = '373'
-        register_german_visa(termin, category, 'Inviting')
-
-        # Tourism
-        termin = ['TERMIN325', 'TERMIN327']
-        category = '2845'
-        register_german_visa(termin, category, 'Tourism')
-        sleep(300)
+        termin = ['TERMIN325', sys.argv[3]]
+        category = sys.argv[4]
+        register_german_visa(termin, category, sys.argv[5])
+        sleep(300 if sys.argv[5] == 'Inviting' else 120)
     except Exception as e:
         telegram.send_message(f'⭕ Germany job failed: {str(e)}: {traceback.format_exc()}')

@@ -1,4 +1,4 @@
-name: Germany
+name: Germany tourism
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
     timeout-minutes: 355
     strategy:
       matrix:
-        tag: [ "monitor_germany" ]
+        tag: [ "SCHENGEN" ]
     steps:
       - uses: actions/checkout@v2
       - name: Cache requirements
@@ -35,7 +35,7 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            🟢 GERMANY JOB IS STARTED 🟢
+            🟢 GERMANY SCHENGEN JOB IS STARTED 🟢
       - name: create-json
         id: create-json
         uses: jsdaniell/create-json@1.1.2
@@ -46,7 +46,7 @@ jobs:
         run: |
           REST_PASSWORD=${{ secrets.REST_PASSWORD }}
           GERMANY_REST_URL=${{ secrets.GERMANY_REST_URL }}
-          python3 run_germany_scan.py "$REST_PASSWORD" "$GERMANY_REST_URL"
+          python3 run_germany_scan.py "$REST_PASSWORD" "$GERMANY_REST_URL" "TERMIN327" "373" "Inviting"
       - name: send custom message
         if: always()
         uses: appleboy/telegram-action@master
@@ -54,4 +54,4 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            🐞 GERMANY JOB IS STOPPED 🐞
+            🐞 GERMANY SCHENGEN JOB IS STOPPED 🐞

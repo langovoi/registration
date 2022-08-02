@@ -1,0 +1,57 @@
+name: Germany tourism
+
+on:
+  push:
+  schedule:
+    - cron: '0 */6 * * *'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      matrix:
+        tag: [ "Tourism" ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache requirements
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install git+https://github.com/behave/behave
+      - name: send custom message start
+        if: always()
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            🟢 GERMANY TOURISM JOB IS STARTED 🟢
+      - name: create-json
+        id: create-json
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "captcha.json"
+          json: ${{ secrets.DB_KEY }}
+      - name: Test with behave
+        run: |
+          REST_PASSWORD=${{ secrets.REST_PASSWORD }}
+          GERMANY_REST_URL=${{ secrets.GERMANY_REST_URL }}
+          python3 run_germany_scan.py "$REST_PASSWORD" "$GERMANY_REST_URL" "TERMIN327" "2845" "Tourism"
+      - name: send custom message
+        if: always()
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            🐞 GERMANY TOURISM JOB IS STOPPED 🐞

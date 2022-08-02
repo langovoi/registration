@@ -5,10 +5,8 @@ import sys
 from datetime import datetime
 from time import sleep
 
-import firebase_admin
 import requests
 from bs4 import BeautifulSoup
-from firebase_admin import credentials, db
 
 from utils import captcha, telegram
 

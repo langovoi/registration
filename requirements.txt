@@ -16,4 +16,3 @@ requests
 beautifulsoup4
 behave
 lxml
-firebase_admin

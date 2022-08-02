@@ -51,13 +51,15 @@ $features/pages/italy_embassy_page.py,b/c/bc370a81ef44d9f1800cf356bab5dd68764ab
 test3.py,4/7/47e2f36f29273e55356a6e02ef971214c8b170e6
 R
 "features/pages/german_visa_page.py,b/d/bdd774f27494516b8e825a28a9326827d475514f
-@
-requirements.txt,1/9/19359a61ae2446b51b549167b014da2fcf265768
 <
 captcha.json,8/6/8643f14cbe8f6d9ce2f46cbd7ed7f79ddecdb9b3
 ;
 utils/dt.py,0/2/02d95c9715faae252fa07d48a739609e3952e82c
-N
-.github/workflows/germany5.yml,a/3/a38034dc44e976498c4df588a36b7ca1beac4aa8
 8
 test2.py,2/a/2a41da11c987266d7c39b70a05e3cc3cba268c18
+O
+features/steps/germany_steps.py,6/4/644c122253a0f8a0a231d5eb0f7a45526c79902a
+G
+italy/run_italy_scan.py,6/d/6d5d2c935c479eb53401b0060680126e29e7b07d
+A
+utils/telegram.py,c/d/cdbb092b35fbdaf723f65b293b3d945238fee458
