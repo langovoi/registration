@@ -39,10 +39,13 @@ def get_code(html: str, page='not set') -> str:
 def is_captcha_displayed(html: str):
     soup = BeautifulSoup(html, "lxml")
     image = soup.select("captcha > div")
-    try:
-        image = image[0]['style'].split("url('")[1].split("')")[0]
-        result = True
-    except IndexError:
-        telegram.send_doc("Не могу найти картинку капчи, хотя captcha > div отображается", str(soup))
+    if image:
+        try:
+            image = image[0]['style'].split("url('")[1].split("')")[0]
+            result = True
+        except IndexError:
+            telegram.send_doc("Не могу найти картинку капчи, хотя captcha > div отображается", str(soup))
+            result = False
+    else:
         result = False
     return result

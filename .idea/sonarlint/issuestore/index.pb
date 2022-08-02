@@ -23,16 +23,8 @@ U
 %.github/workflows/italy_consulate.yml,0/1/016cbff3fa3737e223077d07794c207065a469ef
 M
 features/tests/france.feature,1/6/16f0411ddd5c6741a4d30d5cb56e437a3da01514
-J
-features/pages/__init__.py,5/2/52b133a7b37c91109be4cdf96a6a58af2848c109
-K
-features/pages/base_page.py,c/a/cabef8aef0f0782bfdd300c57df2ab619e6dbf04
-M
-features/steps/basic_steps.py,b/6/b63a8cfee97d08479d60dda09dc41f1a3515c913
 R
 "features/pages/french_visa_page.py,e/4/e40bd383afbd426107b844ae79d71ee9f4a74db8
-B
-italy_requests2.py,4/7/47f7bfc48fa698d940276953e1396c6adaa96b1b
 V
 &features/pages/italy_consulate_page.py,7/5/756130472d76ef3befefd394d236cec63259a494
 V
@@ -47,17 +39,9 @@ D
 italy/italy_login.py,9/3/93ae7907f7ad7e63c2894f9caa47b1be56a2f004
 T
 $features/pages/italy_embassy_page.py,b/c/bc370a81ef44d9f1800cf356bab5dd68764ab041
-8
-test3.py,4/7/47e2f36f29273e55356a6e02ef971214c8b170e6
 R
 "features/pages/german_visa_page.py,b/d/bdd774f27494516b8e825a28a9326827d475514f
 <
 captcha.json,8/6/8643f14cbe8f6d9ce2f46cbd7ed7f79ddecdb9b3
-8
-test2.py,2/a/2a41da11c987266d7c39b70a05e3cc3cba268c18
-O
-features/steps/germany_steps.py,6/4/644c122253a0f8a0a231d5eb0f7a45526c79902a
 G
 italy/run_italy_scan.py,6/d/6d5d2c935c479eb53401b0060680126e29e7b07d
-A
-utils/telegram.py,c/d/cdbb092b35fbdaf723f65b293b3d945238fee458

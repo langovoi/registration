@@ -3,13 +3,15 @@ from .german_visa_page import GermanVisaPage
 from .google_page import GooglePage
 from .italy_consulate_page import ItalyConsulatePage
 from .italy_embassy_page import ItalyEmbassyPage
+from .spain_visa_page import SpainVisaPage
 
 page_map = {
-    "google.com": GooglePage,
-    "german visa": GermanVisaPage,
     "italy consulate": ItalyConsulatePage,
     "italy embassy": ItalyEmbassyPage,
     "french visa": FrenchVisaPage,
+    "german visa": GermanVisaPage,
+    "google.com": GooglePage,
+    "spain visa": SpainVisaPage,
 }
 
 

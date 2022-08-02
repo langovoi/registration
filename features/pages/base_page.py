@@ -1,8 +1,7 @@
 import abc
 from time import sleep
 
-from selenium.common.exceptions import StaleElementReferenceException, TimeoutException, \
-    ElementClickInterceptedException, NoSuchElementException
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException, NoSuchElementException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
