@@ -20,20 +20,20 @@ def before_all(context):
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_experimental_option("prefs", prefs)
     caps = {
-        # # -- Chrome Selenoid options
-        # 'browserName': 'chrome',
+        # -- Chrome Selenoid options
+        'browserName': 'chrome',
         # 'version': '87.0',
-        # 'selenoid:options':
-        #     {
-        #         'enableVNC': True,
-        #         'enableVideo': False
-        #     },
-        # # -- Chrome browser mobile emulation and headless options
-        # 'goog:chromeOptions': {
-        #     # 'mobileEmulation': {'deviceName': 'iPhone X'},
-        #     # 'window-size': ['1920,1080'],
-        #     'args': args
-        # }
+        'selenoid:options':
+            {
+                'enableVNC': True,
+                'enableVideo': False
+            },
+        # -- Chrome browser mobile emulation and headless options
+        'goog:chromeOptions': {
+            # 'mobileEmulation': {'deviceName': 'iPhone X'},
+            # 'window-size': ['1920,1080'],
+            'args': args
+        }
     }
     '''
         -- Android browser Selenoid options
