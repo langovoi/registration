@@ -49,8 +49,6 @@ M
 features/steps/basic_steps.py,b/6/b63a8cfee97d08479d60dda09dc41f1a3515c913
 B
 italy_requests2.py,4/7/47f7bfc48fa698d940276953e1396c6adaa96b1b
-C
-run_germany_scan.py,1/d/1d2721a1f3cd4174f47a0147321026d907d1051d
 J
 features/pages/__init__.py,5/2/52b133a7b37c91109be4cdf96a6a58af2848c109
 K
