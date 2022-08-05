@@ -8,29 +8,39 @@ from twocaptcha import TwoCaptcha
 
 from utils import telegram
 
-API_KEY = sys.argv[6]
 
 def get_code(html: str, page='not set') -> str:
     logging.warning(f'{datetime.now().strftime("%H:%M:%S")}: captcha page {page}')
-    logging.warning(f'1')
     soup = BeautifulSoup(html, "lxml")
-    logging.warning(f'2')
     image = soup.select("captcha > div")
-    logging.warning(f'3')
     image = image[0]['style'].split("url('")[1].split("')")[0]
-    logging.warning(f'4')
+    errors = []
     try:
-        logging.warning(f'5')
-        code = str(TwoCaptcha(API_KEY).normal(image)['code'])
-        logging.warning(f'6')
+        return str(TwoCaptcha(sys.argv[6]).normal(image)['code'])
         # ref.push().set({'code': code, 'image': image_base64})
-        logging.warning(f'7')
     except Exception as e:
-        logging.warning(f'8')
+        logging.warning(f'captcha error: {str(e)}')
+        if 'ERROR_ZERO_BALANCE' in str(e):
+            telegram.send_message(f'Ошибка TwoCaptcha: Timeout 5 минут: {str(e)}')
+            sleep(300)
+            return None
+        elif 'ERROR_CAPTCHA_UNSOLVABLE' in str(e):
+            return None
+        else:
+            telegram.send_message(f'Неизвестная Ошибка TwoCaptcha: {str(e)}')
+            errors.append(str(e))
+
+
+def get_code_selenium(context, image_name: str, page='not set'):
+    try:
+        code = str(TwoCaptcha(context.api_key).normal(image_name)['code'])
+    except Exception as e:
         logging.warning(f'captcha error')
         if 'ERROR_ZERO_BALANCE' in str(e):
             telegram.send_message(f'Ошибка TwoCaptcha: Timeout 5 минут: {str(e)}')
             sleep(300)
+        elif 'ERROR_CAPTCHA_UNSOLVABLE' in str(e):
+            return None
         else:
             telegram.send_message(f'Ошибка TwoCaptcha: {str(e)}')
         code = None

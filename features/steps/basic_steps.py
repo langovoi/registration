@@ -95,6 +95,7 @@ def init_screen(context, page_name):
     """Instantiating verifies that we're on that page"""
     page_class = pages.factory(page_name)
     context.page = page_class(context)
+    print('page+name')
 
 
 @step('open url: "(?P<url>.*)"')

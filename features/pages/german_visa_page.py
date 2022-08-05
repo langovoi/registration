@@ -1,4 +1,5 @@
 import re
+from multiprocessing import Pool
 
 from selenium.webdriver.common.by import By
 
@@ -9,6 +10,10 @@ from utils import captcha
 
 
 class GermanVisaPage(BasePage):
+    categories = {'373': {"type": "Inviting", "name": "Шенген"},
+                  '2845': {"type": "Tourism", "name": "Туризм"},
+                  '375': {"type": "National", "name": "Национальная"}}
+
     IMAGE_CAPTCHA = By.XPATH, '//captcha/div'
     FIELD_CAPTCHA = By.NAME, 'captchaText'
     BUTTON_CONTINUE = By.XPATH, '//input[@id="appointment_captcha_day_appointment_showDay" or @id="appointment_captcha_month_appointment_showMonth" or @id="appointment_newAppointmentForm_appointment_addAppointment"]'
@@ -42,8 +47,6 @@ class GermanVisaPage(BasePage):
 
     def click_on(self, element_name, section=None):
         super(GermanVisaPage, self).click_on(element_name)
-        if element_name == 'continue button':
-            self.enter_captcha()
         if 'appointment button' in element_name:
             # link: href="extern/appointment_showDay.do?locationCode=mins&realmId=231&categoryId=375&dateStr=15.08.2022"
             available_dates = self.driver.find_elements_by_xpath(f'//div/a[contains(@href, "dateStr")]')

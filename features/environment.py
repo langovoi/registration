@@ -66,7 +66,7 @@ def before_all(context):
     parser.read('behave.ini')
     context.config = parser
     context.values = {'start_time': datetime.utcnow()}
-
+    context.api_key = sys.argv[6]
     # google sheets
     # context.data_worksheet = GoogleSheets().authorize('Data')
 

@@ -3,10 +3,12 @@ Feature: Check google.com
 
   @monitor_germany @retry1000
   Scenario: register germany
-    When open url: "https://service2.diplo.de/rktermin/extern/appointment_showMonth.do?locationCode=mins&realmId=231&categoryId=373"
+    When open url: "https://service2.diplo.de/rktermin/extern/appointment_showMonth.do?locationCode=mins&realmId=231&categoryId=375"
     Then page german visa is opened
-    When enter "captcha" in captcha field
-    When click on continue button
-    When gather germany dates
-    # select date and time
-    When register germany
+    When get german dates for "375" category
+
+  @register_family
+  Scenario: register family
+    When open url: "https://service2.diplo.de/rktermin/extern/appointment_showMonth.do?locationCode=mins&realmId=231&categoryId=375"
+    Then page german visa is opened
+    When register_family

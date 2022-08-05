@@ -1,15 +1,20 @@
 import re
+import subprocess
 import traceback
 from datetime import datetime
+from multiprocessing import Pool
+from time import sleep
 
-from behave import step, use_step_matcher
+from behave import step, when, then, use_step_matcher
+from bs4 import BeautifulSoup
+from selenium.webdriver import ActionChains
 
-from utils import telegram
+from utils import telegram, captcha, users
 
 use_step_matcher('re')
 
 
-@step("gather germany dates")
+@step("monitor germany dates")
 def gather_dates(context):
     # check 3 months
     gather_all_dates(context, number_of_months=3)
@@ -157,28 +162,76 @@ def get_available_time(context, user):
     return times
 
 
-@step("monitor germany")
-def monitor(context):
+
+def register_family(args):
+    user_id, members = args
+    print(args)
+
+@step('get german dates for "(?P<category>.*)" category')
+def step_impl(context, category):
+    soup = BeautifulSoup(context.driver.page_source, "lxml")
+    type = context.page.categories[str(category)]['type']
+    type = 'Inviting'
+    name = context.page.categories[str(category)]['name']
+    name = 'Шенген'
     while True:
-        try:
-            context.execute_steps(u'''
-                When open url: "https://service2.diplo.de/rktermin/extern/appointment_showMonth.do?locationCode=mins&realmId=231&categoryId=373"
-                Then page german visa is opened
-                When enter "captcha" in captcha field
-                When click on continue button
-                When clear log
-                When gather dates
-                When click on next month button
-                When gather dates
-                When click on next month button
-                When send dates
-            ''')
-        except Exception as e:
-            context.bot.send_photo(chat_id=context.config['telegram']['telegram_to'],
-                                   photo=context.driver.get_screenshot_as_png(),
-                                   caption=f'Unknown exception: {str(e)}')
-            with open('page_source.html', 'w') as f:
-                f.write(context.driver.page_source)
-            telegram.send_document(context, caption=f'Unknown exception: {str(e)}: {traceback.format_exc()}')
-        finally:
-            context.driver.delete_all_cookies()
+        # enter captcha
+        if captcha.is_captcha_displayed(str(soup)):
+            for _ in range(3):
+                code = captcha.get_code(str(soup))
+                if code:
+                    break
+                else:
+                    context.driver.refresh()
+                    soup = BeautifulSoup(context.driver.page_source, "lxml")
+            else:
+                telegram.send_doc('Не смог ввести капчу c 3 раз', str(soup))
+                raise RuntimeError('Не смог ввести капчу с 3 раз')
+            context.page.type_in('captcha field', code)
+            context.page.click_on('continue button')
+            soup = BeautifulSoup(context.driver.page_source, "lxml")
+            if captcha.is_captcha_displayed(str(soup)):
+                sleep(10)
+                continue
+        # check if dates
+        soup = BeautifulSoup(context.driver.page_source, "lxml")
+        if 'Unfortunately' in str(soup) or 'ERR_ADDRESS_UNREACHABLE' in str(soup) or 'ERR_TIMED_OUT' in str(soup) or 'The server is currently busy' in str(soup):
+            # no dates - refresh page
+            sleep(10)
+            context.driver.refresh()
+            soup = BeautifulSoup(context.driver.page_source, "lxml")
+        elif 'Termine sind verfügbar' in str(soup) or 'Запись на прием возможна' in str(soup) or 'Please select a date' in str(soup):
+            element = soup.find_all("div", {'style': 'margin-left: 20%;'})
+            dates_list = [link.find("a")['href'].split('=')[-1] for link in element]
+            dates = [{'date': datetime.strptime(date, '%d.%m.%Y')} for date in dates_list]
+            all_users = users.get_users(type)
+            families = {}
+
+            # create families
+            for user in all_users:
+                if user['vc_with'] == '0':
+                    families[user['id']] = {'members': [user]}
+                else:
+                    if user['vc_with'] in families:
+                        families[user['vc_with']]['members'].append(user)
+                    else:
+                        families[user['vc_with']]['members'] = user
+            # assign dates
+            for user_id, family in families.items():
+                date_from = datetime.strptime(family['members'][0]['vc_date_from'] if family['members'][0]['vc_date_from'] else '2022-01-01', '%Y-%m-%d')
+                date_to = datetime.strptime(family['members'][0]['vc_date_to'] if family['members'][0]['vc_date_to'] else '3000-01-01', '%Y-%m-%d')
+                for date in dates:
+                    if date_from <= date['date'] <= date_to:
+                        families[user_id].setdefault("dates", []).append(date)
+            context.values['eligible_families'] = eligible_families = {k: v for k, v in families.items() if 'dates' in v}
+            subprocess.call(f'python3 behave-parallel.py --tags=register_family --processes=2', shell=True)
+            # short_families = {k: [v['members'][0]['vc_name'], v['members'][0]['vc_surname'], f'кол-во: {len(v["members"])}'] for k, v in eligible_families.items()}
+            # telegram.send_message(f'🇩🇪 Германия {name}: {dates_list}\nПодходящие: {short_families}')
+        else:
+            telegram.send_doc('Неизвестная ошибка на странице дат', str(soup))
+            raise RuntimeError('Неизвестная ошибка на странице дат')
+
+
+@when("register_family")
+def step_impl(context):
+    import configparser

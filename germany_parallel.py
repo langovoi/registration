@@ -167,7 +167,6 @@ class Germany():
                     time_slots = self.get_time(date)
                     for time in time_slots:
                         code, soup = self.open_register_page(date, time[1])
-                        telegram.send_doc(f'Германия {self.categories[self.category]}: Страница заполнения полей', str(soup))
                         is_registered = self.register_family(family, date, time[1], code, soup)
                         if is_registered:
                             break
@@ -204,7 +203,7 @@ class Germany():
         for _ in range(3):
             html = self.fill_fields(family, date, time, code)
             soup = BeautifulSoup(html, "lxml")
-            if not (soup.find("captcha") or soup.find("div", {"class": "global-error"}) or 'An error occured while processing your appointment' in str(soup)):
+            if not (soup.find("captcha") or soup.find("div", {"class": "global-error"})):
                 telegram.send_doc(caption=f'🟢 🇩🇪 Германия: Успешно записан: {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]}) на {str(time_text)}', html=str(html))
                 for user in family:
                     users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='4')
