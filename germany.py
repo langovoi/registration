@@ -166,7 +166,7 @@ class Germany():
     def open_register_page(self, date, time):
         code = soup = None
         for _ in range(3):
-            html = self.open_page('register').text
+            html = self.open_page('register', date=date, time=time).text
             if 'An error occured while processing your appointment.' in html:
                 telegram.send_doc('An error occured while processing your appointment.', html)
                 raise RuntimeError('An error occured while processing your appointment.')
