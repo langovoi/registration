@@ -56,10 +56,13 @@ def is_captcha_displayed(html: str):
     if image:
         try:
             image = image[0]['style'].split("url('")[1].split("')")[0]
-            base64.b64decode(image.split(',')[1])
-            result = True
+            try:
+                base64.b64decode(image.split(',')[1])
+                return True
+            except Exception:
+                sleep(30)
+                return False
         except Exception:
-            telegram.send_doc("Не могу найти картинку капчи, хотя captcha > div отображается", str(soup))
             result = False
     else:
         result = False
