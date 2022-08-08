@@ -26,9 +26,9 @@ def register_german_visa(termin, category, vc_type):
                     telegram.send_message(
                         f'🇩🇪 Подходящие клиенты: {[[(user["vc_passport"], user["vc_surname"], user["vc_name"]) for user in family_list[family]] for family in family_list]}')
                     g.register_users(date_slots, vc_type)
-                else:
-                    telegram.send_message(
-                        f'🟡 Германия {g.categories[g.category]}: Нет пользователей для регистрации на {date_slots}')
+                # else:
+                #     telegram.send_message(
+                #         f'🟡 Германия {g.categories[g.category]}: Нет пользователей для регистрации на {date_slots}')
             sleep(30)
 
 
