@@ -34,7 +34,7 @@ def send_doc(caption, html):
         bot.send_document(chat_id=chat_id, document=open("page_source.html", "rb"), caption=caption)
         bot.stop_bot()
     except Exception:
-        raise RuntimeError(f'Telegram failed to send doc with message: {caption}')
+        pass
 
 
 def send_image(image_name, caption):
@@ -44,7 +44,7 @@ def send_image(image_name, caption):
         bot.send_photo(chat_id=chat_id, photo=image_name, caption=caption)
         bot.stop_bot()
     except Exception:
-        raise RuntimeError(f'Telegram failed to image with message: {caption}')
+        pass
 
 
 def send_message(message):
@@ -55,4 +55,4 @@ def send_message(message):
             bot.stop_bot()
             break
         except Exception:
-            raise RuntimeError(f'Telegram failed to send message: {message}')
+            pass
