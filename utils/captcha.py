@@ -1,3 +1,4 @@
+import base64
 import logging
 import sys
 from datetime import datetime
@@ -14,6 +15,12 @@ def get_code(html: str, page='not set') -> str:
     soup = BeautifulSoup(html, "lxml")
     image = soup.select("captcha > div")
     image = image[0]['style'].split("url('")[1].split("')")[0]
+    for _ in range(10):
+        try:
+            base64.b64decode(image.split(',')[1])
+            break
+        except Exception:
+            return None
     errors = []
     try:
         return str(TwoCaptcha(sys.argv[6]).normal(image)['code'])
