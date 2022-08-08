@@ -67,6 +67,7 @@ class Germany():
     def open_appointments_page_and_get_dates(self, code):
         date_slots = []
         logging.warning('open appointments page')
+        errors = []
         for _ in range(3):
             html = self.open_page('appointments', code=code).text
             if 'Unfortunately' in html:
@@ -91,6 +92,7 @@ class Germany():
                     telegram.send_doc('⭕ Ошибка, капча не отображается', html)
                 sleep(1)  # if captcha
         else:
+            telegram.send_doc(f'⭕ Не разгадал капчу с 3 попыток для категории {self.categories[str(self.category)]}', html)
             raise RuntimeError(f'⭕ Не разгадал капчу с 3 попыток для категории {self.categories[str(self.category)]}')
         return date_slots, code
 
