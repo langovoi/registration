@@ -15,12 +15,6 @@ def get_code(html: str, page='not set') -> str:
     soup = BeautifulSoup(html, "lxml")
     image = soup.select("captcha > div")
     image = image[0]['style'].split("url('")[1].split("')")[0]
-    for _ in range(10):
-        try:
-            base64.b64decode(image.split(',')[1])
-            break
-        except Exception:
-            return None
     errors = []
     try:
         return str(TwoCaptcha(sys.argv[6]).normal(image)['code'])
@@ -30,8 +24,10 @@ def get_code(html: str, page='not set') -> str:
         if 'ERROR_ZERO_BALANCE' in str(e):
             telegram.send_message(f'Ошибка TwoCaptcha: Timeout 5 минут: {str(e)}')
             sleep(300)
+            print(f'{datetime.now()} error: ERROR_ZERO_BALANCE')
             return None
         elif 'ERROR_CAPTCHA_UNSOLVABLE' in str(e):
+            print(f'{datetime.now()} error: ERROR_CAPTCHA_UNSOLVABLE')
             return None
         else:
             telegram.send_message(f'Неизвестная Ошибка TwoCaptcha: {str(e)}')
@@ -60,8 +56,9 @@ def is_captcha_displayed(html: str):
     if image:
         try:
             image = image[0]['style'].split("url('")[1].split("')")[0]
+            base64.b64decode(image.split(',')[1])
             result = True
-        except IndexError:
+        except Exception:
             telegram.send_doc("Не могу найти картинку капчи, хотя captcha > div отображается", str(soup))
             result = False
     else:
