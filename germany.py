@@ -74,16 +74,13 @@ class Germany():
         for _ in range(4):
             html = self.open_page('appointments', code=code).text
             if 'Unfortunately' in html:
-                # telegram.send_message(f"Германия {self.categories[self.category]}: нет дат")
+                telegram.send_message(f"Германия {self.categories[self.category]}: нет дат")
                 break
             elif 'Termine sind verfügbar' in html or 'Запись на прием возможна' in html or 'Please select a date' in html:
                 soup = BeautifulSoup(html, "lxml")
                 element = soup.find_all("div", {'style': 'margin-left: 20%;'})
                 date_slots = [link.find("a")['href'].split('=')[-1] for link in element]
-                try:
-                    telegram.send_message(f'🇩🇪 Германия {self.categories[str(self.category)]}: {date_slots}')
-                except Exception:
-                    pass
+                telegram.send_message(f'🇩🇪 Германия {self.categories[str(self.category)]}: {date_slots}')
                 break
             else:
                 if captcha.is_captcha_displayed(html):
@@ -95,7 +92,6 @@ class Germany():
                 else:
                     telegram.send_doc('⭕ Ошибка, капча не отображается', html)
                     code = self.open_login_page_get_captcha_code()
-                sleep(60)  # if captcha
 
         else:
             telegram.send_doc(f'⭕ Не разгадал капчу с 3 попыток для категории {self.categories[str(self.category)]}', html)
