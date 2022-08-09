@@ -246,6 +246,7 @@ class Germany():
                     'captchaText': f'{code}',
                     'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}', 'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Speichern',}
         elif self.category == '373':
+            purpose = 'Geschäft' if family[0]["vc_type"] == 'Buisness' else 'Посещение родственников/друзей/знакомых'
             data = {'lastname': f'{family[0]["vc_surname"]}', 'firstname': f'{family[0]["vc_name"]}', 'email': f'{family[0]["vc_mail"]}', 'emailrepeat': f'{family[0]["vc_mail"]}',
                     'fields[0].content': f'{family[0]["vc_birth"]}', 'fields[0].definitionId': '2005', 'fields[0].index': '0',
                     'fields[1].content': f'{family[0]["vc_passport"]}', 'fields[1].definitionId': '854', 'fields[1].index': '1',
@@ -253,7 +254,7 @@ class Germany():
                     'fields[3].content': f'{additional_users}', 'fields[3].definitionId': '860', 'fields[3].index': '3',
                     'fields[4].content': f'{len(family)}', 'fields[4].definitionId': '858', 'fields[4].index': '4',
                     'fields[5].content': {inviting if inviting  else "hotel"}, 'fields[5].definitionId': '2007', 'fields[5].index': '5',
-                    'fields[6].content': 'Посещение родственников/друзей/знакомых', 'fields[6].definitionId': '855', 'fields[6].index': '6',
+                    'fields[6].content': purpose, 'fields[6].definitionId': '855', 'fields[6].index': '6',
                     'captchaText': f'{code}',
                     'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}', 'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Submit',}
         else: # elif self.category == '2845':
