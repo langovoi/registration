@@ -60,7 +60,7 @@ def is_captcha_displayed(html: str):
                 base64.b64decode(image.split(',')[1])
                 return True
             except Exception:
-                sleep(60)
+                sleep(120)
                 return False
         except Exception:
             result = False
