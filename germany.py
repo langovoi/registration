@@ -71,7 +71,7 @@ class Germany():
         date_slots = []
         logging.warning('open appointments page')
         html = ''
-        for _ in range(3):
+        for _ in range(4):
             html = self.open_page('appointments', code=code).text
             if 'Unfortunately' in html:
                 # telegram.send_message(f"Германия {self.categories[self.category]}: нет дат")
@@ -89,7 +89,9 @@ class Germany():
                 if captcha.is_captcha_displayed(html):
                     # telegram.send_doc(f'⭕ Captcha: Неверный код {code}. Попытка {i+1}', str(soup))
                     code = captcha.get_code(html, f'appointments {self.category}')
-                    if code is None: telegram.send_doc('⭕ Ошибка, не смог решить капчу', html)
+                    if code is None:
+                        telegram.send_doc('⭕ Ошибка, не смог решить капчу', html)
+                        code = self.open_login_page_get_captcha_code()
                 else:
                     telegram.send_doc('⭕ Ошибка, капча не отображается', html)
                     code = self.open_login_page_get_captcha_code()
