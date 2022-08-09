@@ -29,7 +29,7 @@ def register_german_visa(termin, category, vc_type):
                 # else:
                 #     telegram.send_message(
                 #         f'🟡 Германия {g.categories[g.category]}: Нет пользователей для регистрации на {date_slots}')
-            sleep(30)
+            sleep(60)
 
 
 

@@ -91,7 +91,7 @@ class Germany():
                     if code is None: telegram.send_doc('⭕ Ошибка, не смог решить капчу', html)
                 else:
                     telegram.send_doc('⭕ Ошибка, капча не отображается', html)
-                sleep(30)  # if captcha
+                sleep(60)  # if captcha
         else:
             telegram.send_doc(f'⭕ Не разгадал капчу с 3 попыток для категории {self.categories[str(self.category)]}', html)
             raise RuntimeError(f'⭕ Не разгадал капчу с 3 попыток для категории {self.categories[str(self.category)]}')

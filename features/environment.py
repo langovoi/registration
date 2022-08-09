@@ -100,7 +100,7 @@ def after_step(context, step) -> None:
             # send page_source.html to telegram
             telegram.send_document(context, caption=f'{step.name}: {step.exception}')
         except Exception as e:
-            sleep(30)
+            sleep(60)
             print(f'after step failed!!: {str(e)}: {traceback.format_exc()}')
 
 
