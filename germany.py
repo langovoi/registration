@@ -74,7 +74,7 @@ class Germany():
         for _ in range(4):
             html = self.open_page('appointments', code=code).text
             if 'Unfortunately' in html:
-                telegram.send_message(f"Германия {self.categories[self.category]}: нет дат")
+                # telegram.send_message(f"Германия {self.categories[self.category]}: нет дат")
                 break
             elif 'Termine sind verfügbar' in html or 'Запись на прием возможна' in html or 'Please select a date' in html:
                 soup = BeautifulSoup(html, "lxml")
@@ -191,8 +191,9 @@ class Germany():
     def register_family(self, family, date, time, code, soup):
         time_text = soup.find("div", {'style': 'font-weight: bold;'}).text.strip().replace('\n', ' ').replace('\t\t\t\t', ' ')
         success = False
+        headers = cookies = data = ''
         for _ in range(3):
-            html = self.fill_fields(family, date, time, code)
+            html, headers, cookies, data = self.fill_fields(family, date, time, code)
             soup = BeautifulSoup(html, "lxml")
             if not (soup.find("captcha") or soup.find("div", {"class": "global-error"}) or 'An error occured while processing your appointment' in str(soup)):
                 telegram.send_doc(caption=f'🟢 🇩🇪 Германия: Успешно записан: {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]}) на {str(time_text)}', html=str(html))
@@ -211,7 +212,7 @@ class Germany():
                     success = True
                 else:
                     telegram.send_doc(
-                        caption=f'⭕ 🇩🇪 Германия {self.categories[self.category]}: Неизвестная ошибка для: ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})\nОшибка: {error.text.strip()}', html=str(soup))
+                        caption=f'⭕ 🇩🇪 Германия {self.categories[self.category]}: Неизвестная ошибка для: ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})\nОшибка: {error.text.strip()}\nHeaders: {headers}\nCookies: {cookies}\nData: {data}', html=str(soup))
                     success = False
                     break
             else:
@@ -262,7 +263,7 @@ class Germany():
                     'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}',
                     'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Submit',}
         r = self.s.post('https://service2.diplo.de/rktermin/extern/appointment_addAppointment.do', cookies=cookies, headers=headers, data=data)
-        return r.text
+        return r.text, headers, cookies, data
 
 
     def open_page(self, page_name: str, **kwargs):
