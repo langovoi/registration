@@ -192,6 +192,7 @@ class Germany():
         time_text = soup.find("div", {'style': 'font-weight: bold;'}).text.strip().replace('\n', ' ').replace('\t\t\t\t', ' ')
         success = False
         headers = cookies = data = ''
+        field_id_map = {}
         for _ in range(3):
             html, headers, cookies, data = self.fill_fields(family, date, time, code)
             soup = BeautifulSoup(html, "lxml")
@@ -216,7 +217,7 @@ class Germany():
                     success = False
                     break
             else:
-                telegram.send_doc(f'Code: {code}. Неизвестная ошибка после ввода всех данных', str(soup))
+                telegram.send_doc(f'Code: {code}. Неизвестная ошибка после ввода всех данных\nHeaders: {headers}\nCookies: {cookies}\nData: {data}', str(soup))
                 raise RuntimeError('')
         return success
 
@@ -253,12 +254,13 @@ class Germany():
         else: # elif self.category == '2845':
             data = {'lastname': f'{family[0]["vc_surname"]}', 'firstname': f'{family[0]["vc_name"]}', 'email': f'{family[0]["vc_mail"]}', 'emailrepeat': f'{family[0]["vc_mail"]}',
                     'numVisitors': f'{len(family)}',
-                    'fields[0].content': f'{family[0]["vc_birth"]}', 'fields[0].definitionId': '10777', 'fields[0].index': '0',
-                    'fields[1].content': f'{family[0]["vc_passport"]}', 'fields[1].definitionId': '10779', 'fields[1].index': '1',
-                    'fields[2].content': f'{family[0]["vc_phone"].replace("+", "")}', 'fields[2].definitionId': '10782', 'fields[2].index': '2',
-                    'fields[3].content': f'{additional_users}', 'fields[3].definitionId': '10783', 'fields[3].index': '3',
-                    'fields[4].content': f'{len(family)}', 'fields[4].definitionId': '10784', 'fields[4].index': '4',
-                    'fields[5].content': {inviting if inviting else "hotel"}, 'fields[5].definitionId': '10785', 'fields[5].index': '5',
+                    'fields[0].content': f'{len(family)}', 'fields[0].definitionId': '10784', 'fields[0].index': '0',
+                    'fields[1].content': f'{family[0]["vc_phone"].replace("+", "")}', 'fields[1].definitionId': '10782', 'fields[1].index': '1',
+                    'fields[2].content': f'{family[0]["vc_birth"]}', 'fields[2].definitionId': '10777', 'fields[2].index': '2',
+                    'fields[3].content': f'{family[0]["vc_passport"]}', 'fields[3].definitionId': '10779', 'fields[3].index': '3',
+                    'fields[4].content': f'{additional_users}', 'fields[4].definitionId': '10783', 'fields[4].index': '4',
+                    'fields[5].content': {inviting if inviting else "hotel"}, 'fields[5].definitionId': '10807', 'fields[5].index': '5',
+                    'fields[6].content': {inviting if inviting else "hotel"}, 'fields[6].definitionId': '10785', 'fields[6].index': '6',
                     'captchaText': {code},
                     'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}',
                     'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Submit',}
