@@ -192,9 +192,8 @@ class Germany():
         time_text = soup.find("div", {'style': 'font-weight: bold;'}).text.strip().replace('\n', ' ').replace('\t\t\t\t', ' ')
         success = False
         headers = cookies = data = ''
-        field_id_map = {}
         for _ in range(3):
-            html, headers, cookies, data = self.fill_fields(family, date, time, code)
+            html, headers, cookies, data = self.fill_fields(family, date, time, code, soup)
             soup = BeautifulSoup(html, "lxml")
             if not (soup.find("captcha") or soup.find("div", {"class": "global-error"}) or 'An error occured while processing your appointment' in str(soup)):
                 telegram.send_doc(caption=f'🟢 🇩🇪 Германия: Успешно записан: {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]}) на {str(time_text)}', html=str(html))
@@ -221,51 +220,40 @@ class Germany():
                 raise RuntimeError('')
         return success
 
-    def fill_fields(self, family, date, time, code):
+    def fill_fields(self, family, date, time, code, soup):
         additional_users = ''
         if len(family) > 1:
             for additional_user in family[1:]:
                 user = f"{additional_user['vc_surname']}, {additional_user['vc_name']}, {additional_user['vc_passport']}"
-                additional_users = user if not additional_users else f'{additional_users}, {user}'
+                additional_users = user if additional_users != '' else f'{additional_users}, {user}'
         cookies = {'JSESSIONID': f'{self.session_id}', 'KEKS': f'{self.termin[0]}',}
         headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Accept-Language': 'en-US,en;q=0.9', 'Cache-Control': 'max-age=0', 'Connection': 'keep-alive', 'Origin': 'https://service2.diplo.de', 'Referer': 'https://service2.diplo.de/rktermin/extern/appointment_showForm.do', 'Sec-Fetch-Dest': 'document', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-User': '?1', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', 'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"macOS"',}
         inviting = family[0]["vc_inviting"]
+        field_id_map = [{match.get('value'): match.get('name').split('[')[1].split(']')[0]}  for match in soup.find_all(id=re.compile("definitionId"), type='hidden')]
         if self.category == '375':
-            data = {'lastname': f'{family[0]["vc_surname"]}', 'firstname': f'{family[0]["vc_name"]}', 'email': f'{family[0]["vc_mail"]}', 'emailrepeat': f'{family[0]["vc_mail"]}',
-                    'fields[0].content': f'{len(family)}', 'fields[0].definitionId': '940', 'fields[0].index': '0',
-                    'fields[1].content': f'{family[0]["vc_passport"]}', 'fields[1].definitionId': '941', 'fields[1].index': '1',
-                    'fields[2].content': f'{additional_users}', 'fields[2].definitionId': '942', 'fields[2].index': '2',
-                    'fields[3].content': f'{family[0]["vc_type"]}', 'fields[3].definitionId': '943', 'fields[3].index': '3',
-                    'fields[4].content': f'{family[0]["vc_phone"].replace("+", "")}', 'fields[4].definitionId': '944', 'fields[4].index': '4',
-                    'fields[5].content': 'true', '__checkbox_fields[5].content': 'true', 'fields[5].definitionId': '945', 'fields[5].index': '5',
-                    'captchaText': f'{code}',
-                    'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}', 'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Speichern',}
+            text_fields = {'940': f'{len(family)}', '941': family[0]["vc_passport"], '942': additional_users, '943': family[0]["vc_type"], '944': family[0]["vc_phone"].replace("+", ""), '945': 'true'}
+            data = {'lastname': f'{family[0]["vc_surname"]}', 'firstname': f'{family[0]["vc_name"]}', 'email': f'{family[0]["vc_mail"]}', 'emailrepeat': f'{family[0]["vc_mail"]}', 'captchaText': f'{code}', 'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}', 'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Submit',}
         elif self.category == '373':
+            text_fields = {'2005': family[0]["vc_birth"], '854': family[0]["vc_passport"], '856': family[0]["vc_phone"].replace("+", ""), '860': additional_users, '858': f'{len(family)}', '2007': inviting if inviting  else "hotel",'855': 'Geschäft' if family[0]["vc_type"] == 'Buisness' else 'Посещение родственников/друзей/знакомых'}
             data = {'lastname': f'{family[0]["vc_surname"]}', 'firstname': f'{family[0]["vc_name"]}', 'email': f'{family[0]["vc_mail"]}', 'emailrepeat': f'{family[0]["vc_mail"]}',
-                    'fields[0].content': f'{family[0]["vc_birth"]}', 'fields[0].definitionId': '2005', 'fields[0].index': '0',
-                    'fields[1].content': f'{family[0]["vc_passport"]}', 'fields[1].definitionId': '854', 'fields[1].index': '1',
-                    'fields[2].content': f'{family[0]["vc_phone"].replace("+", "")}', 'fields[2].definitionId': '856', 'fields[2].index': '2',
-                    'fields[3].content': f'{additional_users}', 'fields[3].definitionId': '860', 'fields[3].index': '3',
-                    'fields[4].content': f'{len(family)}', 'fields[4].definitionId': '858', 'fields[4].index': '4',
-                    'fields[5].content': {inviting if inviting  else "hotel"}, 'fields[5].definitionId': '2007', 'fields[5].index': '5',
-                    'fields[6].content': 'Посещение родственников/друзей/знакомых', 'fields[6].definitionId': '855', 'fields[6].index': '6',
-                    'captchaText': f'{code}',
-                    'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}', 'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Submit',}
-        else: # elif self.category == '2845':
+                    'captchaText': f'{code}', 'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}', 'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Submit',}
+        elif self.category == '2845' : # elif self.category == '2845':
+            text_fields = {'10784': f'{len(family)}', '10782': family[0]["vc_phone"].replace("+", ""), '10777': family[0]["vc_birth"], '10779': family[0]["vc_passport"], '10783': additional_users, '10807': inviting if inviting else "hotel", '10785': inviting if inviting else "hotel"}
             data = {'lastname': f'{family[0]["vc_surname"]}', 'firstname': f'{family[0]["vc_name"]}', 'email': f'{family[0]["vc_mail"]}', 'emailrepeat': f'{family[0]["vc_mail"]}',
-                    'numVisitors': f'{len(family)}',
-                    'fields[0].content': f'{len(family)}', 'fields[0].definitionId': '10784', 'fields[0].index': '0',
-                    'fields[1].content': f'{family[0]["vc_phone"].replace("+", "")}', 'fields[1].definitionId': '10782', 'fields[1].index': '1',
-                    'fields[2].content': f'{family[0]["vc_birth"]}', 'fields[2].definitionId': '10777', 'fields[2].index': '2',
-                    'fields[3].content': f'{family[0]["vc_passport"]}', 'fields[3].definitionId': '10779', 'fields[3].index': '3',
-                    'fields[4].content': f'{additional_users}', 'fields[4].definitionId': '10783', 'fields[4].index': '4',
-                    'fields[5].content': {inviting if inviting else "hotel"}, 'fields[5].definitionId': '10807', 'fields[5].index': '5',
-                    'fields[6].content': {inviting if inviting else "hotel"}, 'fields[6].definitionId': '10785', 'fields[6].index': '6',
-                    'captchaText': {code},
-                    'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}',
-                    'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Submit',}
-        r = self.s.post('https://service2.diplo.de/rktermin/extern/appointment_addAppointment.do', cookies=cookies, headers=headers, data=data)
-        return r.text, headers, cookies, data
+                    'numVisitors': f'{len(family)}', 'captchaText': {code}, 'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Submit', 'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}'}
+        else:
+            raise RuntimeError(f'Неизвестная категория: {self.category}')
+
+        for i, definition in enumerate(field_id_map):
+            (id, index), = definition.items()
+            if id == '945': # checkbox
+                data.update({f'fields[{index}].content': 'true', f'__checkbox_fields[{index}].content': 'true', f'fields[{index}].definitionId': id, f'fields[{index}].index': index})
+            elif id in text_fields.keys(): # text field and dropdowns
+                data.update({f'fields[{index}].content': text_fields[id], f'fields[{index}].definitionId': id, f'fields[{index}].index': index,})
+            else:
+                telegram.send_doc(f'Неизвестное поле({id}) для категории {self.categories[self.category]}', str(soup))
+        r = self.s.post('https://service2.diplo.de/rktermin/extern/appointment_addAppointment.do', cookies=cookies, headers=headers, data=data).text
+        return r, headers, cookies, data
 
 
     def open_page(self, page_name: str, **kwargs):
