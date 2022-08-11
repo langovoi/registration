@@ -87,6 +87,7 @@ class Germany():
                 telegram.send_message(f'🇩🇪 Германия {self.categories[str(self.category)]}: {date_slots}')
                 break
             else:
+                sleep(1)
                 loggs.append(f'Ошибка. Попытка: {_+1}')
                 # telegram.send_doc(f'⭕ Captcha: Неверный код {code}. После ввода кода {_+1} раз', str(html))
                 if captcha.is_captcha_displayed(html):
