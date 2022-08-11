@@ -102,8 +102,7 @@ class Germany():
                     code, html = self.open_login_page_get_captcha_code()
 
         else:
-            telegram.send_message(f'Логи: {loggs}')
-            telegram.send_doc(f'⭕ Не разгадал капчу с 5 попыток для категории {self.categories[str(self.category)]}', html)
+            telegram.send_doc(f'⭕ Не разгадал капчу с 5 попыток для категории {self.categories[str(self.category)]}\nЛоги: {loggs}', html)
             raise RuntimeError(f'⭕ Не разгадал капчу с 5 попыток для категории {self.categories[str(self.category)]}')
         return date_slots, code
 
