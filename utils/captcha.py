@@ -57,8 +57,7 @@ def is_captcha_displayed(html: str):
         try:
             image = image[0]['style'].split("url('")[1].split("')")[0]
             try:
-                base64.b64decode(image.split(',')[1])
-                return True
+                return True if len(base64.b64decode(image.split(',')[1])) > 5000 else False
             except Exception:
                 sleep(120)
                 return False
