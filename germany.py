@@ -65,13 +65,14 @@ class Germany():
             telegram.send_doc(f'Не смог разгадать капчу с 3 раз. code: {code}', html_login_page)
             raise RuntimeError(f'Не смог разгадать капчу с 3 раз. code: {code}')
         logging.warning('code is found')
-        return code
+        return code, html_login_page
 
     def open_appointments_page_and_get_dates(self, code):
         date_slots = []
         logging.warning('open appointments page')
         html = ''
         for _ in range(4):
+            old_html = html
             html = self.open_page('appointments', code=code).text
             if 'Unfortunately' in html:
                 # telegram.send_message(f"Германия {self.categories[self.category]}: нет дат")
@@ -83,15 +84,16 @@ class Germany():
                 telegram.send_message(f'🇩🇪 Германия {self.categories[str(self.category)]}: {date_slots}')
                 break
             else:
+                telegram.send_doc(f'⭕ Captcha: Неверный код {code}. Попытка {_+1}', str(old_html))
                 if captcha.is_captcha_displayed(html):
                     # telegram.send_doc(f'⭕ Captcha: Неверный код {code}. Попытка {i+1}', str(soup))
                     code = captcha.get_code(html, f'appointments {self.category}')
                     if code is None:
-                        telegram.send_doc('⭕ Ошибка, не смог решить капчу', html)
-                        code = self.open_login_page_get_captcha_code()
+                        # telegram.send_doc('⭕ Ошибка, не смог решить капчу', html)
+                        code, html = self.open_login_page_get_captcha_code()
                 else:
-                    telegram.send_doc('⭕ Ошибка, капча не отображается', html)
-                    code = self.open_login_page_get_captcha_code()
+                    # telegram.send_doc('⭕ Ошибка, капча не отображается', html)
+                    code, html = self.open_login_page_get_captcha_code()
 
         else:
             telegram.send_doc(f'⭕ Не разгадал капчу с 3 попыток для категории {self.categories[str(self.category)]}', html)

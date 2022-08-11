@@ -8,7 +8,7 @@ from utils import telegram
 def register_german_visa(termin, category, vc_type):
     g = Germany(termin=termin, category=category, vc_type=vc_type)
     # get captcha from login_page
-    code = g.open_login_page_get_captcha_code()
+    code, html = g.open_login_page_get_captcha_code()
     if code:
         while True:
             date_slots, code = g.open_appointments_page_and_get_dates(code)
