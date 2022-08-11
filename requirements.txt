@@ -18,3 +18,4 @@ behave
 lxml
 undetected-chromedriver
 selenium-wire
+Pillow
