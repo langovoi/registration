@@ -88,7 +88,7 @@ class Germany():
                 break
             else:
                 loggs.append(f'Ошибка. Попытка: {_+1}')
-                telegram.send_doc(f'⭕ Captcha: Неверный код {code}. После ввода кода {_+1} раз', str(html))
+                # telegram.send_doc(f'⭕ Captcha: Неверный код {code}. После ввода кода {_+1} раз', str(html))
                 if captcha.is_captcha_displayed(html):
                     loggs.append(f'Неверный код {code}. Попытка: {_+1}')
                     # telegram.send_doc(f'⭕ Captcha: Неверный код {code}. Попытка {i+1}', str(soup))
