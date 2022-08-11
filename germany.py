@@ -74,7 +74,6 @@ class Germany():
         loggs = []
         for _ in range(5):
             loggs.append(f'Попытка ввода кода: {_+1}')
-            old_html = html
             html = self.open_page('appointments', code=code).text
             if 'Unfortunately' in html:
                 loggs.append(f'Нет дат {code}. Попытка: {_+1}')
@@ -89,8 +88,7 @@ class Germany():
                 break
             else:
                 loggs.append(f'Ошибка. Попытка: {_+1}')
-                telegram.send_doc(f'⭕ Captcha: Неверный код {code}. До ввода кода {_}', str(old_html))
-                telegram.send_doc(f'⭕ Captcha: Неверный код {code}. После ввода кода {_}', str(html))
+                telegram.send_doc(f'⭕ Captcha: Неверный код {code}. После ввода кода {_+1} раз', str(html))
                 if captcha.is_captcha_displayed(html):
                     loggs.append(f'Неверный код {code}. Попытка: {_+1}')
                     # telegram.send_doc(f'⭕ Captcha: Неверный код {code}. Попытка {i+1}', str(soup))
