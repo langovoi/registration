@@ -155,8 +155,7 @@ class Germany():
                     family_list[user['vc_with']] = user
         return family_list
 
-    def register_users(self, date_slots, vc_type):  # get time and register
-        family_list = self.get_users_with_dates(date_slots, vc_type)
+    def register_users(self, date_slots, family_list):  # get time and register
         for index, family in family_list.items():  # check each user
             for date in date_slots:
                 is_registered = False
