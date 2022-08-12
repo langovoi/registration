@@ -11,7 +11,7 @@ def register_german_visa(termin, category, vc_type):
     code, html = g.open_login_page_get_captcha_code()
     if code:
         while True:
-            date_slots, code = g.open_appointments_page_and_get_dates(code)
+            date_slots, code = g.open_appointments_page_and_get_dates(code, html)
             print(code)
             if date_slots and g.users_dict:
                 # # get registration page

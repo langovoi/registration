@@ -67,41 +67,36 @@ class Germany():
         logging.warning('code is found')
         return code, html_login_page
 
-    def open_appointments_page_and_get_dates(self, code):
+    def open_appointments_page_and_get_dates(self, code, html):
         date_slots = []
         logging.warning('open appointments page')
-        html = ''
         loggs = []
         for _ in range(5):
-            loggs.append(f'Попытка ввода кода: {_+1}')
+            old_html = html
             html = self.open_page('appointments', code=code).text
             if 'Unfortunately' in html:
-                loggs.append(f'Нет дат {code}. Попытка: {_+1}')
                 # telegram.send_message(f"Германия {self.categories[self.category]}: нет дат")
                 break
             elif 'Termine sind verfügbar' in html or 'Запись на прием возможна' in html or 'Please select a date' in html:
-                loggs.append(f'Есть даты {code}. Попытка: {_+1}')
                 soup = BeautifulSoup(html, "lxml")
                 element = soup.find_all("div", {'style': 'margin-left: 20%;'})
                 date_slots = [link.find("a")['href'].split('=')[-1] for link in element]
                 telegram.send_message(f'🇩🇪 Германия {self.categories[str(self.category)]}: {date_slots}')
                 break
-            else:
-                sleep(1)
-                loggs.append(f'Ошибка. Попытка: {_+1}')
-                # telegram.send_doc(f'⭕ Captcha: Неверный код {code}. После ввода кода {_+1} раз', str(html))
-                if captcha.is_captcha_displayed(html):
-                    loggs.append(f'Неверный код {code}. Попытка: {_+1}')
-                    # telegram.send_doc(f'⭕ Captcha: Неверный код {code}. Попытка {i+1}', str(soup))
-                    code = captcha.get_code(html, f'appointments {self.category}')
-                    if code is None:
-                        loggs.append(f'Капча не отображается > удаляем кэш1 {code}. Попытка: {_+1}')
-                        code, html = self.open_login_page_get_captcha_code()
-                else:
-                    # telegram.send_doc('⭕ Ошибка, капча не отображается', html)
-                    loggs.append(f'Капча не отображается > удаляем кэш2 {code}. Попытка: {_+1}')
+            elif captcha.is_captcha_displayed(html):
+                telegram.send_doc(f'⭕ Captcha: Неверный код {code}. После ввода кода {_+1} раз', str(old_html))
+                sleep(3)
+                code = captcha.get_code(html, f'appointments {self.category}')
+                telegram.send_doc(f'⭕ Captcha получаю новый код: {code}. После ввода кода {_+1} раз', str(html))
+                sleep(3)
+                if code is None:
                     code, html = self.open_login_page_get_captcha_code()
-
+                    telegram.send_doc(f'⭕ Captcha не отображается. Получаю новый код: {code}. После ввода кода {_+1} раз', str(html))
+                    sleep(3)
+            else:
+                code, html = self.open_login_page_get_captcha_code()
+                telegram.send_doc(f'⭕ Captcha не отображается. Получаю новый код: {code}. После ввода кода {_+1} раз', str(html))
+                sleep(3)
         else:
             telegram.send_doc(f'⭕ Не разгадал капчу с 5 попыток для категории {self.categories[str(self.category)]}\nЛоги: {loggs}', html)
             raise RuntimeError(f'⭕ Не разгадал капчу с 5 попыток для категории {self.categories[str(self.category)]}')
