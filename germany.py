@@ -67,12 +67,12 @@ class Germany():
         logging.warning('code is found')
         return code, html_login_page
 
-    def open_appointments_page_and_get_dates(self, code, html):
+    def open_appointments_page_and_get_dates(self, code):
         date_slots = []
         logging.warning('open appointments page')
         loggs = []
         for _ in range(5):
-            old_html = html
+            # old_html = html
             html = self.open_page('appointments', code=code).text
             if 'Unfortunately' in html:
                 # telegram.send_message(f"Германия {self.categories[self.category]}: нет дат")
@@ -84,19 +84,19 @@ class Germany():
                 telegram.send_message(f'🇩🇪 Германия {self.categories[str(self.category)]}: {date_slots}')
                 break
             elif captcha.is_captcha_displayed(html):
-                telegram.send_doc(f'⭕ Captcha: Неверный код {code}. После ввода кода {_+1} раз', str(old_html))
-                sleep(3)
+                # telegram.send_doc(f'⭕ Captcha: Неверный код {code}. После ввода кода {_+1} раз', str(old_html))
+                # sleep(3)
                 code = captcha.get_code(html, f'appointments {self.category}')
-                telegram.send_doc(f'⭕ Captcha получаю новый код: {code}. После ввода кода {_+1} раз', str(html))
-                sleep(3)
+                # telegram.send_doc(f'⭕ Captcha получаю новый код: {code}. После ввода кода {_+1} раз', str(html))
+                # sleep(3)
                 if code is None:
                     code, html = self.open_login_page_get_captcha_code()
-                    telegram.send_doc(f'⭕ Captcha не отображается. Получаю новый код: {code}. После ввода кода {_+1} раз', str(html))
-                    sleep(3)
+                    # telegram.send_doc(f'⭕ Captcha не отображается. Получаю новый код: {code}. После ввода кода {_+1} раз', str(html))
+                    # sleep(3)
             else:
                 code, html = self.open_login_page_get_captcha_code()
-                telegram.send_doc(f'⭕ Captcha не отображается. Получаю новый код: {code}. После ввода кода {_+1} раз', str(html))
-                sleep(3)
+                # telegram.send_doc(f'⭕ Captcha не отображается. Получаю новый код: {code}. После ввода кода {_+1} раз', str(html))
+                # sleep(3)
         else:
             telegram.send_doc(f'⭕ Не разгадал капчу с 5 попыток для категории {self.categories[str(self.category)]}\nЛоги: {loggs}', html)
             raise RuntimeError(f'⭕ Не разгадал капчу с 5 попыток для категории {self.categories[str(self.category)]}')
