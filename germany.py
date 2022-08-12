@@ -200,7 +200,7 @@ class Germany():
             html, headers, cookies, data = self.fill_fields(family, date, time, code, soup)
             soup = BeautifulSoup(html, "lxml")
             if not (soup.find("captcha") or soup.find("div", {"class": "global-error"}) or 'An error occured while processing your appointment' in str(soup)):
-                telegram.send_doc(caption=f'🟢 🇩🇪 Германия: Успешно записан: {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]}) на {str(time_text)}', html=str(html))
+                telegram.send_doc(caption=f'🟢 🇩🇪 Германия {self.categories[self.category]}: Успешно записан: {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]}) на {str(time_text)}', html=str(html))
                 for user in family:
                     users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='4')
                 success = True
