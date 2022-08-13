@@ -1,5 +1,6 @@
 import sys
 import traceback
+from multiprocessing import Pool
 from time import sleep
 from germany import Germany
 from utils import telegram
@@ -25,19 +26,43 @@ def register_german_visa(termin, category, vc_type):
                 if family_list:
                     telegram.send_message(
                         f'🇩🇪 Подходящие клиенты: {[[(user["vc_passport"], user["vc_surname"], user["vc_name"]) for user in family_list[family]] for family in family_list]}')
-                    g.register_users(date_slots, family_list)
+                    family = [f for i, f in family_list.items()]
+                    try:
+                        with Pool(len(family)) as p:
+                            p.map(register, family)
+                    except Exception:
+                        pass
+                print()
                 # else:
                 #     telegram.send_message(
                 #         f'🟡 Германия {g.categories[g.category]}: Нет пользователей для регистрации на {date_slots}')
-            sleep(60)
 
 
+def register(family):
+    g = Germany(termin=['TERMIN325', sys.argv[3]], category=sys.argv[4], vc_type=sys.argv[5])
+    # get captcha from login_page
+    g.open_page('login')
+    date_slots = [x for x in family[0]['dates'][::-1]]
+    for date in date_slots:
+        is_registered = False
+        time_slots = g.get_time(date)
+        time_slots = [x for x in time_slots[::-1]]
+        for time in time_slots:
+            code, soup = g.open_register_page(date, time[1])
+            telegram.send_doc(f'Германия {g.categories[g.category]}: Страница заполнения полей', str(soup))
+            is_registered = g.register_family(family, date, time[1], code, soup)
+            if is_registered:
+                break
+        if is_registered:
+            break
 
-while True:
-    try:
-        termin = ['TERMIN325', sys.argv[3]]
-        category = sys.argv[4]
-        register_german_visa(termin, category, sys.argv[5])
-        sleep(300 if sys.argv[5] == 'Inviting' else 120)
-    except Exception as e:
-        telegram.send_message(f'⭕ Restart Germany job. Failed with {str(e)}: \n{traceback.format_exc()}')
+
+if __name__ == "__main__":
+    while True:
+        try:
+            termin = ['TERMIN325', sys.argv[3]]
+            category = sys.argv[4]
+            register_german_visa(termin, category, sys.argv[5])
+            sleep(300 if sys.argv[5] == 'Inviting' else 60)
+        except Exception as e:
+            telegram.send_message(f'⭕ Restart Germany job. Failed with {str(e)}: \n{traceback.format_exc()}')
