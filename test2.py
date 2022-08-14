@@ -1,17 +1,37 @@
-from time import sleep
+from datetime import datetime
 
-from germany import Germany
+import requests
+import undetected_chromedriver as uc # Import from seleniumwire
 
-users_dict = [
-    {"status": 0, "reason": "Посещение родственников/друзей/знакомых", "surname": "Hvzodzeu", "name": "Yauheni",
-     "email": "kojio6ok@tut.by",
-     "passport_number": "MP4140001", "birth_day": "10/10/1985", "passport_issued": "13/04/2021",
-     "passport_expired": "13/4/2031", "issued_by": "MIA", "phone_number": "375296090090", "nationality": "Belarus",
-     "travel_date": "05/11/2022", "date_from": "13/07/2022", "date_to": "25/10/2022", "family": "1"}]
+# Create a new instance of the Chrome driver
+driver = uc.Chrome()
+
+# Go to the Google home page
+driver.get('https://prenotami.esteri.it/Home?ReturnUrl=%2fUserArea')
+
+driver.find_element_by_xpath('//input[@id="login-email"]').send_keys('zse1@bk.ru')
+driver.find_element_by_xpath('//input[@id="login-password"]').send_keys('zHIG25046')
+driver.find_element_by_xpath('//button[@type="submit"]').click()
+driver.get('https://prenotami.esteri.it/Services/Booking/163')
+driver.find_element_by_xpath('//input[@id="PrivacyCheck"]').click()
+driver.find_element_by_xpath('//button[@id="btnAvanti"]').click()
+alert = driver.switch_to.alert
+alert.accept()
+cookies = driver.get_cookies()
+s = requests.Session()
+for cookie in cookies: s.cookies.set(cookie['name'], cookie['value'])
+headers = {'Accept': 'application/json, text/javascript, */*; q=0.01','Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8','Connection': 'keep-alive','Content-Type': 'application/json; charset=UTF-8','Origin': 'https://prenotami.esteri.it','Referer': 'https://prenotami.esteri.it/BookingCalendar?selectedService=Visti%20per%20Motivi%20di%20studio','Sec-Fetch-Dest': 'empty','Sec-Fetch-Mode': 'cors','Sec-Fetch-Site': 'same-origin','User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.79 Safari/537.36','X-Requested-With': 'XMLHttpRequest',}
+today = datetime.now().strftime("%d/%m/%Y")
+json_data = {'_Servizio': '1090','selectedDay': today,}
+r = s.post('https://prenotami.esteri.it/BookingCalendar/RetrieveCalendarAvailability', cookies=s.cookies, headers=headers, json=json_data)
+r.json()
+
+json_data = {'selectedDay': '2022-08-31','idService': '163',}
+r = s.post('https://prenotami.esteri.it/BookingCalendar/RetrieveTimeSlots', cookies=s.cookies, headers=headers, json=json_data)
+
+headers = {'Accept': 'application/json, text/javascript, */*; q=0.01','Accept-Language': 'en-US,en;q=0.9','Connection': 'keep-alive','Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8','Origin': 'https://prenotami.esteri.it','Referer': 'https://prenotami.esteri.it/BookingCalendar?selectedService=Visti%20per%20Motivi%20di%20studio','Sec-Fetch-Dest': 'empty','Sec-Fetch-Mode': 'cors','Sec-Fetch-Site': 'same-origin','User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36','X-Requested-With': 'XMLHttpRequest','sec-ch-ua': '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"','sec-ch-ua-mobile': '?0','sec-ch-ua-platform': '"macOS"',}
+data = 'idCalendarioGiornaliero=3066762&selectedDay=2022-08-31&selectedHour=11%3A31+-+12%3A00(4)'
+# r = s.post('https://prenotami.esteri.it/BookingCalendar/InsertNewBooking', cookies=s.cookies, headers=headers, data=data)
 
 
-g = Germany(['TERMIN325', 'TERMIN340'], '375', users_dict)
-date_slots = g.get_dates()
-family_list = g.get_users_with_dates(date_slots)
-g.register_users(family_list, date_slots)
-
+print(s.text)
