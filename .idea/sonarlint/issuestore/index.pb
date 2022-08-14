@@ -3,9 +3,6 @@ M
 features/pages/google_page.py,d/4/d4630912d3aa3c6851e8f66d74ec451367664019
 B
 utils/gsheets.json,a/0/a05e05a6d7d469ecebe127a7ddc3f80e409a9ea2
-:
-
-.gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
 >
 utils/gmail.py,c/f/cfc9ce4bd18aab684abe94310bf769994a3640e2
 W
@@ -22,16 +19,12 @@ $features/pages/italy_embassy_page.py,b/c/bc370a81ef44d9f1800cf356bab5dd68764ab
 requirements.txt,1/9/19359a61ae2446b51b549167b014da2fcf265768
 ;
 utils/dt.py,0/2/02d95c9715faae252fa07d48a739609e3952e82c
-B
-italy_requests2.py,4/7/47f7bfc48fa698d940276953e1396c6adaa96b1b
 K
 features/pages/base_page.py,c/a/cabef8aef0f0782bfdd300c57df2ab619e6dbf04
 M
 features/steps/spain_steps.py,3/c/3ced43ef31b5fac49d5c6e53f0dc99ce94c6441e
 Q
 !features/pages/spain_visa_page.py,9/3/93b2e81d8666eda9dc887e2751197861f2615f9c
->
-spain_visa.yml,d/b/db033722d07015cd803e9d7a1d7092bde1219deb
 B
 run_french_scan.py,8/8/88f7cc78b4221d9dcea3ca3225e90cf257b666ac
 L
@@ -75,10 +68,6 @@ R
 "features/pages/german_visa_page.py,b/d/bdd774f27494516b8e825a28a9326827d475514f
 C
 germany_parallel.py,d/b/db92bb237b8d4fd328d31586ae531f4aa9cdb30e
-I
-visa_italy/italy_login.py,5/6/566e9b2ad696c3e99ad06c05355adc5cf18c8bfd
-L
-visa_italy/run_italy_scan.py,f/e/fe11cb9bd6badeb1bfcc4ac53bcaa38cbbc7fe57
 U
 %.github/workflows/germany_tourism.yml,7/d/7d7966561fea5c2d4b679b3bd302ef1c9bb086a7
 V
