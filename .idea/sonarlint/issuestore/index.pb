@@ -15,8 +15,6 @@ T
 $features/pages/italy_embassy_page.py,b/c/bc370a81ef44d9f1800cf356bab5dd68764ab041
 <
 captcha.json,8/6/8643f14cbe8f6d9ce2f46cbd7ed7f79ddecdb9b3
-@
-requirements.txt,1/9/19359a61ae2446b51b549167b014da2fcf265768
 ;
 utils/dt.py,0/2/02d95c9715faae252fa07d48a739609e3952e82c
 K
