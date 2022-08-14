@@ -1,5 +1,5 @@
 import requests
-
+print('')
 cookies = {
     'JSESSIONID': 'D03227BC78C567382DC6BF57B21C23E8',
     'KEKS': 'TERMIN340',
