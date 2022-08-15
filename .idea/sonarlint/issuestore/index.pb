@@ -13,8 +13,6 @@ V
 &features/pages/italy_consulate_page.py,7/5/756130472d76ef3befefd394d236cec63259a494
 T
 $features/pages/italy_embassy_page.py,b/c/bc370a81ef44d9f1800cf356bab5dd68764ab041
-<
-captcha.json,8/6/8643f14cbe8f6d9ce2f46cbd7ed7f79ddecdb9b3
 ;
 utils/dt.py,0/2/02d95c9715faae252fa07d48a739609e3952e82c
 K
@@ -64,13 +62,15 @@ R
 "features/pages/french_visa_page.py,e/4/e40bd383afbd426107b844ae79d71ee9f4a74db8
 R
 "features/pages/german_visa_page.py,b/d/bdd774f27494516b8e825a28a9326827d475514f
-C
-germany_parallel.py,d/b/db92bb237b8d4fd328d31586ae531f4aa9cdb30e
 U
 %.github/workflows/germany_tourism.yml,7/d/7d7966561fea5c2d4b679b3bd302ef1c9bb086a7
 V
 &.github/workflows/germany_schengen.yml,1/6/16faf18206c31e78d041306becaf342b597f18d2
-O
-features/steps/germany_steps.py,6/4/644c122253a0f8a0a231d5eb0f7a45526c79902a
 @
 utils/captcha.py,e/b/eb8d387ad6c97eded47b0a004c61621b09ea5b93
+>
+spain_visa.yml,d/b/db033722d07015cd803e9d7a1d7092bde1219deb
+L
+visa_italy/italy_requests.py,9/6/9654488bddf24ea50e1552cbea3a9d395d4962e1
+M
+visa_italy/italy_requests2.py,d/a/da930cc8b6125060a1fb255e9f4cfe742006b625

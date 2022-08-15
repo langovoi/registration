@@ -12,49 +12,48 @@ def register_german_visa(termin, category, vc_type):
     code, html = g.open_login_page_get_captcha_code()
     if code:
         while True:
-            date_slots, code = g.open_appointments_page_and_get_dates(code)
+            date_time_slots, code = g.open_appointments_page_and_get_dates(code)
             print(code)
-            if date_slots and g.users_dict:
-                # # get registration page
-                # response = g.get_time(date_slots[0])
-                # soup = BeautifulSoup(response.text, "lxml")
-                # element = soup.find_all("div", {'style': 'margin-left: 20%;'})
-                # time_slots = [[re.findall("\d+", link.text)[0], link.find("a")['href'].split('=')[-1]] for link in element if link.find("a")]
-                # code, html = g.open_register_page(date_slots[0], time_slots[0][1])
-                # telegram.send_doc(caption='!!!!!!!!!!!!!!!!!!!!!!!! Страниц регистрации: ', html=str(html))
-                family_list = g.get_users_with_dates(date_slots, vc_type=vc_type)
+            if date_time_slots:
+                family_list = g.get_users_with_dates(date_time_slots, vc_type=vc_type)
                 if family_list:
-                    telegram.send_message(
-                        f'🇩🇪 Подходящие клиенты: {[[(user["vc_passport"], user["vc_surname"], user["vc_name"]) for user in family_list[family]] for family in family_list]}')
+                    # # get registration page
+                    # response = g.get_time(date_slots[0])
+                    # soup = BeautifulSoup(response.text, "lxml")
+                    # element = soup.find_all("div", {'style': 'margin-left: 20%;'})
+                    # time_slots = [[re.findall("\d+", link.text)[0], link.find("a")['href'].split('=')[-1]] for link in element if link.find("a")]
+                    # code, html = g.open_register_page(date_slots[0], time_slots[0][1])
+                    # telegram.send_doc(caption='!!!!!!!!!!!!!!!!!!!!!!!! Страниц регистрации: ', html=str(html))
                     family = [f for i, f in family_list.items()]
-                    try:
-                        with Pool(len(family)) as p:
-                            p.map(register, family)
-                    except Exception:
-                        pass
-            sleep(60)
+                    family.sort(key=len, reverse=True)
+                    with Pool(len(family) if len(family) < 9 else 8) as p:
+                        p.map(register, family)
+            else:
+                sleep(60)
                 # else:
                 #     telegram.send_message(
                 #         f'🟡 Германия {g.categories[g.category]}: Нет пользователей для регистрации на {date_slots}')
 
 
 def register(family):
-    g = Germany(termin=['TERMIN325', sys.argv[3]], category=sys.argv[4], vc_type=sys.argv[5])
-    # get captcha from login_page
-    g.open_page('login')
-    date_slots = [x for x in family[0]['dates'][::-1]]
-    for date in date_slots:
-        is_registered = False
-        time_slots = g.get_time(date)
-        time_slots = [x for x in time_slots[::-1]]
-        for time in time_slots:
-            code, soup = g.open_register_page(date, time[1])
-            telegram.send_doc(f'Германия {g.categories[g.category]}: Страница заполнения полей', str(soup))
-            is_registered = g.register_family(family, date, time[1], code, soup)
+    try:
+        g = Germany(termin=['TERMIN325', sys.argv[3]], category=sys.argv[4], vc_type=sys.argv[5])
+        # get captcha from login_page
+        code, html = g.open_login_page_get_captcha_code()
+        date_slots = [x for x in family[0]['dates'][::-1]]
+        telegram.send_message(f'Регистрирую семью {family[0]["vc_surname"]} {family[0]["vc_name"]} из {len(family)} членов на {date_slots}')
+        for date, time in date_slots:
+            g.open_page('appointments', code=code)
+            code, soup = g.open_register_page(date, time)
+            html = str(soup)
+            telegram.send_doc(f'Германия {g.categories[g.category]}: Страница заполнения полей', html)
+            is_registered = g.register_family(family, date, time, code, soup)
             if is_registered:
                 break
-        if is_registered:
-            break
+        else:
+            raise RuntimeError(f'Не удалось зарегистрировать семью: {family}')
+    except Exception as e:
+        raise RuntimeError(f'Ошибка {str(e)} при регистрации семьи: {family}')
 
 
 if __name__ == "__main__":

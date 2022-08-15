@@ -68,7 +68,7 @@ class Germany():
         return code, html_login_page
 
     def open_appointments_page_and_get_dates(self, code):
-        date_slots = []
+        date_time_slots = []
         logging.warning('open appointments page')
         for _ in range(10):
             html = self.open_page('appointments', code=code).text
@@ -80,6 +80,8 @@ class Germany():
                 element = soup.find_all("div", {'style': 'margin-left: 20%;'})
                 date_slots = [link.find("a")['href'].split('=')[-1] for link in element]
                 telegram.send_message(f'🇩🇪 Германия {self.categories[str(self.category)]}: {date_slots}')
+                for date in date_slots:
+                    date_time_slots.extend(self.get_time(date))
                 break
             elif captcha.is_captcha_displayed(html):
                 code = captcha.get_code(html, f'appointments {self.category}')
@@ -92,7 +94,7 @@ class Germany():
         else:
             telegram.send_doc(f'⭕ Не разгадал капчу с 10 попыток для категории {self.categories[str(self.category)]}', html)
             raise RuntimeError(f'⭕ Не разгадал капчу с 10 попыток для категории {self.categories[str(self.category)]}')
-        return date_slots, code
+        return date_time_slots, code
 
     def get_time(self, date):
         # try first time without code
@@ -120,21 +122,45 @@ class Germany():
                 telegram.send_doc('Не разгадал капчу с 3 раз', r.text)
         soup = BeautifulSoup(r.text, "lxml")
         element = soup.find_all("div", {'style': 'margin-left: 20%;'})
-        time_slots = [[re.findall("\d+", link.text)[0], link.find("a")['href'].split('=')[-1]] for link in element if
+        time_slots = [[link.find("a")['href'].split('=')[-1], int(re.findall("\d+", link.text)[0])] for link in element if
                       link.find("a")]
-        return time_slots
+        date_time_slots = []
+        for time in time_slots:
+            for _ in range(time[1]):
+                date_time_slots.append([date, time[0]])
+        return date_time_slots
 
-    def get_users_with_dates(self, dates_list, vc_type):
+    def register_users(self, family_list):  # get time and register
+        for index, family in family_list.items():
+            date_slots = family[0]['dates']# check each user
+            for date in date_slots:
+                is_registered = False
+                if date in family[0]['dates']:  # get available time
+                    time_slots = self.get_time(date)
+                    for time in time_slots:
+                        code, soup = self.open_register_page(date, time[1])
+                        telegram.send_doc(f'Германия {self.categories[self.category]}: Страница заполнения полей',
+                                          str(soup))
+                        is_registered = self.register_family(family, date, time[1], code, soup)
+                        if is_registered:
+                            break
+                    if is_registered:
+                        break
+
+    def get_users_with_dates(self, date_time_slots, vc_type):
         self.users_dict = users.get_users(vc_type)
-        for date in dates_list:
+        while len(date_time_slots):
             for i, user in enumerate(self.users_dict):
-                date_from = datetime.strptime(user['vc_date_from'] if user['vc_date_from'] else '2022-01-01',
-                                              '%Y-%m-%d')
-                date_to = datetime.strptime(user['vc_date_to'] if user['vc_date_to'] else '3000-01-01', '%Y-%m-%d')
-                actual_date = datetime.strptime(date, '%d.%m.%Y')
-                if date_from <= actual_date <= date_to:
-                    if not ('dates' in user and date in user['dates']):
-                        self.users_dict[i].setdefault("dates", []).append(date)
+                for date in date_time_slots:
+                    date_from = datetime.strptime(user['vc_date_from'] if user['vc_date_from'] else '2022-01-01',
+                                                  '%Y-%m-%d')
+                    date_to = datetime.strptime(user['vc_date_to'] if user['vc_date_to'] else '3000-01-01', '%Y-%m-%d')
+                    actual_date = datetime.strptime(date[0], '%d.%m.%Y')
+                    if date_from <= actual_date <= date_to:
+                        if not ('dates' in user and date[0] in user['dates']):
+                            self.users_dict[i].setdefault("dates", []).append(date)
+                            date_time_slots.remove(date)
+                            break
         available_users = [d for d in self.users_dict if 'dates' in d]
         family_list = {}
         for user in available_users:
@@ -156,10 +182,20 @@ class Germany():
                 raise RuntimeError('An error occured while processing your appointment.')
             code = captcha.get_code(html, f'registration {self.category}')
             if code is None:
-                cookies = {'JSESSIONID': f'{self.session_id}', 'KEKS': f'{self.termin[1]}',}
-                headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8', 'Connection': 'keep-alive', 'Referer': f'https://service2.diplo.de/rktermin/extern/appointment_showDay.do?locationCode=mins&realmId=231&categoryId={self.category}&dateStr={date}', 'Sec-Fetch-Dest': 'document', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-User': '?1', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', 'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"macOS"',}
-                params = {'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'dateStr': f'{date}', 'openingPeriodId': f'{time}',}
-                r = self.s.get('https://service2.diplo.de/rktermin/extern/appointment_showForm.do', params=params, cookies=cookies, headers=headers)
+                cookies = {'JSESSIONID': f'{self.session_id}', 'KEKS': f'{self.termin[1]}', }
+                headers = {
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                    'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8', 'Connection': 'keep-alive',
+                    'Referer': f'https://service2.diplo.de/rktermin/extern/appointment_showDay.do?locationCode=mins&realmId=231&categoryId={self.category}&dateStr={date}',
+                    'Sec-Fetch-Dest': 'document', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Site': 'same-origin',
+                    'Sec-Fetch-User': '?1', 'Upgrade-Insecure-Requests': '1',
+                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
+                    'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
+                    'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"macOS"', }
+                params = {'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}',
+                          'dateStr': f'{date}', 'openingPeriodId': f'{time}', }
+                r = self.s.get('https://service2.diplo.de/rktermin/extern/appointment_showForm.do', params=params,
+                               cookies=cookies, headers=headers)
                 code = captcha.get_code(r.text, f'registration 2 {self.category}')
             soup = BeautifulSoup(html, "lxml")
             if len(soup.find("div", {'style': 'font-weight: bold;'})):
@@ -169,7 +205,8 @@ class Germany():
         return code, soup
 
     def register_family(self, family, date, time, code, soup):
-        time_text = soup.find("div", {'style': 'font-weight: bold;'}).text.strip().replace('\n', ' ').replace('\t\t\t\t', ' ')
+        time_text = soup.find("div", {'style': 'font-weight: bold;'}).text.strip().replace('\n', ' ').replace(
+            '\t\t\t\t', ' ')
         success = False
         headers = cookies = data = ''
         for _ in range(3):
@@ -234,7 +271,6 @@ class Germany():
                 telegram.send_doc(f'Неизвестное поле({id}) для категории {self.categories[self.category]}', str(soup))
         r = self.s.post('https://service2.diplo.de/rktermin/extern/appointment_addAppointment.do', cookies=cookies, headers=headers, data=data).text
         return r, headers, cookies, data
-
 
     def open_page(self, page_name: str, **kwargs):
         if page_name == 'login':

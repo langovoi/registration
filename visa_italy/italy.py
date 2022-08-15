@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import requests
-import undetected_chromedriver.v2 as uc  # Import from seleniumwire
+import undetected_chromedriver as uc  # Import from seleniumwire
 from selenium.webdriver.support.select import Select
 
 
