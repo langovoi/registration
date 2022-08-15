@@ -32,7 +32,7 @@ def register_german_visa(termin, category, vc_type):
                             p.map(register, family)
                     except Exception:
                         pass
-                print()
+            sleep(60)
                 # else:
                 #     telegram.send_message(
                 #         f'🟡 Германия {g.categories[g.category]}: Нет пользователей для регистрации на {date_slots}')
