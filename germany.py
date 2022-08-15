@@ -161,8 +161,8 @@ class Germany():
         for _ in range(3):
             html = self.open_page('register', date=date, time=time).text
             if 'An error occured while processing your appointment.' in html:
-                telegram.send_doc('An error occured while processing your appointment.', html)
-                raise RuntimeError('An error occured while processing your appointment.')
+                telegram.send_doc('⭕ Германия - Дата ушла: An error occured while processing your appointment.', html)
+                break
             code = captcha.get_code(html, f'registration {self.category}')
             if code is None:
                 cookies = {'JSESSIONID': f'{self.session_id}', 'KEKS': f'{self.termin[1]}', }
