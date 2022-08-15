@@ -130,23 +130,6 @@ class Germany():
                 date_time_slots.append([date, time[0]])
         return date_time_slots
 
-    def register_users(self, family_list):  # get time and register
-        for index, family in family_list.items():
-            date_slots = family[0]['dates']# check each user
-            for date in date_slots:
-                is_registered = False
-                if date in family[0]['dates']:  # get available time
-                    time_slots = self.get_time(date)
-                    for time in time_slots:
-                        code, soup = self.open_register_page(date, time[1])
-                        telegram.send_doc(f'Германия {self.categories[self.category]}: Страница заполнения полей',
-                                          str(soup))
-                        is_registered = self.register_family(family, date, time[1], code, soup)
-                        if is_registered:
-                            break
-                    if is_registered:
-                        break
-
     def get_users_with_dates(self, date_time_slots, vc_type):
         self.users_dict = users.get_users(vc_type)
         while len(date_time_slots):

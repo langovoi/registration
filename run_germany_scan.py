@@ -1,3 +1,4 @@
+import logging
 import sys
 import traceback
 from multiprocessing import Pool
@@ -46,8 +47,10 @@ def register(family):
             g.open_page('appointments', code=code)
             code, soup = g.open_register_page(date, time)
             html = str(soup)
-            telegram.send_doc(f'Германия {g.categories[g.category]}: Страница заполнения полей', html)
             is_registered = g.register_family(family, date, time, code, soup)
+            logging.warning(f'========================== Германия {g.categories[g.category]}: Страница заполнения полей:\n'
+                            f'{html}\n'
+                            f'==========================')
             if is_registered:
                 break
         else:
