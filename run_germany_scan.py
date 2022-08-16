@@ -43,6 +43,7 @@ def register(family):
                 continue
             html = str(soup)
             is_registered = g.register_family(family, date, time, code, soup)
+            logging.warning(f'is_registered: {is_registered}')
             logging.warning(f'========================== Германия {g.categories[g.category]}: Страница заполнения полей:\n'
                             f'{html}\n'
                             f'==========================')

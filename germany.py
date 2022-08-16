@@ -192,8 +192,10 @@ class Germany():
             '\t\t\t\t', ' ')
         success = False
         headers = cookies = data = ''
+        logging.warning(f'Register family:{family}\n{date} {time}')
         for _ in range(3):
             html, headers, cookies, data = self.fill_fields(family, date, time, code, soup)
+            logging.warning(f'Fill fields:{html}')
             soup = BeautifulSoup(html, "lxml")
             if not (soup.find("captcha") or soup.find("div", {"class": "global-error"}) or 'An error occured while processing your appointment' in str(soup)):
                 telegram.send_doc(caption=f'🟢 🇩🇪 Германия {self.categories[self.category]}: Успешно записан: {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]}) на {str(time_text)}', html=str(html))
@@ -202,6 +204,7 @@ class Germany():
                 success = True
                 break
             elif error := soup.find("div", {"class": "global-error"}):
+                logging.warning(f"Error: {error.text}")
                 if "The entered text was wrong" in error.text:
                     code = captcha.get_code(str(soup), f'The entered text was wrong {self.category}')
                 elif "This entry needs to be unique" in error.text:
@@ -218,6 +221,7 @@ class Germany():
             else:
                 telegram.send_doc(f'Code: {code}. Неизвестная ошибка после ввода всех данных\nHeaders: {headers}\nCookies: {cookies}\nData: {data}', str(soup))
                 raise RuntimeError('')
+        logging.warning(f'Success: {success}')
         return success
 
     def fill_fields(self, family, date, time, code, soup):
