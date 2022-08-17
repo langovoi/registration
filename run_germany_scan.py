@@ -18,10 +18,13 @@ def register_german_visa(termin, category, vc_type):
             if date_time_slots:
                 family_list = g.get_users_with_dates(date_time_slots, vc_type=vc_type)
                 if family_list:
-                    family = [f for i, f in family_list.items()]
-                    family.sort(key=len, reverse=True)
-                    with Pool(len(family) if len(family) < 9 else 8) as p:
-                        p.map(register, family)
+                    families = [f for i, f in family_list.items()]
+                    families.sort(key=len, reverse=True)
+                    fam_str = '\n'.join([f'{family[0]["vc_surname"]} {family[0]["vc_name"]} из {len(family)} членов на {family[0]["dates"]}' for family in families])
+                    telegram.send_message(f'🟡 Германия {g.categories[category]}: Начинаю регистрировать:\n{fam_str}')
+                    with Pool(len(families) if len(families) < 9 else 8) as p:
+                        p.map(register, families)
+                    print()
             else:
                 sleep(60)
                 # else:
@@ -34,19 +37,22 @@ def register(family):
         g = Germany(termin=['TERMIN325', sys.argv[3]], category=sys.argv[4], vc_type=sys.argv[5])
         # get captcha from login_page
         code, html = g.open_login_page_get_captcha_code()
-        date_slots = [x for x in family[0]['dates'][::-1]]
+        date_slots = family[0]['dates']
         telegram.send_message(f'Регистрирую семью {family[0]["vc_surname"]} {family[0]["vc_name"]} из {len(family)} членов на {date_slots}')
         for date, time in date_slots:
             g.open_page('appointments', code=code)
+            sleep(1) # wait for appointments page opened
             code, soup = g.open_register_page(date, time)
             if None in (code, soup):
                 continue
             html = str(soup)
             is_registered = g.register_family(family, date, time, code, soup)
             logging.warning(f'is_registered: {is_registered}')
-            logging.warning(f'========================== Германия {g.categories[g.category]}: Страница заполнения полей:\n'
-                            f'{html}\n'
-                            f'==========================')
+            html_log = '\n\n'.join(x for x in html.splitlines() if x.strip())
+            logging.warning(
+                f'========================== Германия {g.categories[g.category]}: Страница заполнения полей:\n'
+                f'{html_log}\n'
+                f'==========================')
             if is_registered:
                 break
         else:

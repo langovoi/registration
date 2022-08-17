@@ -33,10 +33,6 @@ J
 features/pages/__init__.py,5/2/52b133a7b37c91109be4cdf96a6a58af2848c109
 V
 &features/tests/italy_consulate.feature,7/2/728dc353760896a06ef530714455aa03fb8ab6c5
-8
-test3.py,4/7/47e2f36f29273e55356a6e02ef971214c8b170e6
-8
-test2.py,2/a/2a41da11c987266d7c39b70a05e3cc3cba268c18
 L
 visa_spain/run_spain_scan.py,e/d/edf190ec9e439dcda62310924ce64fa81e4efdb8
 C
@@ -46,14 +42,10 @@ C
 behave.ini,f/5/f52618c500a3740e794ddd0f7e1801c7c88f1740
 9
 	README.md,8/e/8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
-7
-test.py,a/3/a36e355ddb203d7d4133221f339dc406cb9f480f
 @
 utils/gsheets.py,f/1/f1cb52265d7fb3c3a5c0b4ba920ad62679286180
 B
 behave-parallel.py,6/f/6f5579d617b01c408ba9fbd3bb5f0cf8103bcfd7
-A
-utils/telegram.py,c/d/cdbb092b35fbdaf723f65b293b3d945238fee458
 M
 features/steps/basic_steps.py,b/6/b63a8cfee97d08479d60dda09dc41f1a3515c913
 G
@@ -64,8 +56,6 @@ R
 "features/pages/german_visa_page.py,b/d/bdd774f27494516b8e825a28a9326827d475514f
 U
 %.github/workflows/germany_tourism.yml,7/d/7d7966561fea5c2d4b679b3bd302ef1c9bb086a7
-V
-&.github/workflows/germany_schengen.yml,1/6/16faf18206c31e78d041306becaf342b597f18d2
 @
 utils/captcha.py,e/b/eb8d387ad6c97eded47b0a004c61621b09ea5b93
 >
@@ -74,3 +64,32 @@ L
 visa_italy/italy_requests.py,9/6/9654488bddf24ea50e1552cbea3a9d395d4962e1
 M
 visa_italy/italy_requests2.py,d/a/da930cc8b6125060a1fb255e9f4cfe742006b625
+@
+requirements.txt,1/9/19359a61ae2446b51b549167b014da2fcf265768
+:
+
+.gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
+8
+test1.py,4/7/47c0d18bce28d555845cc8c7eaf10d4b76638051
+O
+features/steps/germany_steps.py,6/4/644c122253a0f8a0a231d5eb0f7a45526c79902a
+>
+utils/users.py,6/2/62ba57e7e0785f06d2e6537013aa081d3543698d
+Q
+!visa_italy/run_italy_scan_copy.py,6/6/66b59862a1dd3f4dc0e741fc79007b19e9d12782
+V
+&.github/workflows/germany_schengen.yml,1/6/16faf18206c31e78d041306becaf342b597f18d2
+C
+visa_italy/italy.py,e/e/ee33a30c7f91577bb4544d90f0c5c2b4cd14f19e
+7
+test.py,a/3/a36e355ddb203d7d4133221f339dc406cb9f480f
+8
+test2.py,2/a/2a41da11c987266d7c39b70a05e3cc3cba268c18
+8
+test3.py,4/7/47e2f36f29273e55356a6e02ef971214c8b170e6
+A
+utils/telegram.py,c/d/cdbb092b35fbdaf723f65b293b3d945238fee458
+8
+zhig2.py,4/1/41524f6a2e5c0930badc854837553fba5b92d39f
+L
+visa_italy/run_italy_scan.py,f/e/fe11cb9bd6badeb1bfcc4ac53bcaa38cbbc7fe57

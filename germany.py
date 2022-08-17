@@ -79,9 +79,9 @@ class Germany():
                 soup = BeautifulSoup(html, "lxml")
                 element = soup.find_all("div", {'style': 'margin-left: 20%;'})
                 date_slots = [link.find("a")['href'].split('=')[-1] for link in element]
-                telegram.send_message(f'🇩🇪 Германия {self.categories[str(self.category)]}: {date_slots}')
                 for date in date_slots:
                     date_time_slots.extend(self.get_time(date))
+                telegram.send_message(f'🇩🇪 Германия {self.categories[str(self.category)]}: {date_time_slots}')
                 break
             elif captcha.is_captcha_displayed(html):
                 code = captcha.get_code(html, f'appointments {self.category}')
