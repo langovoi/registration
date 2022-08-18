@@ -40,7 +40,7 @@ def register(family):
         date_slots = family[0]['dates']
         telegram.send_message(f'Регистрирую семью {family[0]["vc_surname"]} {family[0]["vc_name"]} из {len(family)} членов на {date_slots}')
         for date, time in date_slots:
-            g.open_page('appointments', code=code)
+            html = g.open_page('appointments', code=code)
             sleep(1) # wait for appointments page opened
             code, soup = g.open_register_page(date, time)
             if None in (code, soup):
@@ -56,9 +56,9 @@ def register(family):
             if is_registered:
                 break
         else:
-            raise RuntimeError(f'Не удалось зарегистрировать семью: {family}')
+            telegram.send_message(f'Не удалось зарегистрировать семью: {family}')
     except Exception as e:
-        raise RuntimeError(f'Ошибка {str(e)} при регистрации семьи: {family}')
+        telegram.send_message(f'Ошибка при регистрации семьи: {family}\n{str(e)}\n{traceback.format_exc()}')
 
 
 if __name__ == "__main__":

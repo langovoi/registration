@@ -25,5 +25,6 @@ def get_families_for_dates(users_list, dates_list):
             if date_from < actual_date <= date_to:
                 users_list[i].setdefault("dates", []).append(date)
 
+
 def update_status(url, id, status):
     s.post(url=f'{url}/{id}', params={"vc_status": f"{status}"})
