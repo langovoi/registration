@@ -38,7 +38,6 @@ def register(family):
         # get captcha from login_page
         code, html = g.open_login_page_get_captcha_code()
         date_slots = family[0]['dates']
-        telegram.send_message(f'Регистрирую семью {family[0]["vc_surname"]} {family[0]["vc_name"]} из {len(family)} членов на {date_slots}')
         for date, time in date_slots:
             html = g.open_page('appointments', code=code)
             sleep(1) # wait for appointments page opened
