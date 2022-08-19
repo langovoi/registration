@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        tag: [ "SCHENGEN" ]
+        tag: [ "NATIONAL" ]
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.10.0
@@ -38,7 +38,7 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            🟢 GERMANY SCHENGEN JOB IS STARTED 🟢
+            🟢 GERMANY NATIONAL JOB IS STARTED 🟢
       - name: create-json
         id: create-json
         uses: jsdaniell/create-json@1.1.2
@@ -50,7 +50,7 @@ jobs:
           REST_PASSWORD=${{ secrets.REST_PASSWORD }}
           GERMANY_REST_URL=${{ secrets.GERMANY_REST_URL }}
           CAPTCHA_API_KEY=${{ secrets.CAPTCHA_API_KEY }}
-          python3 run_germany_scan.py "$REST_PASSWORD" "$GERMANY_REST_URL" "TERMIN327" "373" "Inviting" "$CAPTCHA_API_KEY"
+          python3 run_germany_scan.py "$REST_PASSWORD" "$GERMANY_REST_URL" "TERMIN340" "375" "National" "$CAPTCHA_API_KEY"
       - name: send custom message
         if: always()
         uses: appleboy/telegram-action@master
@@ -58,4 +58,4 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            🐞 GERMANY SCHENGEN JOB IS STOPPED 🐞
+            🐞 GERMANY NATIONAL JOB IS STOPPED 🐞

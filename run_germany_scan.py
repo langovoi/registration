@@ -66,6 +66,6 @@ if __name__ == "__main__":
             termin = ['TERMIN325', sys.argv[3]]
             category = sys.argv[4]
             register_german_visa(termin, category, sys.argv[5])
-            sleep(300 if sys.argv[5] == 'Inviting' else 60)
+            sleep(3600 if sys.argv[5] == 'National' else 60)
         except Exception as e:
             telegram.send_message(f'⭕ Restart Germany job. Failed with {str(e)}: \n{traceback.format_exc()}')
