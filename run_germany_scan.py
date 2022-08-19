@@ -26,7 +26,7 @@ def register_german_visa(termin, category, vc_type):
                         p.map(register, families)
                     print()
             else:
-                sleep(60)
+                sleep(3600 if sys.argv[5] == 'National' else 60)
                 # else:
                 #     telegram.send_message(
                 #         f'🟡 Германия {g.categories[g.category]}: Нет пользователей для регистрации на {date_slots}')
