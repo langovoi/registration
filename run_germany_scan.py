@@ -5,6 +5,12 @@ from multiprocessing import Pool
 from time import sleep
 from germany import Germany
 from utils import telegram
+from copy import deepcopy
+
+termin = ['TERMIN325', sys.argv[3]]
+category = sys.argv[4]
+vc_type = sys.argv[5]
+germ_obj = Germany(termin=termin, category=category, vc_type=vc_type)
 
 
 def register_german_visa(termin, category, vc_type):
@@ -22,9 +28,10 @@ def register_german_visa(termin, category, vc_type):
                     families.sort(key=len, reverse=True)
                     fam_str = '\n'.join([f'{family[0]["vc_surname"]} {family[0]["vc_name"]} из {len(family)} членов на {family[0]["dates"]}' for family in families])
                     telegram.send_message(f'🟡 Германия {g.categories[category]}: Начинаю регистрировать:\n{fam_str}')
+                    global germ_obj
+                    germ_obj = g
                     with Pool(len(families) if len(families) < 9 else 8) as p:
                         p.map(register, families)
-                    print()
             else:
                 sleep(3600 if sys.argv[5] == 'National' else 60)
                 # else:
@@ -34,16 +41,19 @@ def register_german_visa(termin, category, vc_type):
 
 def register(family):
     try:
-        g = Germany(termin=['TERMIN325', sys.argv[3]], category=sys.argv[4], vc_type=sys.argv[5])
+        g = deepcopy(germ_obj)
         # get captcha from login_page
-        code, html = g.open_login_page_get_captcha_code()
         date_slots = family[0]['dates']
         for date, time in date_slots:
-            html = g.open_page('appointments', code=code)
-            sleep(1) # wait for appointments page opened
+            print(date)
             code, soup = g.open_register_page(date, time)
             if None in (code, soup):
-                continue
+                code, html = g.open_login_page_get_captcha_code()
+                html = g.open_page('appointments', code=code)
+                sleep(1)
+                code, soup = g.open_register_page(date, time)
+                if None in (code, soup):
+                    continue
             html = str(soup)
             is_registered = g.register_family(family, date, time, code, soup)
             logging.warning(f'is_registered: {is_registered}')
@@ -54,18 +64,15 @@ def register(family):
                 f'==========================')
             if is_registered:
                 break
-        else:
-            telegram.send_message(f'Не удалось зарегистрировать семью: {family}')
     except Exception as e:
-        telegram.send_message(f'Ошибка при регистрации семьи: {family}\n{str(e)}\n{traceback.format_exc()}')
+        telegram.send_message(f'Ошибка при регистрации семьи: {family}\n{str(e)}')
+        telegram.send_message(traceback.format_exc())
 
 
 if __name__ == "__main__":
     while True:
         try:
-            termin = ['TERMIN325', sys.argv[3]]
-            category = sys.argv[4]
-            register_german_visa(termin, category, sys.argv[5])
+            register_german_visa(termin, category, vc_type)
             sleep(3600 if sys.argv[5] == 'National' else 60)
         except Exception as e:
             telegram.send_message(f'⭕ Restart Germany job. Failed with {str(e)}: \n{traceback.format_exc()}')

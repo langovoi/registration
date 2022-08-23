@@ -161,7 +161,7 @@ class Germany():
         for _ in range(3):
             html = self.open_page('register', date=date, time=time).text
             if 'An error occured while processing your appointment.' in html:
-                telegram.send_doc('⭕ Германия - Дата ушла: An error occured while processing your appointment.', html)
+                telegram.send_doc('⭕ Германия - An error occured while processing your appointment.', html)
                 break
             code = captcha.get_code(html, f'registration {self.category}')
             if code is None:
@@ -213,9 +213,14 @@ class Germany():
                     telegram.send_doc(
                         caption=f'⭕ 🇩🇪 Германия: {self.categories[self.category]}: Уже зарегистрирован ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})\nОшибка: {error.text.strip()}', html=str(soup))
                     success = True
+                elif "There are no available Appointments for the chosen period" in error.text:
+                    telegram.send_doc(
+                        caption=f'⭕ 🇩🇪 Германия {self.categories[self.category]}: Дата ушла: ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})', html=str(soup))
+                    success = False
+                    break
                 else:
                     telegram.send_doc(
-                        caption=f'⭕ 🇩🇪 Германия {self.categories[self.category]}: Неизвестная ошибка для: ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})\nОшибка: {error.text.strip()}\nHeaders: {headers}\nCookies: {cookies}\nData: {data}', html=str(soup))
+                        caption=f'⭕ 🇩🇪 Германия {self.categories[self.category]}: Неизвестная ошибка для: ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})\nОшибка: {error.text.strip()}', html=str(soup))
                     success = False
                     break
             else:

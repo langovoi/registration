@@ -20,3 +20,4 @@ undetected-chromedriver
 selenium-wire
 Pillow
 httpx[http2]
+oauth2client
