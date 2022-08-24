@@ -224,8 +224,8 @@ class Germany():
                     success = False
                     break
             else:
-                telegram.send_doc(f'Code: {code}. Неизвестная ошибка после ввода всех данных\nHeaders: {headers}\nCookies: {cookies}\nData: {data}', str(soup))
-                raise RuntimeError('')
+                telegram.send_doc(f'Неизвестная ошибка после ввода всех данных', str(soup))
+                success = False
         logging.warning(f'Success: {success}')
         return success
 
