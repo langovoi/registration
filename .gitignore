@@ -1,9 +1,7 @@
-.idea/
-/.idea/*
 .pytest_cache/
 .DS_Store
 out/
 page_source.html
 visa_captcha.png
 /test*
-.idea/sonarlint/issuestore/index.pb
+.idea
