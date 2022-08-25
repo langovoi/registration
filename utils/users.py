@@ -28,3 +28,7 @@ def get_families_for_dates(users_list, dates_list):
 
 def update_status(url, id, status):
     s.post(url=f'{url}/{id}', params={"vc_status": f"{status}"})
+
+
+def update_fields(url, id, body):
+    s.post(url=f'{url}/{id}', params=body)
