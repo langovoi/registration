@@ -3,12 +3,13 @@ import logging
 import re
 import sys
 from datetime import datetime
+from operator import itemgetter
 from time import sleep
 
 import requests
 from bs4 import BeautifulSoup
 
-from utils import captcha, telegram, users
+from utils import captcha, telegram, users, gsheets
 
 
 # National
@@ -34,6 +35,7 @@ class Germany():
         self.users_dict = users.get_users(vc_type)
         self.categories = {'373': "Шенген", '2845': "Туризм", '375': "Национальная"}
         self.errors = []
+        self.gs = gsheets.GoogleSheets('mail_ru')
 
     def get_session_id(self, url):
         self.s = requests.Session()
@@ -131,7 +133,7 @@ class Germany():
         return date_time_slots
 
     def get_users_with_dates(self, date_time_slots, vc_type):
-        self.users_dict = users.get_users(vc_type)
+        self.update_users_emails(vc_type)
         while len(date_time_slots):
             for i, user in enumerate(self.users_dict):
                 for date in date_time_slots:
@@ -153,8 +155,21 @@ class Germany():
                 if user['vc_with'] in family_list:
                     family_list[user['vc_with']].append(user)
                 else:
-                    family_list[user['vc_with']] = user
+                    family_list[user['vc_with']] = [user]
         return family_list
+
+    def update_users_emails(self, vc_type):
+        self.users_dict = users.get_users(vc_type)
+        all_emails = self.gs.ws.get_all_values()
+        all_emails = all_emails[2:]
+        all_emails = sorted(all_emails, key=itemgetter(3))
+        users_without_email_assigned = [user for user in self.users_dict if '|' not in user['vc_comment']]
+        # add email to comment in agent
+        for i, user in enumerate(users_without_email_assigned):
+            users.update_fields(url=f'{sys.argv[2]}', id=user['id'], body={'vc_comment': f'{user["vc_comment"]}|{all_emails[i][1]}|'})
+        self.users_dict = users.get_users(vc_type)
+        for i, user in enumerate(self.users_dict):
+            self.users_dict[i]['vc_mail'] = user['vc_comment'].split('|')[1]
 
     def open_register_page(self, date, time):
         code = soup = None
@@ -201,7 +216,17 @@ class Germany():
                 telegram.send_doc(caption=f'🟢 🇩🇪 Германия {self.categories[self.category]}: Успешно записан: {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]}) на {str(time_text)}', html=str(html))
                 for user in family:
                     users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='4')
+                all_emails = self.gs.ws.get_all_values
                 success = True
+                try:
+                    for email in all_emails:
+                        if email[1] == family[0]["vc_mail"]:
+                            i = int(email[0]) + 1
+                            count = int(email[3])
+                            self.gs.ws.update_acell(f'D{i}', count+1)
+                            break
+                except Exception as e:
+                    telegram.send_message(f'Save email exceptions: {str(e)}')
                 break
             elif error := soup.find("div", {"class": "global-error"}):
                 logging.warning(f"Error: {error.text}")

@@ -5,3 +5,5 @@ page_source.html
 visa_captcha.png
 /test*
 .idea
+config.json
+gsheet_email_key.json
