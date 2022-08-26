@@ -40,11 +40,11 @@ jobs:
           message: |
             🟢 GERMANY NATIONAL JOB IS STARTED 🟢
       - name: create-json
-          id: create-json
-          uses: jsdaniell/create-json@1.1.2
-          with:
-            name: "config.json"
-            json: ${{ secrets.CONFIG }}
+        id: create-json
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "config.json"
+          json: ${{ secrets.CONFIG }}
       - name: Test with behave
         run: |
           REST_PASSWORD=${{ secrets.REST_PASSWORD }}
