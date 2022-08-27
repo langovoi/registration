@@ -41,7 +41,7 @@ def register_german_visa(termin, category, vc_type):
 
 def register(family):
     try:
-        g = deepcopy(germ_obj)
+        g = Germany(termin=termin, category=category, vc_type=vc_type)
         # get captcha from login_page
         date_slots = family[0]['dates']
         for date, time in date_slots:
