@@ -1,0 +1,65 @@
+from time import sleep
+
+from selenium import webdriver
+from selenium.webdriver import Keys
+from selenium.webdriver.common.by import By
+
+driver = webdriver.Chrome()
+driver.implicitly_wait(1000)
+driver.get('https://vk.com')
+driver.find_element(By.XPATH, '//button[contains(@class,"VkIdForm__signUpButton")]').click()
+# получить номер из 5sim в simphone
+phone_field = driver.find_element(By.XPATH, '//input[@name="phone"]')
+phone_field.click()
+phone_field.send_keys(Keys.BACKSPACE)
+phone_field.send_keys('79290913193')
+
+
+driver.find_element(By.XPATH, '//button[@type="submit"]').click()
+if "SMS придёт в течение" not in driver.page_source:
+    sleep(125)
+    driver.find_element(By.XPATH, '//button[@data-test-id="confirmPhoneResendCodeLink"]').click()
+# получить  код из 5sim в simkode
+driver.find_element(By.XPATH, '//input[@id="otp"]').send_keys('1111')
+sleep(60)
+driver.find_element(By.XPATH, '//button[@type="submit"]').click()
+driver.find_element(By.XPATH, '//input[@name="first_name"]').send_keys('Иван')
+driver.find_element(By.XPATH, '//input[@name="last_name"]').send_keys('Иванов')
+driver.find_element(By.XPATH, '//input[@name="birthday"]').send_keys('11.19.1985')
+driver.find_element(By.XPATH, '//button[@class="flat_button button_big_text"]').click()
+driver.find_element(By.XPATH, '//a[@class="join_skip_link"]').click()
+driver.find_element(By.XPATH, '//a[@class="join_skip_link"]').click()
+#указать почту
+#driver.find_element(By.XPATH, '//input[@id="pedit_email"]').send_keys('test@test.com')
+#class="flat_button button_big_text button_disabled"
+driver.find_element(By.XPATH, '//a[@class="join_skip_link"]').click()
+# изменение пароля
+#driver.get('https://vk.com/settings')
+# driver.find_element(By.XPATH, '//input[@id="settings_old_pwd"]').send_keys('Ab123456!')
+# driver.find_element(By.XPATH, '//input[@id="settings_new_pwd"]').send_keys('Ab123456!')
+# driver.find_element(By.XPATH, '//input[@id="settings_confirm_pwd"]').send_keys('Ab123456!')
+#driver.find_element(By.XPATH, '//button[@id="settings_pwd_btn"]').click()
+driver.get('https://id.vk.com/restore/#/resetPassword')
+driver.find_element(By.XPATH, '//input[@data-test-id="loginInput"]').send_keys('+79290913193')
+//может проверять по наличию кнопки
+if "Введите текст с картинки" in driver.page_source:
+    #послать капчу
+    #ввести полученный код
+    driver.find_element(By.XPATH, '//div[@class="vkuiAlert__content Alert__content"]//input[@class="vkuiInput__el Input__el"]').send_keys('1111')
+    driver.find_element(By.XPATH, '//button[contains(@class,"vkuiAlert__button--default")]').click()
+driver.find_element(By.XPATH, '//input[@data-test-id="surnameInput"]').send_keys('Иванов')
+driver.find_element(By.XPATH, '//button[@data-test-id="nextButton"]').click()
+driver.find_element(By.XPATH, '//button[contains(@class,"vkuiButton")]').click()#2 но первая эта
+driver.find_element(By.XPATH, '//button[contains(@class,"vkuiButton")]').click()
+driver.find_element(By.XPATH, '//button[contains(@class,"vkuiButton")]').click()
+#получить смс
+driver.find_element(By.XPATH, '//input[@autocomplete="one-time-code"]').send_keys('1111')
+driver.find_element(By.XPATH, '//button[contains(@class,"vkuiButton")]').click(
+
+
+
+
+# driver.find_element(By.XPATH, '//input[@id="input-250"]').send_keys('01/01/2024')
+# sleep(5)
+# driver.find_element(By.XPATH, '//div[contains(text(),"Нет доступной даты/слота для записи указанного количества заявителей.")]')
+print()
