@@ -2,20 +2,23 @@ import undetected_chromedriver as uc
 from time import sleep
 
 import os, sys
+
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(CURRENT_DIR))
 
 from driver.base_page import BasePage
 from utils import telegram
+from selenium import webdriver
 
 
 class Kaliningrad(BasePage):
     pass
 
 
-
 if __name__ == "__main__":
-    driver = uc.Chrome()
+    options = webdriver.ChromeOptions()
+    options.headless = True
+    driver = uc.Chrome(options=options)
     try:
         driver.get('https://ruserv.visametric.com/apsys/')
         k = Kaliningrad(driver)
@@ -32,7 +35,7 @@ if __name__ == "__main__":
         k.click_on('//div[@id="list-item-200-0"]')
         available_date = False
         dates = ['01/10/2022', '01/12/2022', '01/02/2023', '01/04/2023']
-        for i in range(5):
+        for i in range(len(dates)):
             k.type_in('//input[@id="input-190"]', dates[i])
             k.is_element_invisible('Проверка ближайшей доступной даты подачи документов', timeout=120)
             if k.is_element_displayed('Нет доступной даты', timeout=60):
@@ -42,7 +45,7 @@ if __name__ == "__main__":
                 telegram.send_doc(f'Калининград: Есть дата', driver.page_source)
                 break
         else:
-            telegram.send_doc(f'Калининград: Нет доступной даты', driver.page_source)
+            telegram.send_doc(f'Калининград: Нет дат', driver.page_source)
     except Exception as e:
         telegram.send_doc(f'Калининград: Ошибка {str(e)}', driver.page_source)
     driver.quit()
