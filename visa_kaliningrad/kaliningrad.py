@@ -14,11 +14,11 @@ from selenium import webdriver
 class Kaliningrad(BasePage):
     pass
 
+
 if __name__ == "__main__":
     options = webdriver.ChromeOptions()
     options.headless = True
-    uc.TARGET_VERSION = 105
-    driver = uc.Chrome(options=options)
+    driver = webdriver.Chrome(options=options)
     try:
         driver.get('https://ruserv.visametric.com/apsys/')
         k = Kaliningrad(driver)
