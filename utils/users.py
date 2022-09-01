@@ -1,6 +1,8 @@
 import json
+import random
 import sys
 from datetime import datetime
+from time import sleep
 
 import requests
 
@@ -9,6 +11,7 @@ s.auth = ('rest_user', sys.argv[1])
 
 
 def get_users(vc_type):
+    sleep(random.uniform(0, 1.5))
     if vc_type == 'Inviting':
         vc_type = ('Inviting', 'Buisness')
     users = s.get(sys.argv[2])

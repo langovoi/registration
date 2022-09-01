@@ -1,5 +1,6 @@
 import json
 import logging
+import http.client
 import re
 import sys
 from datetime import datetime
@@ -172,6 +173,7 @@ class Germany():
             self.users_dict[i]['vc_mail'] = user['vc_comment'].split('|')[1]
 
     def open_register_page(self, date, time):
+        http.client._MAXLINE = 655360
         code = soup = None
         for _ in range(3):
             html = self.open_page('register', date=date, time=time).text

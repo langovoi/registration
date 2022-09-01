@@ -6,7 +6,7 @@ from google.oauth2.service_account import Credentials
 
 
 class GoogleSheets:
-    gs_key_file = os.path.abspath(os.curdir) + "/gsheet_email_key.json"
+    gs_key_file = os.path.dirname(os.path.dirname(__file__)) + "/gsheet_email_key.json"
     data_columns = {'id': 'A',
                     'email': 'B',
                     'password': 'C',
@@ -18,7 +18,7 @@ class GoogleSheets:
     def authorize(self, work_sheet):
         scope = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive']
         if not os.path.isfile(self.gs_key_file):
-            config_file = os.path.abspath(os.curdir) + "/config.json"
+            config_file = os.path.dirname(os.path.dirname(__file__)) + "/config.json"
             with open(config_file) as json_file:
                 data = json.load(json_file)['email_key']
             with open(self.gs_key_file, 'w') as fp:
