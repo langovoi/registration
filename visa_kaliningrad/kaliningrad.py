@@ -14,7 +14,6 @@ from selenium import webdriver
 class Kaliningrad(BasePage):
     pass
 
-
 if __name__ == "__main__":
     options = webdriver.ChromeOptions()
     options.headless = True
