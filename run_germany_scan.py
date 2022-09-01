@@ -41,33 +41,29 @@ def register_german_visa(termin, category, vc_type):
 
 
 def register(family):
-    try:
-        g = Germany(termin=termin, category=category, vc_type=vc_type)
-        # get captcha from login_page
-        date_slots = family[0]['dates']
-        for date, time in date_slots:
-            print(date)
+    g = Germany(termin=termin, category=category, vc_type=vc_type)
+    # get captcha from login_page
+    date_slots = family[0]['dates']
+    for date, time in date_slots:
+        print(date)
+        code, soup = g.open_register_page(date, time)
+        if None in (code, soup):
+            code, html = g.open_login_page_get_captcha_code()
+            html = g.open_page('appointments', code=code)
+            sleep(1)
             code, soup = g.open_register_page(date, time)
             if None in (code, soup):
-                code, html = g.open_login_page_get_captcha_code()
-                html = g.open_page('appointments', code=code)
-                sleep(1)
-                code, soup = g.open_register_page(date, time)
-                if None in (code, soup):
-                    continue
-            html = str(soup)
-            is_registered = g.register_family(family, date, time, code, soup)
-            logging.warning(f'is_registered: {is_registered}')
-            html_log = '\n\n'.join(x for x in html.splitlines() if x.strip())
-            logging.warning(
-                f'========================== Германия {g.categories[g.category]}: Страница заполнения полей:\n'
-                f'{html_log}\n'
-                f'==========================')
-            if is_registered:
-                break
-    except Exception as e:
-        telegram.send_message(f'Ошибка при регистрации семьи: {family}\n{str(e)}')
-        telegram.send_message(traceback.format_exc())
+                continue
+        html = str(soup)
+        is_registered = g.register_family(family, date, time, code, soup)
+        logging.warning(f'is_registered: {is_registered}')
+        html_log = '\n\n'.join(x for x in html.splitlines() if x.strip())
+        logging.warning(
+            f'========================== Германия {g.categories[g.category]}: Страница заполнения полей:\n'
+            f'{html_log}\n'
+            f'==========================')
+        if is_registered:
+            break
 
 
 if __name__ == "__main__":
