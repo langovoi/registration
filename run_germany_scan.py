@@ -20,7 +20,6 @@ def register_german_visa(termin, category, vc_type):
     if code:
         while True:
             date_time_slots, code = g.open_appointments_page_and_get_dates(code)
-            date_time_slots = [['02.09.2022', '69237'], ['02.09.2022', '69237'], ['02.09.2022', '69237'], ['02.09.2022', '69237']]
             print(code)
             if date_time_slots:
                 family_list = g.get_users_with_dates(date_time_slots, vc_type=vc_type)
