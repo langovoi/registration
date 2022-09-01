@@ -1,12 +1,17 @@
 import undetected_chromedriver as uc
 from time import sleep
 
+import os, sys
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(CURRENT_DIR))
+
 from driver.base_page import BasePage
 from utils import telegram
 
 
 class Kaliningrad(BasePage):
     pass
+
 
 
 if __name__ == "__main__":
