@@ -218,7 +218,7 @@ class Germany():
                 telegram.send_doc(caption=f'🟢 🇩🇪 Германия {self.categories[self.category]}: Успешно записан: {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]}) на {str(time_text)}', html=str(html))
                 for user in family:
                     users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='4')
-                all_emails = self.gs.ws.get_all_values
+                all_emails = self.gs.ws.get_all_values()
                 success = True
                 try:
                     for email in all_emails:
@@ -288,7 +288,8 @@ class Germany():
                 data.update({f'fields[{index}].content': text_fields[id], f'fields[{index}].definitionId': id, f'fields[{index}].index': index,})
             else:
                 telegram.send_doc(f'Неизвестное поле({id}) для категории {self.categories[self.category]}', str(soup))
-        r = self.s.post('https://service2.diplo.de/rktermin/extern/appointment_addAppointment.do', cookies=cookies, headers=headers, data=data).text
+        # r = self.s.post('https://service2.diplo.de/rktermin/extern/appointment_addAppointment.do', cookies=cookies, headers=headers, data=data).text
+        r = '<html>test</html>'
         return r, headers, cookies, data
 
     def open_page(self, page_name: str, **kwargs):

@@ -44,15 +44,12 @@ def register(family):
     # get captcha from login_page
     date_slots = family[0]['dates']
     for date, time in date_slots:
-        print(date)
+        code, html = g.open_login_page_get_captcha_code()
+        g.open_page('appointments', code=code)
+        sleep(1)
         code, soup = g.open_register_page(date, time)
         if None in (code, soup):
-            code, html = g.open_login_page_get_captcha_code()
-            html = g.open_page('appointments', code=code)
-            sleep(1)
-            code, soup = g.open_register_page(date, time)
-            if None in (code, soup):
-                continue
+            continue
         html = str(soup)
         is_registered = g.register_family(family, date, time, code, soup)
         logging.warning(f'is_registered: {is_registered}')
