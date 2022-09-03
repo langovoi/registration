@@ -22,7 +22,7 @@ if __name__ == "__main__":
     try:
         driver.get('https://ruserv.visametric.com/apsys/')
         k = Kaliningrad(driver)
-        k.is_element_invisible('Data Loading...', timeout=60)
+        k.is_element_invisible('Data Loading...', timeout=360)
         k.click_on('ru')
         k.type_in('//input[@id="input-59"]', 'Калининградская область')
         k.click_on('//span[text()="Калининградская область"]')
@@ -34,7 +34,7 @@ if __name__ == "__main__":
         k.type_in('//input[@id="input-178"]', 'Калининград')
         k.click_on('//div[@id="list-item-200-0"]')
         available_date = False
-        dates = ['01/10/2022', '01/12/2022', '01/02/2023', '01/04/2023']
+        dates = ['01/10/2022', '01/12/2022']
         for i in range(len(dates)):
             k.type_in('//input[@id="input-190"]', dates[i])
             k.is_element_invisible('Проверка ближайшей доступной даты подачи документов', timeout=120)
