@@ -9,8 +9,9 @@ from time import sleep
 
 import requests
 from bs4 import BeautifulSoup
+from selenium import webdriver
 
-from utils import captcha, telegram, users, gsheets
+from utils import captcha, telegram, users, gsheets, gmm
 
 
 # National
@@ -215,20 +216,10 @@ class Germany():
             logging.warning(f'Fill fields:{html}')
             soup = BeautifulSoup(html, "lxml")
             if not (soup.find("captcha") or soup.find("div", {"class": "global-error"}) or 'An error occured while processing your appointment' in str(soup)):
-                telegram.send_doc(caption=f'🟢 🇩🇪 Германия {self.categories[self.category]}: Успешно записан: {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]}) на {str(time_text)}', html=str(html))
+                telegram.send_doc(caption=f'🟢 🇩🇪 Германия {self.categories[self.category]}: Успешно записан: {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]}) на {str(time_text)}\nЖду письмо... ', html=str(html))
                 for user in family:
-                    users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='4')
-                all_emails = self.gs.ws.get_all_values()
-                success = True
-                try:
-                    for email in all_emails:
-                        if email[1] == family[0]["vc_mail"]:
-                            i = int(email[0]) + 1
-                            count = int(email[3])
-                            self.gs.ws.update_acell(f'D{i}', count+1)
-                            break
-                except Exception as e:
-                    telegram.send_message(f'Save email exceptions: {str(e)}')
+                    users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='3')
+                self.confirm(family)
                 break
             elif error := soup.find("div", {"class": "global-error"}):
                 logging.warning(f"Error: {error.text}")
@@ -255,6 +246,37 @@ class Germany():
                 success = False
         logging.warning(f'Success: {success}')
         return success
+
+    def confirm(self, family):
+        timeout = 30
+        username = family[0]["vc_mail"]
+        telegram.send_message(f'Германия Жду email({username}) {timeout} мин')
+        emails = self.gs.ws.get_all_values()
+        emails = [email for email in emails if username in email[1]]
+        password = emails[0][2]
+        for _ in range(timeout):
+            soup = gmm.find_regex_in_email_with_title(username, password, 'Terminvereinbarung')
+            if soup:
+                element = soup.find("a", href=lambda
+                    href: href and "https://service2.diplo.de/rktermin/extern/confirmation_appointment.do?" in href)
+                options = webdriver.ChromeOptions()
+                options.headless = True
+                driver = webdriver.Chrome(options=options)
+                driver.get(element['href'])
+                soup = BeautifulSoup(driver.page_source)
+                if soup.find_all(text='Termin bestätigen') or soup.find_all(text='Подтвердить запись на собеседование'):
+                    telegram.send_doc(f'🟩💌 Германия подтвержден email: {username}', str(soup))
+                    comment = f'{element["href"]}{family[0]["vc_comment"]}'
+                    for user in family:
+                        users.update_fields(url=f'{sys.argv[2]}', id=user["id"], body={'vc_comment': {comment}, 'status':'4'})
+
+                else:
+                    telegram.send_doc(f'🔴💌 Германия НЕ подтвержден email: {username}', driver.page_source)
+                break
+            else:
+                sleep(60)
+        else:
+            telegram.send_message(f'🔴💌 Германия НЕ пришел email на {username} за {timeout} минут')
 
     def fill_fields(self, family, date, time, code, soup):
         additional_users = ''

@@ -1,6 +1,7 @@
 name: Germany schengen
 
 on:
+  push:
   schedule:
     - cron: '0 */6 * * *'
 jobs:
@@ -30,14 +31,6 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install git+https://github.com/behave/behave
-      - name: send custom message start
-        if: always()
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: |
-            🟢 GERMANY SCHENGEN JOB IS STARTED 🟢
       - name: create-json
         id: create-json
         uses: jsdaniell/create-json@1.1.2
@@ -50,11 +43,3 @@ jobs:
           GERMANY_REST_URL=${{ secrets.GERMANY_REST_URL }}
           CAPTCHA_API_KEY=${{ secrets.CAPTCHA_API_KEY }}
           python3 run_germany_scan.py "$REST_PASSWORD" "$GERMANY_REST_URL" "TERMIN327" "373" "Inviting" "$CAPTCHA_API_KEY"
-      - name: send custom message
-        if: always()
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: |
-            🐞 GERMANY SCHENGEN JOB IS STOPPED 🐞
