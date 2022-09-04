@@ -44,8 +44,6 @@ if __name__ == "__main__":
             else:
                 telegram.send_doc(f'Калининград: Есть дата', driver.page_source)
                 break
-        else:
-            telegram.send_doc(f'Калининград: Нет дат', driver.page_source)
     except Exception as e:
         telegram.send_doc(f'Калининград: Ошибка {str(e)}', driver.page_source)
     driver.quit()
