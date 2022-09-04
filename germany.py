@@ -219,7 +219,7 @@ class Germany():
                 telegram.send_doc(caption=f'🟢 🇩🇪 Германия {self.categories[self.category]}: Успешно записан: {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]}) на {str(time_text)}\nЖду письмо... ', html=str(html))
                 for user in family:
                     users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='3')
-                self.confirm(family)
+                self.confirm(family, date, time)
                 break
             elif error := soup.find("div", {"class": "global-error"}):
                 logging.warning(f"Error: {error.text}")
@@ -247,7 +247,7 @@ class Germany():
         logging.warning(f'Success: {success}')
         return success
 
-    def confirm(self, family):
+    def confirm(self, family, date, time):
         timeout = 30
         username = family[0]["vc_mail"]
         telegram.send_message(f'Германия Жду email({username}) {timeout} мин')
@@ -266,7 +266,7 @@ class Germany():
                 soup = BeautifulSoup(driver.page_source)
                 if soup.find_all(text='Termin bestätigen') or soup.find_all(text='Подтвердить запись на собеседование'):
                     telegram.send_doc(f'🟩💌 Германия подтвержден email: {username}', str(soup))
-                    comment = f'{element["href"]}{family[0]["vc_comment"]}'
+                    comment = f'{date} {time} - {family[0]["vc_comment"]} - {element["href"]}'
                     for user in family:
                         users.update_fields(url=f'{sys.argv[2]}', id=user["id"], body={'vc_comment': {comment}, 'status':'4'})
 
