@@ -136,21 +136,9 @@ class Germany():
 
     def get_users_with_dates(self, date_time_slots, vc_type):
         self.update_users_emails(vc_type)
-        while len(date_time_slots):
-            for i, user in enumerate(self.users_dict):
-                for date in date_time_slots:
-                    date_from = datetime.strptime(user['vc_date_from'] if user['vc_date_from'] else '2022-01-01',
-                                                  '%Y-%m-%d')
-                    date_to = datetime.strptime(user['vc_date_to'] if user['vc_date_to'] else '3000-01-01', '%Y-%m-%d')
-                    actual_date = datetime.strptime(date[0], '%d.%m.%Y')
-                    if date_from <= actual_date <= date_to:
-                        if not ('dates' in user and date[0] in user['dates']):
-                            self.users_dict[i].setdefault("dates", []).append(date)
-                            date_time_slots.remove(date)
-                            break
-        available_users = [d for d in self.users_dict if 'dates' in d]
         family_list = {}
-        for user in available_users:
+        # get families
+        for user in self.users_dict:
             if user['vc_with'] == '0':
                 family_list[user['id']] = [user]
             else:
@@ -158,6 +146,24 @@ class Germany():
                     family_list[user['vc_with']].append(user)
                 else:
                     family_list[user['vc_with']] = [user]
+        # remove families without dates
+        users = list(family_list.keys())
+        while (len(users)):
+            for i in users:
+                user = family_list[i][0]
+                for date in date_time_slots:
+                    date_from = datetime.strptime(user['vc_date_from'] if user['vc_date_from'] else '2022-01-01',
+                                                  '%Y-%m-%d')
+                    date_to = datetime.strptime(user['vc_date_to'] if user['vc_date_to'] else '3000-01-01', '%Y-%m-%d')
+                    actual_date = datetime.strptime(date[0], '%d.%m.%Y')
+                    if date_from <= actual_date <= date_to:
+                        if not ('dates' in user and date[0] in user['dates']):
+                            family_list[i][0].setdefault("dates", []).append(date)
+                            date_time_slots.remove(date)
+                            break
+                else:
+                    users.remove(i)
+        family_list = {k: v for k, v in family_list.items() if 'dates' in v[0]}
         return family_list
 
     def update_users_emails(self, vc_type):
@@ -265,18 +271,18 @@ class Germany():
                 driver.get(element['href'])
                 soup = BeautifulSoup(driver.page_source)
                 if soup.find_all(text='Termin bestätigen') or soup.find_all(text='Подтвердить запись на собеседование'):
-                    telegram.send_doc(f'🟩💌 Германия подтвержден email: {username}', str(soup))
+                    telegram.send_doc(f'🟩💌 Германия подтвержден email: {username}\n{element["href"]}', str(soup))
                     comment = f'{date} {time} - {family[0]["vc_comment"]} - {element["href"]}'
-                    for user in family:
-                        users.update_fields(url=f'{sys.argv[2]}', id=user["id"], body={'vc_comment': {comment}, 'status':'4'})
-
+                    for user in family: users.update_fields(url=f'{sys.argv[2]}', id=user["id"], body={'vc_comment': {comment}, 'status':'4'})
                 else:
-                    telegram.send_doc(f'🔴💌 Германия НЕ подтвержден email: {username}', driver.page_source)
+                    telegram.send_doc(f'🔴💌 Германия НЕ подтвержден email: {username}\n{element["href"]}', driver.page_source)
+                    for user in family: users.update_fields(url=f'{sys.argv[2]}', id=user["id"], body={'status':'2'})
                 break
             else:
                 sleep(60)
         else:
             telegram.send_message(f'🔴💌 Германия НЕ пришел email на {username} за {timeout} минут')
+            for user in family: users.update_fields(url=f'{sys.argv[2]}', id=user["id"], body={'status':'2'})
 
     def fill_fields(self, family, date, time, code, soup):
         additional_users = ''
@@ -310,8 +316,7 @@ class Germany():
                 data.update({f'fields[{index}].content': text_fields[id], f'fields[{index}].definitionId': id, f'fields[{index}].index': index,})
             else:
                 telegram.send_doc(f'Неизвестное поле({id}) для категории {self.categories[self.category]}', str(soup))
-        # r = self.s.post('https://service2.diplo.de/rktermin/extern/appointment_addAppointment.do', cookies=cookies, headers=headers, data=data).text
-        r = '<html>test</html>'
+        r = self.s.post('https://service2.diplo.de/rktermin/extern/appointment_addAppointment.do', cookies=cookies, headers=headers, data=data).text
         return r, headers, cookies, data
 
     def open_page(self, page_name: str, **kwargs):
