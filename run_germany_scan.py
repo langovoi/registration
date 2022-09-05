@@ -32,6 +32,8 @@ def register_german_visa(termin, category, vc_type):
                     germ_obj = g
                     with Pool(len(families) if len(families) < 9 else 8) as p:
                         p.map(register, families)
+                else:
+                    sleep(3600 if sys.argv[5] == 'National' else 60)
             else:
                 sleep(3600 if sys.argv[5] == 'National' else 60)
                 # else:
