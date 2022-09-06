@@ -272,7 +272,7 @@ class Germany():
         elif self.category == '2845' : # elif self.category == '2845':
             text_fields = {'10784': f'{len(family)}', '10782': family[0]["vc_phone"].replace("+", "").replace(" ", ""), '10777': family[0]["vc_birth"], '10779': family[0]["vc_passport"], '10783': additional_users, '10807': inviting if inviting else "hotel", '10785': inviting if inviting else "hotel"}
             data = {'lastname': f'{family[0]["vc_surname"]}', 'firstname': f'{family[0]["vc_name"]}', 'email': f'{family[0]["vc_mail"]}', 'emailrepeat': f'{family[0]["vc_mail"]}',
-                    'numVisitors': f'{len(family)}', 'captchaText': {code}, 'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Submit', 'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}'}
+                    'captchaText': {code}, 'date': f'{date}', 'dateStr': f'{date}', 'action:appointment_addAppointment': 'Submit', 'locationCode': 'mins', 'realmId': '231', 'categoryId': f'{self.category}', 'openingPeriodId': f'{time}'}
         else:
             raise RuntimeError(f'Неизвестная категория: {self.category}')
 

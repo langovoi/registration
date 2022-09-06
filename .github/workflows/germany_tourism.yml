@@ -42,4 +42,4 @@ jobs:
           REST_PASSWORD=${{ secrets.REST_PASSWORD }}
           GERMANY_REST_URL=${{ secrets.GERMANY_REST_URL }}
           CAPTCHA_API_KEY=${{ secrets.CAPTCHA_API_KEY }}
-          python3 run_germany_scan.py "$REST_PASSWORD" "$GERMANY_REST_URL" "TERMIN327" "2845" "Tourism" "$CAPTCHA_API_KEY"
+          python3 run_germany_scan.py "$REST_PASSWORD" "$GERMANY_REST_URL" "TERMIN344" "2845" "Tourism" "$CAPTCHA_API_KEY"
