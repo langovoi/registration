@@ -23,40 +23,43 @@ def make_seen(username, password):
         mail.uid('fetch', latest_email_uid, '(RFC822)')
 
 
-def find_regex_in_email_with_title(username, password, subj):
+def find_regex_in_email_with_title(username, password, subj, folders=None):
+    if folders is None:
+        folders = ["Inbox", "INBOX/Newsletters"]
     mail = imaplib.IMAP4_SSL(get_imap(username))
     mail.login(username, password)
     mail.list()
-    mail.select('inbox')
-    result, data = mail.uid('search', None, "UNSEEN")  # (ALL/UNSEEN)
-    i = len(data[0].split())  # emails count
-    soup = ""
-    for x in range(i):
-        latest_email_uid = data[0].split()[x]
-        result, email_data = mail.uid('fetch', latest_email_uid, '(RFC822)')
-        raw_email_string = email_data[0][1].decode('utf-8')
-        email_message = email.message_from_string(raw_email_string)
+    s = []
+    for folder in folders:
+        mail.select(folder)
+        result, data = mail.uid('search', None, "UNSEEN")  # (ALL/UNSEEN)
+        i = len(data[0].split())  # emails count
+        for x in range(i):
+            latest_email_uid = data[0].split()[x]
+            result, email_data = mail.uid('fetch', latest_email_uid, '(RFC822)')
+            raw_email_string = email_data[0][1].decode('utf-8')
+            email_message = email.message_from_string(raw_email_string)
 
-        # Header Details
-        date_tuple = email.utils.parsedate_tz(email_message['Date'])
-        if date_tuple:
-            local_date = datetime.datetime.fromtimestamp(email.utils.mktime_tz(date_tuple))
-            local_message_date = "%s" % (str(local_date.strftime("%a, %d %b %Y %H:%M:%S")))
-        email_from = str(email.header.make_header(email.header.decode_header(email_message['From'])))
-        email_to = str(email.header.make_header(email.header.decode_header(email_message['To'])))
-        subject = str(email.header.make_header(email.header.decode_header(email_message['Subject'])))
-        # Body details
-        if subj in subject:
-            for part in email_message.walk():
-                print(subject)
-                if part.get_content_type() == "text/html":
-                    body = part.get_payload(decode=True)
-                    soup = BeautifulSoup(body.decode('utf-8'), "lxml")
-                    break
-                else:
-                    continue
-            break
-    return soup
+            # Header Details
+            date_tuple = email.utils.parsedate_tz(email_message['Date'])
+            if date_tuple:
+                local_date = datetime.datetime.fromtimestamp(email.utils.mktime_tz(date_tuple))
+                local_message_date = "%s" % (str(local_date.strftime("%a, %d %b %Y %H:%M:%S")))
+            email_from = str(email.header.make_header(email.header.decode_header(email_message['From'])))
+            email_to = str(email.header.make_header(email.header.decode_header(email_message['To'])))
+            subject = str(email.header.make_header(email.header.decode_header(email_message['Subject'])))
+            # Body details
+            if subj in subject:
+                for part in email_message.walk():
+                    print(subject)
+                    if part.get_content_type() == "text/html":
+                        body = part.get_payload(decode=True)
+                        soup = BeautifulSoup(body.decode('utf-8'), "lxml")
+                        s.append(soup)
+                        break
+                    else:
+                        continue
+    return s
 
 
 def clear_mailbox(username, password):

@@ -1,6 +1,8 @@
 # Remember to use your own values from my.telegram.org!
 import json
 import os
+import random
+from time import sleep
 
 import telebot
 
@@ -33,7 +35,16 @@ def send_doc(caption, html):
         bot.send_document(chat_id=chat_id, document=open("page_source.html", "rb"), caption=caption[:2048])
         bot.stop_bot()
     except Exception:
-        pass
+        sleep(random.randint(2, 10))
+        try:
+            with open("page_source.html", "w") as f:
+                f.write(html)
+            bot = telebot.TeleBot(config['telegram_token'])
+            chat_id = config['telegram_to']
+            bot.send_document(chat_id=chat_id, document=open("page_source.html", "rb"), caption=caption[:2048])
+            bot.stop_bot()
+        except Exception:
+            pass
 
 
 def send_image(image_name, caption):

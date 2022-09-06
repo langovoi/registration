@@ -37,7 +37,7 @@ class Germany():
         self.users_dict = users.get_users(vc_type)
         self.categories = {'373': "Шенген", '2845': "Туризм", '375': "Национальная"}
         self.errors = []
-        self.gs = gsheets.GoogleSheets('mail_ru')
+        self.gs = gsheets.GoogleSheets('germany')
 
     def get_session_id(self, url):
         self.s = requests.Session()
@@ -225,7 +225,6 @@ class Germany():
                 telegram.send_doc(caption=f'🟢 🇩🇪 Германия {self.categories[self.category]}: Успешно записан: {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]}) на {str(time_text)}\nЖду письмо... ', html=str(html))
                 for user in family:
                     users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='3')
-                self.confirm(family, date, time)
                 break
             elif error := soup.find("div", {"class": "global-error"}):
                 logging.warning(f"Error: {error.text}")
@@ -253,43 +252,12 @@ class Germany():
         logging.warning(f'Success: {success}')
         return success
 
-    def confirm(self, family, date, time):
-        timeout = 30
-        username = family[0]["vc_mail"]
-        telegram.send_message(f'Германия Жду email({username}) {timeout} мин')
-        emails = self.gs.ws.get_all_values()
-        emails = [email for email in emails if username in email[1]]
-        password = emails[0][2]
-        for _ in range(timeout):
-            soup = gmm.find_regex_in_email_with_title(username, password, 'Terminvereinbarung')
-            if soup:
-                element = soup.find("a", href=lambda
-                    href: href and "https://service2.diplo.de/rktermin/extern/confirmation_appointment.do?" in href)
-                options = webdriver.ChromeOptions()
-                options.headless = True
-                driver = webdriver.Chrome(options=options)
-                driver.get(element['href'])
-                soup = BeautifulSoup(driver.page_source)
-                if soup.find_all(text='Termin bestätigen') or soup.find_all(text='Подтвердить запись на собеседование'):
-                    telegram.send_doc(f'🟩💌 Германия подтвержден email: {username}\n{element["href"]}', str(soup))
-                    comment = f'{date} {time} - {family[0]["vc_comment"]} - {element["href"]}'
-                    for user in family: users.update_fields(url=f'{sys.argv[2]}', id=user["id"], body={'vc_comment': {comment}, 'status':'4'})
-                else:
-                    telegram.send_doc(f'🔴💌 Германия НЕ подтвержден email: {username}\n{element["href"]}', driver.page_source)
-                    for user in family: users.update_fields(url=f'{sys.argv[2]}', id=user["id"], body={'status':'2'})
-                break
-            else:
-                sleep(60)
-        else:
-            telegram.send_message(f'🔴💌 Германия НЕ пришел email на {username} за {timeout} минут')
-            for user in family: users.update_fields(url=f'{sys.argv[2]}', id=user["id"], body={'status':'2'})
-
     def fill_fields(self, family, date, time, code, soup):
         additional_users = ''
         if len(family) > 1:
             for additional_user in family[1:]:
                 user = f"{additional_user['vc_surname']}, {additional_user['vc_name']}, {additional_user['vc_passport']}"
-                additional_users = user if additional_users != '' else f'{additional_users}, {user}'
+                additional_users = user if additional_users == '' else f'{additional_users}, {user}'
         cookies = {'JSESSIONID': f'{self.session_id}', 'KEKS': f'{self.termin[0]}',}
         headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Accept-Language': 'en-US,en;q=0.9', 'Cache-Control': 'max-age=0', 'Connection': 'keep-alive', 'Origin': 'https://service2.diplo.de', 'Referer': 'https://service2.diplo.de/rktermin/extern/appointment_showForm.do', 'Sec-Fetch-Dest': 'document', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-User': '?1', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', 'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"macOS"',}
         inviting = family[0]["vc_inviting"]
