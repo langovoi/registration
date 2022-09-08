@@ -22,3 +22,4 @@ Pillow
 httpx[http2]
 oauth2client
 nord
+clipboard

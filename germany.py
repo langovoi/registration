@@ -23,7 +23,7 @@ from utils import captcha, telegram, users, gsheets, gmm
 # category = '373'
 
 # Tourism
-# termin = ['TERMIN325', 'TERMIN327']
+# termin = ['TERMIN325', 'TERMIN344']
 # category = '2845'
 
 # status:0

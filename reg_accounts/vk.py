@@ -8,9 +8,9 @@ from utils import gsheets
 from utils.sim import Sim
 
 
-
 def register_vk(user):
     driver = uc.Chrome()
+    driver.delete_all_cookies()
     driver.implicitly_wait(30)
     driver.get('https://vk.com')
     driver.find_element(By.XPATH, '//button[contains(@class,"VkIdForm__signUpButton")]').click()
@@ -19,6 +19,12 @@ def register_vk(user):
         sim = Sim('russia', 'vkontakte')
         sim_id, sim_phone = sim.sim_id, sim.sim_phone.replace('+', '')
         print(sim_phone)
+        bl = gsheets.GoogleSheets('vk_blacklist')
+        black_list = bl.ws.get_all_values()
+        if [sim_phone] in black_list:
+            sim.ban_sim()
+            driver.quit()
+            return None, None
         phone_field.click()
         phone_field.clear()
         phone_field.click()
@@ -35,7 +41,8 @@ def register_vk(user):
             break
         else:
             sim.ban_sim()
-            driver.back()
+            driver.quit()
+            return None, None
     else:
         raise RuntimeError('')
     driver.find_element(By.XPATH, '//input[@id="otp"]').send_keys(code)
@@ -43,20 +50,30 @@ def register_vk(user):
 
     user_id, user_surname, user_name, user_dob, user_phone, user_password = user
     if len(driver.find_elements(By.XPATH, '//input[@name="first_name"]')) == 0:
-        return user_id, sim_phone
+        bl.ws.update_acell(f'A{len(black_list)+1}', sim_phone)
+        return user_id, None
     driver.find_element(By.XPATH, '//input[@name="first_name"]').send_keys(user_name)
     driver.find_element(By.XPATH, '//input[@name="last_name"]').send_keys(user_surname)
     sleep(2)
     driver.find_element(By.XPATH, '//input[@name="birthday"]').send_keys(user_dob)
+    sleep(4)
     driver.find_element(By.XPATH, '//button[@type="submit"]').click()
-    driver.find_element(By.XPATH, '//button[@class="flat_button button_big_text"]').click()  # не нажимает
+    try:
+        driver.find_element(By.XPATH, '//button[@class="flat_button button_big_text"]').click()  # не нажимает
+    except Exception as e:
+        bd = driver.find_element(By.XPATH, '//input[@name="birthday"]')
+        bd.click()
+        bd.send_keys(Keys.BACKSPACE)
+        bd.send_keys(user_dob[-1])
+        sleep(2)
+        driver.find_element(By.XPATH, '//button[@type="submit"]').click()
+        driver.find_element(By.XPATH, '//button[@class="flat_button button_big_text"]').click()  # не нажимает
     driver.find_element(By.XPATH, '//a[@class="join_skip_link"]').click()
     driver.find_element(By.XPATH, '//a[@class="join_skip_link"]').click()
     # указать почту
     # driver.find_element(By.XPATH, '//input[@id="pedit_email"]').send_keys('test@test.com')
     # class="flat_button button_big_text button_disabled"
     driver.find_element(By.XPATH, '//a[@class="join_skip_link"]').click()
-
     sleep(2)
     driver.get('https://id.vk.com/account/#/password-change')
     driver.find_element(By.XPATH, '//span[contains(@class, "vkuiButton__in")]/..').click()
@@ -69,17 +86,19 @@ def register_vk(user):
     driver.find_element(By.XPATH, '//span[contains(@class, "vkuiButton__in")]/..').click()
     driver.find_element(By.XPATH, '//input[@name="new_password"]').send_keys('Ab123456!')
     driver.find_element(By.XPATH, '//input[@name="new_password_repeat"]').send_keys('Ab123456!')
+    sleep(2)
     driver.find_element(By.XPATH, '//span[contains(@class, "vkuiButton__in")]/..').click()
-    driver.find_element(By.XPATH, '//span[contains(@class, "vkuiButton__in")]/..').click()
+    driver.find_element(By.XPATH, '//h2[text()="Password set"]').is_displayed()
     sleep(2)
     driver.quit()
     return user_id, sim_phone
 
 
 if __name__ == "__main__":
-    for i in range(20):
+    for i in range(9):
         gs = gsheets.GoogleSheets('vk')
         users = gs.ws.get_all_values()[1:]
         users = [user for user in users if not user[4]]
         user_id, sim_phone = register_vk(users[0])
-        gs.ws.update_acell(f'E{int(user_id) + 1}', f"'{sim_phone}")
+        if sim_phone:
+            gs.ws.update_acell(f'E{int(user_id) + 1}', f"'{sim_phone}")
