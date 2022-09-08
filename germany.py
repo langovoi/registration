@@ -232,7 +232,7 @@ class Germany():
                     code = captcha.get_code(str(soup), f'The entered text was wrong {self.category}')
                 elif "This entry needs to be unique" in error.text:
                     for user in family:
-                        users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='4')
+                        users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='3')
                     telegram.send_doc(
                         caption=f'⭕ 🇩🇪 Германия: {self.categories[self.category]}: Уже зарегистрирован ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})\nОшибка: {error.text.strip()}', html=str(soup))
                     success = True
