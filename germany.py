@@ -153,8 +153,10 @@ class Germany():
                 user = family_list[i][0]
                 for date in date_time_slots:
                     date_from = datetime.strptime(user['vc_date_from'] if user['vc_date_from'] else '2022-01-01', '%Y-%m-%d').date()
-                    if user['vc_before_visit'] == '1' and date_from <= datetime.today().date() + timedelta(days=1):
-                        date_from = datetime.today().date() + timedelta(days=2)
+                    date_shift = user['vc_before_visit']
+                    date_shift = int(date_shift) if date_shift else 0
+                    min_date = datetime.today().date() + timedelta(days=date_shift+1)
+                    date_from = date_from if date_from >= min_date else min_date
                     date_to = datetime.strptime(user['vc_date_to'] if user['vc_date_to'] else '3000-01-01', '%Y-%m-%d').date()
                     actual_date = datetime.strptime(date[0], '%d.%m.%Y').date()
                     if date_from <= actual_date <= date_to:
