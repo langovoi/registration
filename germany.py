@@ -3,7 +3,7 @@ import logging
 import http.client
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from operator import itemgetter
 from time import sleep
 
@@ -152,10 +152,11 @@ class Germany():
             for i in users:
                 user = family_list[i][0]
                 for date in date_time_slots:
-                    date_from = datetime.strptime(user['vc_date_from'] if user['vc_date_from'] else '2022-01-01',
-                                                  '%Y-%m-%d')
-                    date_to = datetime.strptime(user['vc_date_to'] if user['vc_date_to'] else '3000-01-01', '%Y-%m-%d')
-                    actual_date = datetime.strptime(date[0], '%d.%m.%Y')
+                    date_from = datetime.strptime(user['vc_date_from'] if user['vc_date_from'] else '2022-01-01', '%Y-%m-%d').date()
+                    if user['vc_before_visit'] == '1' and date_from <= datetime.today().date() + timedelta(days=1):
+                        date_from = datetime.today().date() + timedelta(days=2)
+                    date_to = datetime.strptime(user['vc_date_to'] if user['vc_date_to'] else '3000-01-01', '%Y-%m-%d').date()
+                    actual_date = datetime.strptime(date[0], '%d.%m.%Y').date()
                     if date_from <= actual_date <= date_to:
                         if not ('dates' in user and date[0] in user['dates']):
                             family_list[i][0].setdefault("dates", []).append(date)
@@ -227,13 +228,13 @@ class Germany():
                     users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='3')
                 all_emails = self.gs.ws.get_all_values()
                 email = [email for email in all_emails if email[1] == family[0]["vc_mail"]][0]
-                row, email, password, used, wait, date, family = email
-                i = int(row) + 1
+                s_row, s_email, s_password, s_used, s_wait, s_date, s_family = email
+                i = int(s_row) + 1
                 # Select a range
                 cell_list = self.gs.ws.range(f'E{i}:G{i}')
-                cell_list[0].value = int(wait) - 1
+                cell_list[0].value = int(s_wait) - 1
                 cell_list[1].value = datetime.now()
-                cell_list[2].value = [f['id'] for f in family]
+                cell_list[2].value = str([f['id'] for f in family])
                 self.gs.ws.update_cells(cell_list)
                 break
             elif error := soup.find("div", {"class": "global-error"}):
