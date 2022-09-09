@@ -225,6 +225,16 @@ class Germany():
                 telegram.send_doc(caption=f'🟢 🇩🇪 Германия {self.categories[self.category]}: Успешно записан: {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]}) на {str(time_text)}\nЖду письмо... ', html=str(html))
                 for user in family:
                     users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='3')
+                all_emails = self.gs.ws.get_all_values()
+                email = [email for email in all_emails if email[1] == family[0]["vc_mail"]][0]
+                row, email, password, used, wait, date, family = email
+                i = int(row) + 1
+                # Select a range
+                cell_list = self.gs.ws.range(f'E{i}:G{i}')
+                cell_list[0].value = int(wait) - 1
+                cell_list[1].value = datetime.now()
+                cell_list[2].value = [f['id'] for f in family]
+                self.gs.ws.update_cells(cell_list)
                 break
             elif error := soup.find("div", {"class": "global-error"}):
                 logging.warning(f"Error: {error.text}")
