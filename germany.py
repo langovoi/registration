@@ -236,7 +236,7 @@ class Germany():
                 cell_list = self.gs.ws.range(f'E{i}:G{i}')
                 cell_list[0].value = int(s_wait) - 1
                 cell_list[1].value = datetime.now()
-                cell_list[2].value = str([f['id'] for f in family])
+                cell_list[2].value = json.dumps(family, indent=4, sort_keys=True, default=str)
                 self.gs.ws.update_cells(cell_list)
                 break
             elif error := soup.find("div", {"class": "global-error"}):
