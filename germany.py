@@ -38,6 +38,8 @@ class Germany():
         self.categories = {'373': "Шенген", '2845': "Туризм", '375': "Национальная"}
         self.errors = []
         self.gs = gsheets.GoogleSheets('germany')
+        self.gs_registered = gsheets.GoogleSheets('germany_registered')
+
 
     def get_session_id(self, url):
         self.s = requests.Session()

@@ -1,24 +1,14 @@
-import base64
-import json
-import logging
-import os
-import sys
-from datetime import datetime
 from time import sleep
 
 import requests
-from bs4 import BeautifulSoup
-from twocaptcha import TwoCaptcha
 
-from utils import telegram
+from utils import config
 
 
 class Sim:
     def __init__(self, country, product):
         self.s = requests.Session()
-        config_file = os.path.dirname(os.path.dirname(__file__)) + "/config.json"
-        with open(config_file) as json_file:
-            self.api_key = json.load(json_file)['sim_key']
+        self.api_key = config.get_data('config', 'sim_key')
         self.sim_id, self.sim_phone = self.get_new_number(country, product)
 
     def get_new_number(self, country, product):
