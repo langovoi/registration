@@ -1,10 +1,7 @@
-import json
-import os
-
 import gspread
 from google.oauth2.service_account import Credentials
 
-from utils import cfg
+import cfg
 
 
 class GoogleSheets:
