@@ -2,9 +2,10 @@ import gspread
 from google.oauth2.service_account import Credentials
 
 import cfg
-
+import sys
 
 class GoogleSheets:
+    sys.path.append('../')
     gs_key_file = cfg.create_json('email_key')
     data_columns = {'id': 'A',
                     'email': 'B',
