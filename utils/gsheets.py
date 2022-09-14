@@ -1,7 +1,7 @@
 import gspread
 from google.oauth2.service_account import Credentials
 
-import cfg
+from utils import cfg
 
 
 class GoogleSheets:

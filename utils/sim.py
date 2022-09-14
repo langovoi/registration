@@ -2,7 +2,7 @@ from time import sleep
 
 import requests
 
-import cfg
+from utils import cfg
 
 
 class Sim:

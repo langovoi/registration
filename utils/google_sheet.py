@@ -2,7 +2,7 @@ import datetime
 import json
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-import cfg
+from utils import cfg
 
 
 class GoogleSheets:
