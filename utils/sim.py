@@ -2,16 +2,16 @@ from time import sleep
 
 import requests
 
-from utils import config
+from utils import cfg
 
 
 class Sim:
-    def __init__(self, country, product):
+    def __init__(self, country, product, max_price=10):
         self.s = requests.Session()
-        self.api_key = config.get_data('config', 'sim_key')
-        self.sim_id, self.sim_phone = self.get_new_number(country, product)
+        self.api_key = cfg.get_data('config', 'sim_key')
+        self.sim_id, self.sim_phone = self.get_new_number(country, product, max_price)
 
-    def get_new_number(self, country, product):
+    def get_new_number(self, country, product, max_price = 10):
         for _ in range(6):
             try:
                 r = self.s.get(f'https://5sim.net/v1/guest/prices?country={country}&product={product}')
@@ -19,7 +19,7 @@ class Sim:
                     prices = r.json()[country][product]
                 else:
                     raise RuntimeError(f'Ошибка 5sim({r.status_code}): {r.text}')
-                valid_operators = {k: v for k, v in prices.items() if v['count'] and v['cost'] < 10}
+                valid_operators = {k: v for k, v in prices.items() if v['count'] and v['cost'] < max_price}
                 operator = list(valid_operators.keys())[0]
 
                 headers = {'Authorization': f"Bearer {self.api_key}", 'Accept': 'application/json', }

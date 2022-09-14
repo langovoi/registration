@@ -4,11 +4,11 @@ import os
 import gspread
 from google.oauth2.service_account import Credentials
 
-from utils import config
+from utils import cfg
 
 
 class GoogleSheets:
-    gs_key_file = config.create_json('email_key')
+    gs_key_file = cfg.create_json('email_key')
     data_columns = {'id': 'A',
                     'email': 'B',
                     'password': 'C',

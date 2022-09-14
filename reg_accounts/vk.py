@@ -1,3 +1,4 @@
+from multiprocessing import Pool
 from time import sleep
 
 import undetected_chromedriver as uc
@@ -50,7 +51,7 @@ def register_vk(user):
 
     user_id, user_surname, user_name, user_dob, user_phone, user_password = user
     if len(driver.find_elements(By.XPATH, '//input[@name="first_name"]')) == 0:
-        bl.ws.update_acell(f'A{len(black_list)+1}', sim_phone)
+        bl.ws.update_acell(f'A{len(black_list) + 1}', sim_phone)
         return user_id, None
     driver.find_element(By.XPATH, '//input[@name="first_name"]').send_keys(user_name)
     driver.find_element(By.XPATH, '//input[@name="last_name"]').send_keys(user_surname)
@@ -94,11 +95,15 @@ def register_vk(user):
     return user_id, sim_phone
 
 
+def register(val):
+    gs = gsheets.GoogleSheets('vk')
+    users = gs.ws.get_all_values()[1:]
+    users = [user for user in users if not user[4]]
+    user_id, sim_phone = register_vk(users[0])
+    if sim_phone:
+        gs.ws.update_acell(f'E{int(user_id) + 1}', f"'{sim_phone}")
+
+
 if __name__ == "__main__":
-    for i in range(9):
-        gs = gsheets.GoogleSheets('vk')
-        users = gs.ws.get_all_values()[1:]
-        users = [user for user in users if not user[4]]
-        user_id, sim_phone = register_vk(users[0])
-        if sim_phone:
-            gs.ws.update_acell(f'E{int(user_id) + 1}', f"'{sim_phone}")
+    with Pool(processes=1) as p:
+        p.map(register, ['12', '12'])

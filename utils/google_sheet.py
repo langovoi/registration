@@ -2,7 +2,7 @@ import datetime
 import json
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from utils import config
+from utils import cfg
 
 
 class GoogleSheets:
@@ -32,8 +32,8 @@ class GoogleSheets:
         """
         GS authorization
         """
-        scope = config.GOOGLE_AUTH_SCOPES
-        credentials = ServiceAccountCredentials.from_json_keyfile_name(config.GOOGLE_API_PROJECT, scope)
+        scope = cfg.GOOGLE_AUTH_SCOPES
+        credentials = ServiceAccountCredentials.from_json_keyfile_name(cfg.GOOGLE_API_PROJECT, scope)
         google_sheet = gspread.authorize(credentials)
         return google_sheet
 
