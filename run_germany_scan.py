@@ -10,7 +10,6 @@ from copy import deepcopy
 termin = ['TERMIN325', sys.argv[3]]
 category = sys.argv[4]
 vc_type = sys.argv[5]
-germ_obj = Germany(termin=termin, category=category, vc_type=vc_type)
 
 
 def register_german_visa(termin, category, vc_type):
@@ -28,8 +27,6 @@ def register_german_visa(termin, category, vc_type):
                     families.sort(key=len, reverse=True)
                     fam_str = '\n'.join([f'{family[0]["vc_surname"]} {family[0]["vc_name"]} из {len(family)} членов на {family[0]["dates"]}' for family in families])
                     telegram.send_message(f'🟡 Германия {g.categories[category]}: Начинаю регистрировать:\n{fam_str}')
-                    global germ_obj
-                    germ_obj = g
                     with Pool(len(families) if len(families) < 9 else 8) as p:
                         p.map(register, families)
                 else:
