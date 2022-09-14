@@ -1,11 +1,34 @@
+import json
+import os
+from pathlib import Path
+
 import gspread
 from google.oauth2.service_account import Credentials
 
-from utils import cfg
+
+def get_project_root() -> str:
+    return str(Path(__file__).parent.parent)
+
+
+def create_json(section, file_name=None):
+    gs_key_file = get_project_root() + f"/{file_name if file_name else section}.json"
+    if not os.path.isfile(gs_key_file):
+        config_file = get_project_root() + "/config.json"
+        with open(config_file) as json_file:
+            data = json.load(json_file)[section]
+        with open(gs_key_file, 'w') as fp:
+            json.dump(data, fp)
+    return gs_key_file
+
+
+def get_data(file_name, section):
+    config_file = get_project_root() + f"/{file_name}.json"
+    with open(config_file) as json_file:
+        return json.load(json_file)[section]
 
 
 class GoogleSheets:
-    gs_key_file = cfg.create_json('email_key')
+    gs_key_file = create_json('email_key')
     data_columns = {'id': 'A',
                     'email': 'B',
                     'password': 'C',
