@@ -2,13 +2,13 @@ from time import sleep
 
 import requests
 
-from utils import cfg
+from utils import gsheets
 
 
 class Sim:
     def __init__(self, country, product, max_price=10):
         self.s = requests.Session()
-        self.api_key = cfg.get_data('config', 'sim_key')
+        self.api_key = gsheets.get_data('config', 'sim_key')
         self.sim_id, self.sim_phone = self.get_new_number(country, product, max_price)
 
     def get_new_number(self, country, product, max_price = 10):

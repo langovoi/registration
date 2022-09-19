@@ -174,9 +174,9 @@ class Germany():
     def update_users_emails(self, vc_type):
         self.users_dict = users.get_users(vc_type)
         all_emails = self.gs.ws.get_all_values()
-        all_emails = all_emails[2:]
+        all_emails = [email for email in all_emails if email[4] == '0']
         all_emails = sorted(all_emails, key=itemgetter(3))
-        users_without_email_assigned = [user for user in self.users_dict if '|' not in user['vc_comment']]
+        users_without_email_assigned = [user for user in self.users_dict if ('|' not in user['vc_comment'] and user['vc_with'] == '0')]
         # add email to comment in agent
         for i, user in enumerate(users_without_email_assigned):
             users.update_fields(url=f'{sys.argv[2]}', id=user['id'], body={'vc_comment': f'{user["vc_comment"]}|{all_emails[i][1]}|'})
@@ -232,13 +232,12 @@ class Germany():
                     users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='3')
                 all_emails = self.gs.ws.get_all_values()
                 email = [email for email in all_emails if email[1] == family[0]["vc_mail"]][0]
-                s_row, s_email, s_password, s_used, s_wait, s_date, s_family = email
+                s_row, s_email, s_imap_password, s_password, s_used, s_wait, s_family = email
                 i = int(s_row) + 1
                 # Select a range
-                cell_list = self.gs.ws.range(f'E{i}:G{i}')
-                cell_list[0].value = int(s_wait) - 1
-                cell_list[1].value = datetime.now()
-                cell_list[2].value = json.dumps(family, indent=4, sort_keys=True, default=str)
+                cell_list = self.gs.ws.range(f'F{i}:G{i}')
+                cell_list[0].value = int(s_wait) + 1
+                cell_list[1].value = len(family)
                 self.gs.ws.update_cells(cell_list)
                 break
             elif error := soup.find("div", {"class": "global-error"}):
