@@ -182,7 +182,8 @@ class Germany():
             users.update_fields(url=f'{sys.argv[2]}', id=user['id'], body={'vc_comment': f'{user["vc_comment"]}|{all_emails[i][1]}|'})
         self.users_dict = users.get_users(vc_type)
         for i, user in enumerate(self.users_dict):
-            self.users_dict[i]['vc_mail'] = user['vc_comment'].split('|')[1]
+            if '|' in user['vc_comment']:
+                self.users_dict[i]['vc_mail'] = user['vc_comment'].split('|')[1]
 
     def open_register_page(self, date, time):
         http.client._MAXLINE = 655360
