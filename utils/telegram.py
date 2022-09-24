@@ -48,6 +48,9 @@ def send_doc(caption, html):
 
 
 def send_image(image_name, caption):
+    if type(image_name) is not str:
+        image_name.save_screenshot('screenshot.png')
+        image_name = 'screenshot.png'
     try:
         bot = telebot.TeleBot(config['telegram_token'])
         chat_id = config['telegram_to']

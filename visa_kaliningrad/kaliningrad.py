@@ -88,4 +88,5 @@ if __name__ == "__main__":
                 except Exception as e:
                     telegram.send_doc(f'Калининград ошибка: {str(e)}', driver.page_source)
         except Exception as e:
+            telegram.send_image(driver, 'Калининград ошибка')
             telegram.send_message(f'Калининград ошибка: {str(e)}')
