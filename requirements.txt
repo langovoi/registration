@@ -24,3 +24,4 @@ oauth2client
 nord
 clipboard
 pydrive
+python-dateutil

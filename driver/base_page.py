@@ -58,7 +58,7 @@ class BasePage:
 
     def get_element_by_name(self, element):
         if type(element) is str:
-            if element.startswith('//'):
+            if element.startswith('//') or element.startswith('(//'):
                 return (By.XPATH, element)
             else:
                 return (By.XPATH, f'//*[contains(text(),"{element}")]|//*[contains(@value,"{element}")]')

@@ -2,6 +2,7 @@ import datetime
 import imaplib, email
 import quopri
 import re
+import logging
 
 from bs4 import BeautifulSoup
 
@@ -24,11 +25,12 @@ def make_seen(username, password):
 
 
 def find_regex_in_email_with_title(username, password, subj, folders=None):
-    if folders is None:
-        folders = ["Inbox", "INBOX/Newsletters"]
     mail = imaplib.IMAP4_SSL(get_imap(username))
     mail.login(username, password)
     mail.list()
+    folders = []
+    for i in mail.list()[1]:
+        folders.append(i.decode().split(' "/" ')[1].replace('"',''))
     s = []
     for folder in folders:
         mail.select(folder)
@@ -51,7 +53,7 @@ def find_regex_in_email_with_title(username, password, subj, folders=None):
             # Body details
             if subj in subject:
                 for part in email_message.walk():
-                    print(subject)
+                    logging.warning(subject)
                     if part.get_content_type() == "text/html":
                         body = part.get_payload(decode=True)
                         soup = BeautifulSoup(body.decode('utf-8'), "lxml")
