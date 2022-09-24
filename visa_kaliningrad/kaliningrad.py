@@ -26,7 +26,6 @@ if __name__ == "__main__":
     while True:
         logging.warning('1')
         options = webdriver.ChromeOptions()
-        options.headless = True
         driver = uc.Chrome(options=options)
         driver.delete_all_cookies()
         driver.get('https://appt.ruserv.visametric.com')
@@ -41,6 +40,8 @@ if __name__ == "__main__":
             f.type_in('//input', email)
             f.click_on('//span[text()="продолжить"]/..')
             f.click_on('//span[text()="запросить проверочный код"]/..')
+            if not f.is_element_invisible('//span[text()="запросить проверочный код"]/..'):
+                f.click_on('//span[text()="запросить проверочный код"]/..')
 
             code = ''
             datetime_start = datetime.now()
