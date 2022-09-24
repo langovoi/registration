@@ -53,6 +53,7 @@ if __name__ == "__main__":
                 sleep(10)
             else:
                 telegram.send_doc(f'Калининград: Письмо не пришло {email}', driver.page_source)
+                telegram.send_image(driver, 'Калининград ошибка')
             for s in soup:
                 text = s.get_text(strip=True)
                 code = re.findall("код:(.*?)Игнорируйте", text)[0]
