@@ -1,9 +1,9 @@
-name: Germany national
+name: Kaliningrad
 
 on:
   push:
   schedule:
-    - cron: '* * * * *'
+    - cron: '0 */6 * * *'
 jobs:
   build:
     runs-on: macos-latest
