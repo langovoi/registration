@@ -1,3 +1,4 @@
+import logging
 import random
 import re
 from datetime import datetime
@@ -23,16 +24,19 @@ class Kaliningrad(BasePage):
 
 if __name__ == "__main__":
     while True:
+        logging.warning('1')
         options = webdriver.ChromeOptions()
         options.headless = True
         driver = uc.Chrome(options=options)
         driver.delete_all_cookies()
         driver.get('https://appt.ruserv.visametric.com')
+        logging.warning('2')
         try:
             # todo - получить email
             email = 'belov.ludvig@mail.ru'
             password = '0SuDKq5g6zThCyaqM7pk'
             f = Kaliningrad(driver)
+            logging.warning('3')
             f.click_on('//button[@value="ru"]')
             f.type_in('//input', email)
             f.click_on('//span[text()="продолжить"]/..')
@@ -40,6 +44,7 @@ if __name__ == "__main__":
 
             code = ''
             datetime_start = datetime.now()
+            logging.warning('4')
             while (datetime.now() - datetime_start).total_seconds() / 60.00 < 5:
                 soup = gmm.find_regex_in_email_with_title(email, password, 'Проверочный код')
                 if soup:
@@ -50,7 +55,7 @@ if __name__ == "__main__":
             for s in soup:
                 text = s.get_text(strip=True)
                 code = re.findall("код:(.*?)Игнорируйте", text)[0]
-
+            logging.warning('5')
             f.type_in('//input', code)
             f.type_in('//div[@class="v-select__slot"]/input[@type="text"]', 'Калининград')
             f.click_on('//span[@class="v-list-item__mask"]')
@@ -58,7 +63,7 @@ if __name__ == "__main__":
             f.click_on('(//input[@type="checkbox"]/..)[2]')
             f.click_on('//div[@class="v-card__actions"]/button[@type="button"]')
             f.click_on('//div[@class="v-card__actions"]/button[@type="button"]')
-
+            logging.warning('6')
             date = ''
             dates = [f"01/{(datetime.today()+ relativedelta(months=m)).strftime('%m/%Y')}" for m in [1, 2]]
             while True:
@@ -77,7 +82,7 @@ if __name__ == "__main__":
                         f.click_on('//div[@class="v-text-field__slot"]/..//button')
                     else:
                         telegram.send_doc('Калининград: Нет дат', driver.page_source)
-                        print('sleep 10')
+                        logging.warning('Калининград: Нет дат')
                         sleep(random.randint(60, 120))
                 except Exception as e:
                     telegram.send_doc(f'Калининград ошибка: {str(e)}', driver.page_source)
