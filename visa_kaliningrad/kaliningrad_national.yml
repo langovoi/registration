@@ -3,10 +3,10 @@ name: Kaliningrad
 on:
   push:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '* * * * *'
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.10.0
