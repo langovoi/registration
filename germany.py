@@ -180,6 +180,11 @@ class Germany():
         # add email to comment in agent
         for i, user in enumerate(users_without_email_assigned):
             users.update_fields(url=f'{sys.argv[2]}', id=user['id'], body={'vc_comment': f'{user["vc_comment"]}|{all_emails[i][1]}|'})
+            try:
+                self.gs.ws.update_acell(f'E{int(all_emails[i][0])+1}', '1')
+            except Exception:
+                sleep(0.5)
+                self.gs.ws.update_acell(f'E{int(all_emails[i][0])+1}', '1')
         self.users_dict = users.get_users(vc_type)
         for i, user in enumerate(self.users_dict):
             if '|' in user['vc_comment']:

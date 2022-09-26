@@ -13,9 +13,12 @@ all_emails = gs.ws.get_all_values()
 
 us = users.get_users('Inviting')
 
+us = [u for u in us if '|' in u['vc_comment']]
+
+
 for user in us:
-    if '|' in user['vc_comment']:
-        users.update_fields(url=f'{sys.argv[2]}', id=user['id'], body={'vc_comment': user["vc_comment"].split("|")[0]})
+    email = user["vc_comment"].split("|")[1]
+    users.update_fields(url=f'{sys.argv[2]}', id=user['id'], body={'vc_comment': f'{user["vc_comment"].replace(f"|{email}|", "")}'})
 # row, email, password, used, wait, date, family = email
 # i = int(row) + 1
 # # Select a range
