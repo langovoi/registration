@@ -13,12 +13,15 @@ from utils import telegram
 from driver.base_page import BasePage
 from selenium import webdriver
 
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 
 class France(BasePage):
     pass
 
 
 if __name__ == "__main__":
+    driver = webdriver.Chrome(ChromeDriverManager().install())
     while True:
         try:
             options = webdriver.ChromeOptions()
