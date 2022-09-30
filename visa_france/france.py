@@ -21,12 +21,12 @@ class France(BasePage):
 
 
 if __name__ == "__main__":
-    driver = webdriver.Chrome(ChromeDriverManager().install())
     while True:
         try:
             options = webdriver.ChromeOptions()
             options.headless = True
-            driver = uc.Chrome(options=options)
+            driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+            # driver = uc.Chrome(options=options)
             driver.delete_all_cookies()
             driver.get('https://consulat.gouv.fr/ru/ambassade-de-france-a-minsk/appointment')
             f = France(driver)
@@ -48,3 +48,4 @@ if __name__ == "__main__":
                 driver.quit()
             except Exception:
                 pass
+            sleep(10)
