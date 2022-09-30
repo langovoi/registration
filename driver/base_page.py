@@ -103,9 +103,8 @@ class BasePage:
             raise RuntimeError('Use XPATH locator only for section element')
 
     def is_element_displayed(self, element_name, timeout=5):
-        locator = self.get_element_by_name(element_name)
         try:
-            self.get_element(locator, timeout=timeout)
+            self.get_element(element_name, timeout=timeout)
             return True
         except TimeoutException:
             return False

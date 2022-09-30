@@ -1,3 +1,5 @@
+import logging
+import random
 
 import undetected_chromedriver as uc
 from time import sleep
@@ -21,25 +23,28 @@ class France(BasePage):
 
 
 if __name__ == "__main__":
-    options = webdriver.ChromeOptions()
-    # options.headless = True
-    driver = uc.Chrome(options=options)
-    driver.delete_all_cookies()
-    driver.get('https://consulat.gouv.fr/ru/ambassade-de-france-a-minsk/appointment')
-    f = France(driver)
-    f.click_on('//button[@class="fr-btn fr-btn--primary fr-icon-check-line fr-btn--icon-left "]')
-    label: refresh
-    if f.is_element_displayed('//button[@class="btn btn-primary btn-md"]'):
-        f.get_click_on('//button[@class="btn btn-primary btn-md"]')
-    f.click_on('//button[@class="fr-btn fr-btn--primary fr-icon-check-line fr-btn--icon-left "]')
-    f.click_on('//label[@class="custom-control-label"]')
-    f.click_on('//button[@class="fr-btn fr-btn--primary fr-icon-check-line fr-btn--icon-left "]')
-    if f.is_element_displayed('//p[@class="fr-text--lg text-secondary col-md-10 offset-md-1 mt-5 mb-5 text-center"]'):
-        sleep(120)
-        # refresh и goto refresh
-    else:
-        telegram.send_doc('Франия: Есть даты!', driver.page_source)
-
-
-    sleep(10000)
-    print()
+    try:
+        options = webdriver.ChromeOptions()
+        options.headless = True
+        driver = uc.Chrome(options=options)
+        driver.delete_all_cookies()
+        driver.get('https://consulat.gouv.fr/ru/ambassade-de-france-a-minsk/appointment')
+        f = France(driver)
+        while True:
+            f.click_on('Доступ к услугам')
+            if f.is_element_displayed('//button[text()="Нет"]'):
+                f.click_on('//button[text()="Нет"]')
+            f.click_on('Подтвердить')
+            f.click_on('Я прочитал')
+            f.click_on('Назначить встречу')
+            if not f.is_element_displayed('На сегодня нет свободных мест.'):
+                telegram.send_doc('Франия: Есть даты!', driver.page_source)
+            logging.warning('Франция нет дат')
+            sleep(random.randint(100,120))
+            driver.refresh()
+    except Exception as e:
+        telegram.send_message(f'Франция ошибка: {str(e)}')
+        try:
+            driver.quit()
+        except Exception:
+            pass
