@@ -6,11 +6,10 @@ from time import sleep
 
 import os, sys
 
-from ..utils import telegram
-
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(CURRENT_DIR))
 
+from utils import telegram
 from driver.base_page import BasePage
 from selenium import webdriver
 
