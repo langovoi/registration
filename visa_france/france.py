@@ -6,7 +6,7 @@ from time import sleep
 
 import os, sys
 
-from utils import telegram
+from ..utils import telegram
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(CURRENT_DIR))
@@ -38,7 +38,7 @@ if __name__ == "__main__":
                 if not f.is_element_displayed('На сегодня нет свободных мест.'):
                     telegram.send_doc('Франия: Есть даты!', driver.page_source)
                 logging.warning('Франция нет дат')
-                sleep(random.randint(100,120))
+                sleep(random.randint(100, 120))
                 driver.refresh()
         except Exception as e:
             telegram.send_message(f'Франция ошибка: {str(e)}')
