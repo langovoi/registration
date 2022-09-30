@@ -32,8 +32,8 @@ if __name__ == "__main__":
         logging.warning('2')
         try:
             # todo - получить email
-            email = 'belov.ludvig@mail.ru'
-            password = '0SuDKq5g6zThCyaqM7pk'
+            email = 'pestov.bogdan@internet.ru'
+            password = 'Qf5dWtE4PAYuvTn3Heaj'
             f = Kaliningrad(driver)
             logging.warning('3')
             f.click_on('//button[@value="ru"]')
@@ -42,7 +42,6 @@ if __name__ == "__main__":
             f.click_on('//span[text()="запросить проверочный код"]/..')
             if not f.is_element_invisible('//span[text()="запросить проверочный код"]/..'):
                 f.click_on('//span[text()="запросить проверочный код"]/..')
-
             code = ''
             datetime_start = datetime.now()
             logging.warning('4')
@@ -75,11 +74,11 @@ if __name__ == "__main__":
                         f.is_element_displayed('//div[@role="progressbar"]//circle')
                         f.is_element_invisible('//div[@role="progressbar"]//circle')
                         alert = f.get_text('//div[@role="alert"]')
-                        if 'Ближайшая доступная дата для записи: ' in alert:
+                        if 'Ближайшая доступная дата: ' in alert:
                             date = alert.split(": ")[1]
                             telegram.send_doc(f'Калининград: Есть дата: {date}', driver.page_source)
                             break
-                        elif 'Нет доступной даты/слота для записи указанного количества заявителей.' in alert:
+                        elif 'Нет доступной даты' in alert:
                             sleep(random.randint(10,60))
                         f.click_on('//div[@class="v-text-field__slot"]/..//button')
                     else:
