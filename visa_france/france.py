@@ -6,9 +6,6 @@ from time import sleep
 
 import os, sys
 
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from utils import telegram
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -23,28 +20,29 @@ class France(BasePage):
 
 
 if __name__ == "__main__":
-    try:
-        options = webdriver.ChromeOptions()
-        options.headless = True
-        driver = uc.Chrome(options=options)
-        driver.delete_all_cookies()
-        driver.get('https://consulat.gouv.fr/ru/ambassade-de-france-a-minsk/appointment')
-        f = France(driver)
-        while True:
-            f.click_on('Доступ к услугам')
-            if f.is_element_displayed('//button[text()="Нет"]'):
-                f.click_on('//button[text()="Нет"]')
-            f.click_on('Подтвердить')
-            f.click_on('Я прочитал')
-            f.click_on('Назначить встречу')
-            if not f.is_element_displayed('На сегодня нет свободных мест.'):
-                telegram.send_doc('Франия: Есть даты!', driver.page_source)
-            logging.warning('Франция нет дат')
-            sleep(random.randint(100,120))
-            driver.refresh()
-    except Exception as e:
-        telegram.send_message(f'Франция ошибка: {str(e)}')
+    while True:
         try:
-            driver.quit()
-        except Exception:
-            pass
+            options = webdriver.ChromeOptions()
+            options.headless = True
+            driver = uc.Chrome(options=options)
+            driver.delete_all_cookies()
+            driver.get('https://consulat.gouv.fr/ru/ambassade-de-france-a-minsk/appointment')
+            f = France(driver)
+            while True:
+                f.click_on('Доступ к услугам')
+                if f.is_element_displayed('//button[text()="Нет"]'):
+                    f.click_on('//button[text()="Нет"]')
+                f.click_on('Подтвердить')
+                f.click_on('Я прочитал')
+                f.click_on('Назначить встречу')
+                if not f.is_element_displayed('На сегодня нет свободных мест.'):
+                    telegram.send_doc('Франия: Есть даты!', driver.page_source)
+                logging.warning('Франция нет дат')
+                sleep(random.randint(100,120))
+                driver.refresh()
+        except Exception as e:
+            telegram.send_message(f'Франция ошибка: {str(e)}')
+            try:
+                driver.quit()
+            except Exception:
+                pass
