@@ -68,7 +68,7 @@ class BasePage:
         return WebDriverWait(self.driver, 10).until(ec.frame_to_be_available_and_switch_to_it(frame))
 
     def get_element(self, element_name, timeout=5):
-        sleep(random.randint(1,2))
+        # sleep(random.randint(1,2))
         locator = self.get_element_by_name(element_name)
         expected_condition = ec.presence_of_element_located(locator)
         result = WebDriverWait(self.driver, timeout).until(
