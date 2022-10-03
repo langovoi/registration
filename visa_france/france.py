@@ -11,7 +11,6 @@ sys.path.append(os.path.dirname(CURRENT_DIR))
 
 from utils import telegram
 from driver.base_page import BasePage
-from selenium import webdriver
 
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -24,9 +23,8 @@ if __name__ == "__main__":
     while True:
         try:
             options = webdriver.ChromeOptions()
-            options.headless = True
+            # options.headless = True
             driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
-            # driver = uc.Chrome(options=options)
             driver.delete_all_cookies()
             driver.get('https://consulat.gouv.fr/ru/ambassade-de-france-a-minsk/appointment')
             f = France(driver)
@@ -37,14 +35,18 @@ if __name__ == "__main__":
                 f.click_on('Подтвердить')
                 f.click_on('Я прочитал')
                 f.click_on('Назначить встречу')
-                if not f.is_element_displayed('На сегодня нет свободных мест.'):
+                if f.is_element_displayed('На сегодня нет свободных мест.'):
+                    sleep(5)
+                    telegram.send_doc('Франция: Нет дат', driver.page_source)
+                else:
                     telegram.send_doc('Франия: Есть даты!', driver.page_source)
                 logging.warning('Франция нет дат')
                 sleep(random.randint(100, 120))
                 driver.refresh()
         except Exception as e:
-            telegram.send_message(f'Франция ошибка: {str(e)}')
+            sleep(5)
             try:
+                telegram.send_doc(f'Франция ошибка: {str(e)}', driver.page_source)
                 driver.quit()
             except Exception:
                 pass
