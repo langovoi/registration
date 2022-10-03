@@ -23,7 +23,7 @@ if __name__ == "__main__":
     while True:
         try:
             options = webdriver.ChromeOptions()
-            # options.headless = True
+            options.headless = True
             driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
             driver.delete_all_cookies()
             driver.get('https://consulat.gouv.fr/ru/ambassade-de-france-a-minsk/appointment')
