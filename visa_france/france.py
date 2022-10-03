@@ -39,7 +39,8 @@ if __name__ == "__main__":
                     sleep(5)
                     telegram.send_doc('Франция: Нет дат', driver.page_source)
                 else:
-                    telegram.send_doc('Франия: Есть даты!', driver.page_source)
+                    sleep(5)
+                    telegram.send_doc('Франия: Есть даты!', driver.page_source, debug=False)
                 logging.warning('Франция нет дат')
                 sleep(random.randint(100, 120))
                 driver.refresh()
