@@ -230,6 +230,7 @@ class Germany():
         logging.warning(f'Register family:{family}\n{date} {time}')
         for _ in range(3):
             html, headers, cookies, data = self.fill_fields(family, date, time, code, soup)
+            telegram.send_doc('Fill fields page:', str(soup))
             logging.warning(f'Fill fields:{html}')
             soup = BeautifulSoup(html, "lxml")
             if not (soup.find("captcha") or soup.find("div", {"class": "global-error"}) or 'An error occured while processing your appointment' in str(soup)):
