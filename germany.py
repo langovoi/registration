@@ -255,16 +255,16 @@ class Germany():
                     for user in family:
                         users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='3')
                     telegram.send_doc(
-                        caption=f'⭕ 🇩🇪 Германия: {self.categories[self.category]}: Уже зарегистрирован ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})\nОшибка: {error.text.strip()}', html=str(soup))
+                        caption=f'⭕ 🇩🇪 Германия: {self.categories[self.category]}: Уже зарегистрирован ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})\nОшибка: {error.text.strip()}', html=str(soup), debug=False)
                     success = True
                 elif "There are no available Appointments for the chosen period" in error.text:
                     telegram.send_doc(
-                        caption=f'⭕ 🇩🇪 Германия {self.categories[self.category]}: Дата ушла: ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})', html=str(soup))
+                        caption=f'⭕ 🇩🇪 Германия {self.categories[self.category]}: Дата ушла: ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})', html=str(soup), debug=False)
                     success = False
                     break
                 else:
                     telegram.send_doc(
-                        caption=f'⭕ 🇩🇪 Германия {self.categories[self.category]}: Неизвестная ошибка для: ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})\nОшибка: {error.text.strip()}', html=str(soup))
+                        caption=f'⭕ 🇩🇪 Германия {self.categories[self.category]}: Неизвестная ошибка для: ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})\nОшибка: {error.text.strip()}', html=str(soup), debug=False)
                     success = False
                     break
             else:
