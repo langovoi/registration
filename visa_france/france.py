@@ -24,7 +24,7 @@ if __name__ == "__main__":
     driver = uc.Chrome(options=options)
     while True:
         try:
-            options.headless = True
+            # options.headless = True
             driver.delete_all_cookies()
             driver.get('https://consulat.gouv.fr/ru/ambassade-de-france-a-minsk/appointment')
             f = France(driver)
