@@ -22,7 +22,7 @@ class France(BasePage):
 if __name__ == "__main__":
     options = webdriver.ChromeOptions()
     options.headless = True
-    driver = webdriver.Chrome(options=options)
+    driver = uc.Chrome(options=options)
     while True:
         try:
             driver.delete_all_cookies()
