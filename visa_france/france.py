@@ -44,6 +44,6 @@ if __name__ == "__main__":
         except Exception as e:
             try:
                 telegram.send_doc('Франция: Неизвестная ошибка', driver.page_source, debug=False)
-            except Exception:
-                telegram.send_message('Франция: Неизвестная ошибка', debug=False)
+            except Exception as e:
+                telegram.send_message(f'Франция: Неизвестная ошибка\n{str(e)}', debug=False)
         sleep(random.randint(100, 120))
