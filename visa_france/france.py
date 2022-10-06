@@ -21,10 +21,10 @@ class France(BasePage):
 
 if __name__ == "__main__":
     options = webdriver.ChromeOptions()
-    driver = uc.Chrome(options=options)
+    options.headless = True
+    driver = webdriver.Chrome(options=options)
     while True:
         try:
-            # options.headless = True
             driver.delete_all_cookies()
             driver.get('https://consulat.gouv.fr/ru/ambassade-de-france-a-minsk/appointment')
             f = France(driver)
