@@ -46,5 +46,4 @@ if __name__ == "__main__":
                 telegram.send_doc('Франция: Неизвестная ошибка', driver.page_source, debug=False)
             except Exception:
                 telegram.send_message('Франция: Неизвестная ошибка', debug=False)
-        sleep(5)
-        # sleep(random.randint(100, 120))
+        sleep(random.randint(100, 120))
