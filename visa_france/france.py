@@ -23,8 +23,10 @@ if __name__ == "__main__":
     options = webdriver.ChromeOptions()
     options.headless = True
     driver = uc.Chrome(options=options)
+    attempts = 0
     while True:
         try:
+            attempts = attempts + 1
             driver.delete_all_cookies()
             driver.get('https://consulat.gouv.fr/ru/ambassade-de-france-a-minsk/appointment')
             f = France(driver)
@@ -37,13 +39,13 @@ if __name__ == "__main__":
                 f.click_on('Назначить встречу')
                 if not f.is_element_displayed('На сегодня нет свободных мест.'):
                     sleep(5)
-                    telegram.send_doc('Франия: Есть даты!', driver.page_source, debug=False)
+                    telegram.send_doc(f'Франия({attempts}): Есть даты!', driver.page_source, debug=False)
                 logging.warning('Франция нет дат')
             else:
-                telegram.send_doc('Франция: Ошибка 502', driver.page_source, debug=False)
+                telegram.send_doc(f'Франция({attempts}): Ошибка 502', driver.page_source, debug=False)
         except Exception as e:
             try:
-                telegram.send_doc('Франция: Неизвестная ошибка', driver.page_source, debug=False)
+                telegram.send_doc(f'Франция({attempts}): Неизвестная ошибка', driver.page_source, debug=False)
             except Exception as e:
-                telegram.send_message(f'Франция: Неизвестная ошибка\n{str(e)}', debug=False)
+                telegram.send_message(f'Франция({attempts}): Неизвестная ошибка\n{str(e)}', debug=False)
         sleep(random.randint(100, 120))
