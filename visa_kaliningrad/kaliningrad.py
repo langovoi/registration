@@ -74,17 +74,15 @@ if __name__ == "__main__":
                         f.is_element_displayed('//div[@role="progressbar"]//circle')
                         f.is_element_invisible('//div[@role="progressbar"]//circle')
                         alert = f.get_text('//div[@role="alert"]')
-                        if 'Ближайшая доступная дата: ' in alert:
-                            date = alert.split(": ")[1]
-                            telegram.send_doc(f'Калининград: Есть дата: {date}', driver.page_source)
+                        if 'Ближайшая доступная дата' in alert:
+                            date = '/'.join(re.findall('(\d+)', alert))
+                            telegram.send_doc(f'Калининград: Есть дата: {date}', driver.page_source, debug=False)
                             break
-                        elif 'Нет доступной даты' in alert:
-                            sleep(random.randint(10,60))
                         f.click_on('//div[@class="v-text-field__slot"]/..//button')
                     else:
                         telegram.send_doc('Калининград: Нет дат', driver.page_source)
                         logging.warning('Калининград: Нет дат')
-                        sleep(random.randint(60, 120))
+                    sleep(random.randint(60, 120))
                 except Exception as e:
                     telegram.send_doc(f'Калининград ошибка: {str(e)}', driver.page_source)
         except Exception as e:
