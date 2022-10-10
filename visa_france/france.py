@@ -21,12 +21,13 @@ class France(BasePage):
 
 if __name__ == "__main__":
     options = webdriver.ChromeOptions()
-    options.headless = True
+    # options.headless = True
     driver = uc.Chrome(options=options)
     attempts = 0
     while True:
         try:
             attempts = attempts + 1
+            print(attempts)
             driver.delete_all_cookies()
             driver.get('https://consulat.gouv.fr/ru/ambassade-de-france-a-minsk/appointment')
             f = France(driver)
@@ -37,15 +38,29 @@ if __name__ == "__main__":
                 f.click_on('Подтвердить')
                 f.click_on('Я прочитал')
                 f.click_on('Назначить встречу')
-                if not f.is_element_displayed('На сегодня нет свободных мест.'):
-                    sleep(5)
+                if f.is_element_displayed('//section/div'):
+                    sleep(3)
+                    telegram.send_doc('🇫🇷 Франция появилась дата', driver.page_source, debug=False)
+                    f.click_on('//section/div')
+                    if f.is_element_displayed('К сожалению, все наши слоты зарезервированы'):
+                        sleep(5)
+                        driver.refresh()
+                    else:
+                        telegram.send_doc('🟢 🇫🇷 Франция появился слот', driver.page_source, debug=False)
+                        sleep(random.randint(100, 120))
+                elif not f.is_element_displayed('На сегодня нет свободных мест.'):
                     telegram.send_doc(f'Франия({attempts}): Есть даты!', driver.page_source, debug=False)
+                    sleep(random.randint(100, 120))
+                else:
+                    sleep(random.randint(100, 120))
                 logging.warning('Франция нет дат')
             else:
                 telegram.send_doc(f'Франция({attempts}): Ошибка 502', driver.page_source, debug=False)
+                sleep(random.randint(10, 20))
         except Exception as e:
             try:
                 telegram.send_doc(f'Франция({attempts}): Неизвестная ошибка', driver.page_source, debug=False)
+                sleep(random.randint(100, 120))
             except Exception as e:
                 telegram.send_message(f'Франция({attempts}): Неизвестная ошибка\n{str(e)}', debug=False)
-        sleep(random.randint(100, 120))
+                sleep(random.randint(100, 120))
