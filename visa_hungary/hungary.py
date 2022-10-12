@@ -29,6 +29,7 @@ if __name__ == "__main__":
     options = webdriver.ChromeOptions()
     options.headless = True
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    driver.maximize_window()
     # driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
     # driver = uc.Chrome(options=options)
     driver.delete_all_cookies()
@@ -60,15 +61,27 @@ if __name__ == "__main__":
     f.click_on('//button[text()="Перейти  к выбору времени"]')
     sleep(3)
     if f.is_element_displayed('//span[text()="Свободно"]'):
-        f.click_on('//span[text()="Свободно"]')
+        f.click_on('(//span[text()="Свободно"])[1]')
+        # тут похоже начинает работать бан, кнопка не всегда работает, нужно переключать ip
+        # может попробовать рандомом кликать по элементам , перемотка вроде помогает немного
         element3 = driver.find_element(By.ID, 'nextTo3')
+        element30 = driver.find_element(By.XPATH, '//h2[text()="Полезная информация"]')
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         driver.execute_script("arguments[0].scrollIntoView();", element3)
+        driver.execute_script("arguments[0].scrollIntoView();", element30)
+        driver.execute_script("arguments[0].scrollIntoView();", element3)
+        sleep(3)
         f.click_on('//button[@id="nextTo3"]')
+
         sleep(5)
         element4 = driver.find_element(By.XPATH, '//button[text()="Завершение бронирования"]')
         driver.execute_script("arguments[0].scrollIntoView();", element4)
+        driver.execute_script("arguments[0].scrollIntoView();", element30)
+        driver.execute_script("arguments[0].scrollIntoView();", element4)
+        sleep(3)
         f.click_on('Завершение бронирования')
-        # отмена записи
+        sleep(5)
+        # отмена записи для теста не забывать отменять
         # f.click_on('Отмена записи')
         # f.click_on('Хорошо')
     else:
