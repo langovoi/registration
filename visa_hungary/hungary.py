@@ -29,6 +29,7 @@ if __name__ == "__main__":
     options = webdriver.ChromeOptions()
     options.headless = True
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    driver.maximize_window()
     # driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
     # driver = uc.Chrome(options=options)
     driver.delete_all_cookies()
