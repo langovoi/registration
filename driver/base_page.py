@@ -29,15 +29,15 @@ class BasePage:
 
     def click_on(self, element_name, section=None):
         try:
-            self.hover_element(element_name)
+            # self.hover_element(element_name)
             self.get_clickable_element(element_name).click()
         except StaleElementReferenceException:
-            sleep(1)
+            sleep(0.1)
             self.get_clickable_element(element_name).click()
 
     def type_in(self, element_name, text):
         try:
-            self.hover_element(element_name)
+            # self.hover_element(element_name)
             self.get_clickable_element(element_name).click()
         except Exception:
             pass
