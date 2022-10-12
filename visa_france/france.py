@@ -39,15 +39,19 @@ if __name__ == "__main__":
                 f.click_on('Я прочитал')
                 f.click_on('Назначить встречу')
                 if f.is_element_displayed('//section/div'):
-                    sleep(3)
-                    telegram.send_doc('🇫🇷 Франция появилась дата', driver.page_source, debug=False)
+                    telegram.send_doc('🇫🇷 Франция появилась дата', driver.page_source)
                     f.click_on('//section/div')
-                    if f.is_element_displayed('К сожалению, все наши слоты зарезервированы'):
-                        sleep(5)
-                        driver.refresh()
-                    else:
-                        telegram.send_doc('🟢 🇫🇷 Франция появился слот', driver.page_source, debug=False)
-                        sleep(random.randint(100, 120))
+                    while True:
+                        if f.is_element_displayed('//p[contains(text(),"К сожалению, все наши слоты зарезервированы")]'):
+                            sleep(5)
+                            driver.refresh()
+                            if f.is_element_displayed('//section/div'):
+                                f.click_on('//section/div')
+                        else:
+                            telegram.send_doc('🟢 🇫🇷 Франция появился слот', driver.page_source, debug=False)
+                            sleep(random.randint(100, 120))
+                            driver.quit()
+                            break
                 elif not f.is_element_displayed('На сегодня нет свободных мест.'):
                     telegram.send_doc(f'Франия({attempts}): Есть даты!', driver.page_source, debug=False)
                     sleep(random.randint(100, 120))
