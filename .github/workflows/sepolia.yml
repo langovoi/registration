@@ -1,0 +1,32 @@
+name: sepolia
+
+on:
+  push:
+  schedule:
+    - cron: '0 8 * * *'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tag: ['https://twitter.com/AlexandrKardas1/status/1580478584254500864', 'https://twitter.com/Sepolia_mining/status/1580177296216186882', 'https://twitter.com/AlexMinaev11/status/1580461469699051521', 'https://twitter.com/IrinaUrad/status/1580493287605293062', 'https://twitter.com/KseniaMagro/status/1580099380790497280', 'https://twitter.com/ksumagro/status/1580457640140115968', 'https://twitter.com/MagKsenia/status/1580461198780567553', 'https://twitter.com/KseniKseni8/status/1580462271155011584', 'https://twitter.com/Ksks56057773/status/1580463672727465984', 'https://twitter.com/DragonsDrunk/status/1580464404453130240', 'https://twitter.com/TerryCr48260000/status/1580465793912909825', 'https://twitter.com/Benname6/status/1580466515547422721', 'https://twitter.com/MerryCh87789160/status/1580467238427328513', 'https://twitter.com/PerryFerry8/status/1580468722438848514', 'https://twitter.com/prairies_soul/status/1580143075740876803', 'https://twitter.com/petro_coins/status/1580146591813423104', 'https://twitter.com/Pavel37413315/status/1580462747661107202', 'https://twitter.com/chipittos/status/1580188389806333957']
+    steps:
+    - uses: actions/checkout@v2
+    - name: Cache requirements
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install git+https://github.com/behave/behave
+    - name: Test with behave
+      run: |
+        python3 sepolia_ui.py ${{ matrix.tag }}
