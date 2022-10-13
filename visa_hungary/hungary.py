@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timezone
 
 import undetected_chromedriver as uc
@@ -54,15 +55,15 @@ def register(thread):
 
     driver.get('https://konzinfoidopont.mfa.gov.hu/')
     f = Hungary(driver)
-    print('Создали драйвер. Открыли сайт')
+    logging.warning('Создали драйвер. Открыли сайт')
     f.click_on_while('//button[@id="langSelector"]')
     while True:
         if f.is_element_displayed('//div[@class="dropdown-menu language show"]//img[@alt="Русский"]'):
             f.click_on('//img[@alt="Русский"]')
-            print('Выбрали язык')
+            logging.warning('Выбрали язык')
             break
         else:
-            print('Глюк селектора выбора языка.Еще заход')
+            logging.warning('Глюк селектора выбора языка.Еще заход')
             f.click_on('//button[@id="langSelector"]')
 
     while True:
@@ -78,23 +79,23 @@ def register(thread):
         except Exception as e:
             sleep(0.1)
     f.click_on_while('//label[text()="Беларусь - Минск"]')
-    print('Выбрали Беларусь')
+    logging.warning('Выбрали Беларусь')
     f.click_on_while('//label[text()="Тип дела"]/..//button[text()="Добавление типа услуги"]')
 
     f.type_in('//h5[text()="Типы дел"]/../..//input[@placeholder="Поиск"]', 'типа С')
     f.click_on_while('//label[contains(text(),"Заявление о выдаче визы (краткосрочная шенгенская виза типа С)")]')
     f.click_on_while('Сохранить')
-    print('Выбрали Тип услуги')
+    logging.warning('Выбрали Тип услуги')
     f.type_in('//input[@id="label4"]', name)
-    print('Ввод имя')
+    logging.warning('Ввод имя')
     f.type_in('//input[@id="birthDate"]', date)
-    print('Ввод рождение')
+    logging.warning('Ввод рождение')
     f.type_in('//input[@id="label9"]', phone)
-    print('Ввод телефон')
+    logging.warning('Ввод телефон')
     f.type_in('//input[@id="label10"]', email)
-    print('Ввод почта')
+    logging.warning('Ввод почта')
     f.type_in('//input[@id="label1000"]', passport)
-    print('Ввод паспорт')
+    logging.warning('Ввод паспорт')
     sleep(2)
     while True:
         try:
@@ -115,41 +116,41 @@ def register(thread):
     while True:
         dt = datetime.now(tz=timezone.utc)
         if time <= dt:
-            print('dt:', dt)
+            logging.warning('dt:', dt)
             break
-    print('Поставили галки')
+    logging.warning('Поставили галки')
     while True:
         try:
             f.click_on('//button[text()="Перейти  к выбору времени"]')
             break
         except Exception as e:
             sleep(0.1)
-    print('Нажали выбор даты')
+    logging.warning('Нажали выбор даты')
     if f.is_element_displayed('//span[text()="Свободно"]'):
         while True:
             try:
                 f.click_on('(//span[text()="Свободно"])[last()]')
                 break
             except Exception as e:
-                print('click')
+                logging.warning('click')
                 sleep(0.1)
         # тут похоже начинает работать бан, кнопка не всегда работает, нужно переключать ip
         # может попробовать рандомом кликать по элементам, перемотка вроде помогает немного
         # element3 = driver.find_element(By.ID, 'nextTo3')
         # driver.execute_script("arguments[0].scrollIntoView();", element3)
-        print('Выбрали дату')
+        logging.warning('Выбрали дату')
         while True:
             try:
                 f.click_on('//button[@id="nextTo3"]')
                 break
             except Exception as e:
                 sleep(0.1)
-        print('Нажали далее')
+        logging.warning('Нажали далее')
         while True:
             try:
                 # telegram.send_message(f'{thread}: {datetime.now()}')
                 f.click_on('Завершение бронирования')
-                print(f'ЗАПИСАН({name}):', datetime.now(tz=timezone.utc))
+                logging.warning(f'ЗАПИСАН({name}):', datetime.now(tz=timezone.utc))
                 sleep(10)
                 telegram.send_doc(f'Венгрия: успешно зарегистрирован({name})', driver.page_source)
                 break
