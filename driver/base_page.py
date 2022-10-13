@@ -35,15 +35,20 @@ class BasePage:
             sleep(0.1)
             self.get_clickable_element(element_name).click()
 
-    def type_in(self, element_name, text):
-        try:
-            # self.hover_element(element_name)
-            self.get_clickable_element(element_name).click()
-        except Exception:
-            pass
-        self.get_element(element_name).click()
-        self.get_element(element_name).clear()
+    def click_on_while(self, element_name, section=None):
+        element=self.get_clickable_element(element_name)
+        for i in range(10):
+            try:
+                # self.hover_element(element_name)
+                element.click()
+                break
+            except Exception:
+                sleep(0.1)
 
+
+    def type_in(self, element_name, text):
+        self.click_on_while(element_name)
+        # self.get_element(element_name).clear()
         self.get_element(element_name).send_keys(text)
 
     def select_by_text(self, element_name, text):
@@ -76,14 +81,14 @@ class BasePage:
             message=f'Не могу найти {element_name} в течение {timeout} сек')
         return result
 
-    def get_elements(self, element_name, timeout=5):
+    def get_elements(self, element_name, timeout=50):
         locator = self.get_element_by_name(element_name)
         expected_condition = ec.presence_of_all_elements_located(locator)
         return WebDriverWait(self.driver, timeout).until(
             expected_condition,
             message=f'Не могу найти ни одного элемента {element_name} в течение {timeout} сек')
 
-    def get_clickable_element(self, element_name, timeout=5):
+    def get_clickable_element(self, element_name, timeout=50):
         locator = self.get_element_by_name(element_name)
         expected_condition = ec.element_to_be_clickable(locator)
         return WebDriverWait(self.driver, timeout).until(
