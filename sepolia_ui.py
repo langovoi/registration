@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as ec
 
 if __name__ == '__main__':
     options = webdriver.ChromeOptions()
-    # options.headless = True
+    options.headless = True
     driver = uc.Chrome(options=options)
     try:
         driver.get('https://faucet-sepolia.rockx.com/')
