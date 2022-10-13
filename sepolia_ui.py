@@ -7,8 +7,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 
-from utils import telegram
-
 if __name__ == '__main__':
     options = webdriver.ChromeOptions()
     options.headless = True
