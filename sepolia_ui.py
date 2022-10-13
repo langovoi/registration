@@ -1,6 +1,6 @@
-from time import sleep
 import sys
 
+import telebot
 import undetected_chromedriver as uc
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -22,5 +22,8 @@ if __name__ == '__main__':
         print(WebDriverWait(driver, 10).until(expected_condition, message=f'Не могу найти').text)
     except Exception:
         driver.save_screenshot('screenshot.png')
-        telegram.send_image('screenshot.png', 'No message')
+        bot = telebot.TeleBot("1275523107:AAF_5t_r80J55Pl-JcVeLcVVOsl7kadqAc4")
+        chat_id = -745819635
+        bot.send_photo(chat_id=chat_id, photo='screenshot.png', caption='Fail')
+        bot.stop_bot()
     #'Funding request accepted'
