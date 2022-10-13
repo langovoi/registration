@@ -113,12 +113,13 @@ def register(thread):
             break
         except Exception as e:
             sleep(0.1)
+    logging.warning('Поставили галки')
+    logging.warning('Жду время')
     while True:
         dt = datetime.now(tz=timezone.utc)
         if time <= dt:
             logging.warning('dt:', dt)
             break
-    logging.warning('Поставили галки')
     while True:
         try:
             f.click_on('//button[text()="Перейти  к выбору времени"]')
