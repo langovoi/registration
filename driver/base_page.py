@@ -37,7 +37,7 @@ class BasePage:
 
     def click_on_while(self, element_name, section=None):
         element=self.get_clickable_element(element_name)
-        while True:
+        for i in range(10):
             try:
                 # self.hover_element(element_name)
                 element.click()
@@ -48,7 +48,7 @@ class BasePage:
 
     def type_in(self, element_name, text):
         self.click_on_while(element_name)
-        self.get_element(element_name).clear()
+        # self.get_element(element_name).clear()
         self.get_element(element_name).send_keys(text)
 
     def select_by_text(self, element_name, text):
