@@ -24,7 +24,7 @@ id_email, email, password, name, date, phone, passport = gs.ws.get_all_values()[
 def register(thread):
     time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/22/00','%m/%d/%Y/%H/%M')
     options = webdriver.ChromeOptions()
-    # options.headless = True
+    options.headless = True
 
     driver = uc.Chrome(options=options)
     driver.delete_all_cookies()
