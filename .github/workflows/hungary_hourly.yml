@@ -1,15 +1,12 @@
-name: Hungary nightly
+name: Hungary hourly
 
 on:
   push:
   schedule:
-    - cron: '45 0 * * *'
+    - cron: '45 * * * *'
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        tag: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.10.0

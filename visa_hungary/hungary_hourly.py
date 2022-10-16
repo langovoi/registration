@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime, timezone
+from random import randint
 
 import undetected_chromedriver as uc
 from time import sleep
@@ -9,7 +10,7 @@ import os, sys
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(CURRENT_DIR))
 
-from utils import telegram
+from utils import telegram, gsheets
 from driver.base_page import BasePage
 from selenium import webdriver
 
@@ -17,38 +18,13 @@ from selenium import webdriver
 class Hungary(BasePage):
     pass
 
-
-users = [
-    {'name': 'DOVATOD SERGEY', 'date': '01/01/1986', 'phone': '+375298222998', 'email': 'igor_fomin00@bk.ru',
-     'passport': 'AB9756323'},
-    {'name': 'PAEEROV VALERY', 'date': '01/10/1999', 'phone': '+375293239918', 'email': 'nikonov.gordei@mail.ru',
-     'passport': 'MC1280954', },
-    {'name': 'SIDOROV IRYNA', 'date': '10/10/2000', 'phone': '+375296669948', 'email': 'likhachev.yaromir@mail.ru',
-     'passport': 'MC3480933', },
-    {'name': 'USACHEV VALERY', 'date': '01/10/1999', 'phone': '+375293239957', 'email': 'nikonov.gordei@mail.ru',
-     'passport': 'AB5480944', },
-    {'name': 'DAVIDOV ANASTASYA', 'date': '01/10/1999', 'phone': '+375253239328', 'email': 'arkhipov.roman00@mail.ru',
-     'passport': 'PD3454476', },
-    {'name': 'IVANOVA ANASTASYA', 'date': '01/11/1989', 'phone': '+375244449788',
-     'email': 'ivashchenko.georgii@mail.ru',
-     'passport': 'PD3450976', },
-    {'name': 'DAVIDOV ANASTASYA', 'date': '05/12/1999', 'phone': '+375443239118', 'email': 'pogomii.timofei@mail.ru',
-     'passport': 'AB3220976', },
-    {'name': 'DAVIDOV ANASTASYA', 'date': '01/10/1999', 'phone': '+375333239985', 'email': 'shufrich.yakov@mail.ru',
-     'passport': 'PD3120976', },
-    {'name': 'DAVIDOV ANASTASYA', 'date': '22/10/1999', 'phone': '+375293636758', 'email': 'isaev.andrei00@mail.ru',
-     'passport': 'PD3340976', },
-    {'name': 'DAVIDOV ANASTASYA', 'date': '11/10/1999', 'phone': '+375293638912', 'email': 'geletei.renata@mail.ru',
-     'passport': 'PD3432976', }
-]
-
-name, date, phone, email, passport = users[int(sys.argv[1])].values()
-
+gs = gsheets.GoogleSheets('hungary')
+id_email, email, password, name, date, phone, passport = gs.ws.get_all_values()[randint(1, 103)]
 
 def register(thread):
     time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/22/00','%m/%d/%Y/%H/%M')
     options = webdriver.ChromeOptions()
-    options.headless = True
+    # options.headless = True
 
     driver = uc.Chrome(options=options)
     driver.delete_all_cookies()
