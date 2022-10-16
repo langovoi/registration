@@ -147,7 +147,13 @@ class Germany():
                 if user['vc_with'] in family_list:
                     family_list[user['vc_with']].append(user)
                 else:
-                    family_list[user['vc_with']] = [user]
+                    for u in self.users_dict:
+                        if u['id'] == user['vc_with']:
+                            user['vc_with'] = u['vc_with'] if u['vc_with'] != '0' else user['vc_with']
+                            family_list[user['vc_with']].append(user)
+                            break
+                    else:
+                        family_list[user['vc_with']] = [user]
         # remove families without dates
         users = list(family_list.keys())
         while (len(users)):
@@ -242,10 +248,7 @@ class Germany():
                 s_row, s_email, s_imap_password, s_password, s_used, s_wait, s_family = email
                 i = int(s_row) + 1
                 # Select a range
-                cell_list = self.gs.ws.range(f'F{i}:G{i}')
-                cell_list[0].value = int(s_wait) + 1
-                cell_list[1].value = len(family)
-                self.gs.ws.update_cells(cell_list)
+                self.gs.ws.update_acell(f'F{i}', int(s_wait) + 1)
                 break
             elif error := soup.find("div", {"class": "global-error"}):
                 logging.warning(f"Error: {error.text}")
