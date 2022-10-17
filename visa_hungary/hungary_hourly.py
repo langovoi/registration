@@ -18,13 +18,16 @@ from selenium import webdriver
 class Hungary(BasePage):
     pass
 
+
 gs = gsheets.GoogleSheets('hungary')
 id_email, email, password, name, date, phone, passport = gs.ws.get_all_values()[randint(1, 103)]
 
+
 def register(thread):
-    time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/22/00','%m/%d/%Y/%H/%M')
+    time = datetime.strptime(
+        f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/{datetime.utcnow().hour+1}/00', '%m/%d/%Y/%H/%M')
     options = webdriver.ChromeOptions()
-    options.headless = True
+    # options.headless = True
 
     driver = uc.Chrome(options=options)
     driver.delete_all_cookies()
@@ -94,7 +97,7 @@ def register(thread):
     while True:
         dt = datetime.strptime(datetime.now(tz=timezone.utc).strftime('%m/%d/%Y/%H/%M'), '%m/%d/%Y/%H/%M')
         if time <= dt:
-            logging.warning('dt:', dt)
+            logging.warning(f'dt:{dt}')
             break
     while True:
         try:
