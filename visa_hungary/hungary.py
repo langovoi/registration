@@ -27,18 +27,18 @@ users = [
      'passport': 'MC3480933', },
     {'name': 'USACHEV VALERY', 'date': '01/10/1999', 'phone': '+375293239957', 'email': 'nikonov.gordei@mail.ru',
      'passport': 'AB5480944', },
-    {'name': 'DAVIDOV ANASTASYA', 'date': '01/10/1999', 'phone': '+375253239328', 'email': 'arkhipov.roman00@mail.ru',
+    {'name': 'DAVIDOV ANASTASYA', 'date': '01/10/1999', 'phone': '+375256239328', 'email': 'arkhipov.roman00@mail.ru',
      'passport': 'PD3454476', },
-    {'name': 'IVANOVA ANASTASYA', 'date': '01/11/1989', 'phone': '+375244449788',
+    {'name': 'IVANOVA ANASTASYA', 'date': '01/11/1989', 'phone': '+375446444978',
      'email': 'ivashchenko.georgii@mail.ru',
      'passport': 'PD3450976', },
-    {'name': 'DAVIDOV ANASTASYA', 'date': '05/12/1999', 'phone': '+375443239118', 'email': 'pogomii.timofei@mail.ru',
+    {'name': 'DOVATOVA ANASTASYA', 'date': '05/12/1999', 'phone': '+375446239118', 'email': 'pogomii.timofei@mail.ru',
      'passport': 'AB3220976', },
-    {'name': 'DAVIDOV ANASTASYA', 'date': '01/10/1999', 'phone': '+375333239985', 'email': 'shufrich.yakov@mail.ru',
+    {'name': 'SHPAK ELENA', 'date': '01/10/1999', 'phone': '+375259239985', 'email': 'shufrich.yakov@mail.ru',
      'passport': 'PD3120976', },
-    {'name': 'DAVIDOV ANASTASYA', 'date': '22/10/1999', 'phone': '+375293636758', 'email': 'isaev.andrei00@mail.ru',
+    {'name': 'PRIVET ELENA', 'date': '22/10/1999', 'phone': '+375297636758', 'email': 'isaev.andrei00@mail.ru',
      'passport': 'PD3340976', },
-    {'name': 'DAVIDOV ANASTASYA', 'date': '11/10/1999', 'phone': '+375293638912', 'email': 'geletei.renata@mail.ru',
+    {'name': 'KOKTYSH ANASTASYA', 'date': '11/10/1999', 'phone': '+375297638912', 'email': 'geletei.renata@mail.ru',
      'passport': 'PD3432976', }
 ]
 
@@ -46,7 +46,7 @@ name, date, phone, email, passport = users[int(sys.argv[1])].values()
 
 
 def register(thread):
-    time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/22/00','%m/%d/%Y/%H/%M')
+    time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/13/30','%m/%d/%Y/%H/%M')
     options = webdriver.ChromeOptions()
     options.headless = True
 
@@ -56,6 +56,16 @@ def register(thread):
     driver.get('https://konzinfoidopont.mfa.gov.hu/')
     f = Hungary(driver)
     logging.warning('Создали драйвер. Открыли сайт')
+    for i in range(3):
+        if not f.is_element_displayed('//button[@id="langSelector"]') or not f.is_element_displayed('//input[@id="birthDate"]'):
+            driver.refresh()
+            sleep(3)
+        else:
+            break
+    else:
+        telegram.send_doc(caption=f'{name} Не прогрузился язык или дата', html=driver.page_source)
+        raise  RuntimeError(f'Не прогрузился язык или дата {name}')
+
     f.click_on_while('//button[@id="langSelector"]')
     while True:
         if f.is_element_displayed('//div[@class="dropdown-menu language show"]//img[@alt="Русский"]'):
@@ -82,8 +92,8 @@ def register(thread):
     logging.warning('Выбрали Беларусь')
     f.click_on_while('//label[text()="Тип дела"]/..//button[text()="Добавление типа услуги"]')
 
-    f.type_in('//h5[text()="Типы дел"]/../..//input[@placeholder="Поиск"]', 'типа С')
-    f.click_on_while('//label[contains(text(),"Заявление о выдаче визы (краткосрочная шенгенская виза типа С)")]')
+    f.type_in('//h5[text()="Типы дел"]/../..//input[@placeholder="Поиск"]', 'D')   #, 'типа С')
+    f.click_on_while('//label[contains(text(),"разрешение на проживание - D")]')
     f.click_on_while('Сохранить')
     logging.warning('Выбрали Тип услуги')
     f.type_in('//input[@id="label4"]', name)
@@ -118,7 +128,7 @@ def register(thread):
     while True:
         dt = datetime.strptime(datetime.now(tz=timezone.utc).strftime('%m/%d/%Y/%H/%M'), '%m/%d/%Y/%H/%M')
         if time <= dt:
-            logging.warning('dt:', dt)
+            logging.warning(f'dt:{dt}')
             break
     while True:
         try:
@@ -126,7 +136,8 @@ def register(thread):
             break
         except Exception as e:
             sleep(0.1)
-    logging.warning('Нажали выбор даты')
+    dt = datetime.strptime(datetime.now(tz=timezone.utc).strftime('%m/%d/%Y/%H/%M'), '%m/%d/%Y/%H/%M')
+    logging.warning(f'Нажали выбор даты:{dt}')
     if f.is_element_displayed('//span[text()="Свободно"]'):
         while True:
             try:
@@ -151,21 +162,26 @@ def register(thread):
             try:
                 # telegram.send_message(f'{thread}: {datetime.now()}')
                 f.click_on('Завершение бронирования')
-                logging.warning(f'ЗАПИСАН({name}):', datetime.now(tz=timezone.utc))
+                dt = datetime.strptime(datetime.now(tz=timezone.utc).strftime('%m/%d/%Y/%H/%M'), '%m/%d/%Y/%H/%M')
+                logging.warning(f'ЗАПИСАН:({name}): {dt}')
                 sleep(10)
-                telegram.send_doc(f'Венгрия: успешно зарегистрирован({name})', driver.page_source)
+                telegram.send_doc(f'Венгрия: в {dt} успешно зарегистрирован({name})', driver.page_source, False)
                 break
             except Exception as e:
                 sleep(0.1)
     else:
-        telegram.send_doc('Венгрия: нет дат', driver.page_source)
-        if f.is_element_displayed('//button[text()="Хорошо"]'):
-            while True:
-                try:
-                    f.click_on('//button[text()="Хорошо"]')
-                    break
-                except Exception as e:
-                    sleep(0.1)
+        if f.is_element_displayed('//div[text()="Обращаем Ваше внимание, что у Вас уже есть действующая запись для решения данного вопроса."]'):
+            telegram.send_doc(f'Венгрия {name} уже зареген другим сеансом', driver.page_source, False)
+            driver.close()
+        else:
+            telegram.send_doc('Венгрия для:{name} нет дат', driver.page_source, False)
+            if f.is_element_displayed('//button[text()="Хорошо"]'):
+                while True:
+                    try:
+                        f.click_on('//button[text()="Хорошо"]')
+                        break
+                    except Exception as e:
+                        sleep(0.1)
 
 
 if __name__ == "__main__":

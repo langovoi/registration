@@ -29,13 +29,12 @@ def send_document(context, caption, document_name='page_source.html'):
 def send_doc(caption, html, debug=True):
     # html: r.text or str(soup)
     try:
-        with open("page_source.html", "w") as f:
-            f.write(html)
+        with open("page_source.html", "w", encoding="utf-8") as f: f.write(str(html))
         bot = telebot.TeleBot(config['telegram_token'])
         chat_id = config['telegram_to_debug' if debug else 'telegram_to']
         bot.send_document(chat_id=chat_id, document=open("page_source.html", "rb"), caption=caption[:2048])
         bot.stop_bot()
-    except Exception:
+    except Exception as e:
         sleep(random.randint(2, 10))
         try:
             with open("page_source.html", "w") as f:

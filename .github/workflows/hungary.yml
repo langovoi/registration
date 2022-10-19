@@ -3,7 +3,7 @@ name: Hungary nightly
 on:
   push:
   schedule:
-    - cron: '45 0 * * *'
+    - cron: '20 13 * * *'
 jobs:
   build:
     runs-on: ubuntu-latest
