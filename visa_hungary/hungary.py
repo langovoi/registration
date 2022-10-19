@@ -49,10 +49,8 @@ def register(thread):
     time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/13/30','%m/%d/%Y/%H/%M')
     options = webdriver.ChromeOptions()
     options.headless = True
-
-    prefs = {"profile.managed_default_content_settings.images": 2}
-    options.add_experimental_option("prefs", prefs)
-    driver = webdriver.Chrome(options=options)
+    options.add_argument('--blink-settings=imagesEnabled=false')
+    driver = uc.Chrome(options=options)
     driver.delete_all_cookies()
 
     driver.get('https://konzinfoidopont.mfa.gov.hu/')
