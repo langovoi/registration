@@ -245,10 +245,8 @@ class Germany():
                     users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='3')
                 all_emails = self.gs.ws.get_all_values()
                 email = [email for email in all_emails if email[1] == family[0]["vc_mail"]][0]
-                s_row, s_email, s_imap_password, s_password, s_used, s_wait, s_family = email
-                i = int(s_row) + 1
                 # Select a range
-                self.gs.ws.update_acell(f'F{i}', int(s_wait) + 1)
+                self.gs.ws.update_acell(f'F{int(email[0]) + 1}', int(email[5]) + 1)
                 break
             elif error := soup.find("div", {"class": "global-error"}):
                 logging.warning(f"Error: {error.text}")
