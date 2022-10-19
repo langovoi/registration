@@ -46,7 +46,7 @@ name, date, phone, email, passport = users[int(sys.argv[1])].values()
 
 
 def register(thread):
-    time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/13/30','%m/%d/%Y/%H/%M')
+    time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/22/00','%m/%d/%Y/%H/%M')
     options = webdriver.ChromeOptions()
     options.headless = True
     options.add_argument('--blink-settings=imagesEnabled=false')
