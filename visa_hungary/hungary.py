@@ -50,7 +50,9 @@ def register(thread):
     options = webdriver.ChromeOptions()
     options.headless = True
 
-    driver = uc.Chrome(options=options)
+    prefs = {"profile.managed_default_content_settings.images": 2}
+    options.add_experimental_option("prefs", prefs)
+    driver = webdriver.Chrome(options=options)
     driver.delete_all_cookies()
 
     driver.get('https://konzinfoidopont.mfa.gov.hu/')
@@ -97,7 +99,7 @@ def register(thread):
     f.click_on_while('Сохранить')
     logging.warning('Выбрали Тип услуги')
     f.type_in('//input[@id="label4"]', name)
-    logging.warning('Ввод имя: {name}')
+    logging.warning(f'Ввод имя: {name}')
     f.type_in('//input[@id="birthDate"]', date)
     logging.warning('Ввод рождение')
     f.type_in('//input[@id="label9"]', phone)
