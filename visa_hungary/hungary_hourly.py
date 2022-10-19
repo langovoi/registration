@@ -61,8 +61,8 @@ def register(thread):
     logging.warning('Выбрали Беларусь')
     f.click_on_while('//label[text()="Тип дела"]/..//button[text()="Добавление типа услуги"]')
 
-    f.type_in('//h5[text()="Типы дел"]/../..//input[@placeholder="Поиск"]', 'типа С')
-    f.click_on_while('//label[contains(text(),"Заявление о выдаче визы (краткосрочная шенгенская виза типа С)")]')
+    f.type_in('//h5[text()="Типы дел"]/../..//input[@placeholder="Поиск"]', 'D')   #, 'типа С')
+    f.click_on_while('//label[contains(text(),"D")]')
     f.click_on_while('Сохранить')
     logging.warning('Выбрали Тип услуги')
     f.type_in('//input[@id="label4"]', name)

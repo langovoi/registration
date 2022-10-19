@@ -158,23 +158,22 @@ def register(thread):
             except Exception as e:
                 sleep(0.1)
         logging.warning('Нажали далее')
-        while True:
-            try:
-                # telegram.send_message(f'{thread}: {datetime.now()}')
-                f.click_on('Завершение бронирования')
-                dt = datetime.strptime(datetime.now(tz=timezone.utc).strftime('%m/%d/%Y/%H/%M'), '%m/%d/%Y/%H/%M')
-                logging.warning(f'ЗАПИСАН:({name}): {dt}')
-                sleep(10)
-                telegram.send_doc(f'Венгрия: в {dt} успешно зарегистрирован({name})', driver.page_source, False)
-                break
-            except Exception as e:
-                sleep(0.1)
+        # telegram.send_message(f'{thread}: {datetime.now()}')
+        telegram.send_doc(f'Венгрия.Перед завершением бронирования {name}',driver.page_source)
+        f.click_on_while('Завершение бронирования')
+        dt = datetime.strptime(datetime.now(tz=timezone.utc).strftime('%m/%d/%Y/%H/%M'), '%m/%d/%Y/%H/%M')
+        logging.warning(f'ЗАПИСАН:({name}): {dt}')
+        sleep(10)
+        telegram.send_doc(f'Венгрия: в {dt} успешно зарегистрирован({name})', driver.page_source)
+
+
     else:
         if f.is_element_displayed('//div[text()="Обращаем Ваше внимание, что у Вас уже есть действующая запись для решения данного вопроса."]'):
-            telegram.send_doc(f'Венгрия {name} уже зареген другим сеансом', driver.page_source, False)
+            telegram.send_doc(f'Венгрия {name} уже зареген другим сеансом', driver.page_source)
+            logging.warning('Уже зареген')
             driver.close()
         else:
-            telegram.send_doc('Венгрия для:{name} нет дат', driver.page_source, False)
+            telegram.send_doc('Венгрия для:{name} нет дат', driver.page_source)
             if f.is_element_displayed('//button[text()="Хорошо"]'):
                 while True:
                     try:
