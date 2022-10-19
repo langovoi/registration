@@ -174,7 +174,7 @@ def register(thread):
             logging.warning('Уже зареген')
             driver.close()
         else:
-            telegram.send_doc('Венгрия для:{name} нет дат', driver.page_source)
+            telegram.send_doc(f'Венгрия для:{name} нет дат', driver.page_source)
             if f.is_element_displayed('//button[text()="Хорошо"]'):
                 while True:
                     try:
