@@ -53,7 +53,7 @@ def register(key):
         start_time_dict = {'1': '21/59/58.0', '2': '21/59/58.5', '3': '21/59/59.0', '4': '21/59/59.5', '5': '21/59/59.9', '6': '22/00/00.0', '7': '22/00/00.1'}
         time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/{start_time_dict[key]}', '%m/%d/%Y/%H/%M/%S.%f')
         options = webdriver.ChromeOptions()
-        # options.headless = True
+        options.headless = True
         options.add_argument('--blink-settings=imagesEnabled=false')
         driver = uc.Chrome(options=options)
         driver.delete_all_cookies()

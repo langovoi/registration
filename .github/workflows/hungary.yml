@@ -38,4 +38,4 @@ jobs:
           json: ${{ secrets.CONFIG }}
       - name: Test python
         run: |
-          python3 visa_hungary/hungary.py ${{ matrix.tag }} "$104"
+          python3 visa_hungary/hungary.py ${{ matrix.tag }} "104"
