@@ -6,6 +6,8 @@ from time import sleep
 
 import os, sys
 
+from selenium.webdriver import DesiredCapabilities
+
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(CURRENT_DIR))
 
@@ -56,9 +58,10 @@ def register(key):
         options = webdriver.ChromeOptions()
         options.headless = True
         options.add_argument('--blink-settings=imagesEnabled=false')
-        driver = uc.Chrome(options=options)
+        caps = DesiredCapabilities().CHROME
+        caps["pageLoadStrategy"] = "none"
+        driver = uc.Chrome(desired_capabilities=caps, options=options)
         driver.delete_all_cookies()
-
         driver.get('https://konzinfoidopont.mfa.gov.hu/')
         f = Hungary(driver)
         logging.warning('Создали драйвер. Открыли сайт')

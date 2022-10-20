@@ -11,10 +11,6 @@ jobs:
       matrix:
         tag: ['1', '2', '3', '4', '5', '6', '7']
     steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.10.0
-        with:
-          access_token: ${{ github.token }}
       - uses: actions/checkout@v2
       - name: Cache requirements
         uses: actions/cache@v2
