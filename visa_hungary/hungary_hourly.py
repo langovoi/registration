@@ -25,7 +25,7 @@ id_email, email, password, name, date, phone, passport = gs.ws.get_all_values()[
 def register(thread):
     try:
         time = datetime.strptime(
-            f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/{datetime.utcnow().hour}/00', '%m/%d/%Y/%H/%M')
+            f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/{datetime.utcnow().hour+1}/00', '%m/%d/%Y/%H/%M')
         options = webdriver.ChromeOptions()
         options.headless = True
         options.add_argument('--blink-settings=imagesEnabled=false')
