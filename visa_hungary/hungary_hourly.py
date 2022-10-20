@@ -70,7 +70,6 @@ def register(thread):
         f.click_on_while('//label[text()="Беларусь - Минск"]')
         logging.warning('Выбрали Беларусь')
         f.click_on_while('//label[text()="Тип дела"]/..//button[text()="Добавление типа услуги"]')
-        telegram.send_image(driver, 'Венгрия неизвестная ошибка')
         f.type_in('//h5[text()="Типы дел"]/../..//input[@placeholder="Поиск"]', 'типа С')
         f.click_on_while('//label[contains(text(),"Заявление о выдаче визы (краткосрочная шенгенская виза типа С)")]')
         f.click_on_while('Сохранить')
