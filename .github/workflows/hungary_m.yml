@@ -1,11 +1,14 @@
-name: Hungary hourly
+name: Hungary nightly
 
 on:
   schedule:
-    - cron: '30 * * * *'
+    - cron: '30 21 * * *'
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tag: ['1', '2', '3', '4', '5', '6', '7']
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.10.0
@@ -34,4 +37,4 @@ jobs:
           json: ${{ secrets.CONFIG }}
       - name: Test python
         run: |
-          python3 visa_hungary/hungary_hourly.py
+          python3 visa_hungary/hungary.py ${{ matrix.tag }} "105"

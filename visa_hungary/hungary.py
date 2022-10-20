@@ -51,7 +51,8 @@ def register(key):
         logging.warning(sys.argv[1])
         logging.warning(sys.argv[2])
         start_time_dict = {'1': '21/59/58.0', '2': '21/59/58.5', '3': '21/59/59.0', '4': '21/59/59.5', '5': '21/59/59.9', '6': '22/00/00.0', '7': '22/00/00.1'}
-        time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/{start_time_dict[key]}', '%m/%d/%Y/%H/%M/%S.%f')
+        # time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/{start_time_dict[key]}', '%m/%d/%Y/%H/%M/%S.%f')
+        time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/19/49/59.5', '%m/%d/%Y/%H/%M/%S.%f')
         options = webdriver.ChromeOptions()
         options.headless = True
         options.add_argument('--blink-settings=imagesEnabled=false')
@@ -97,8 +98,10 @@ def register(key):
         logging.warning('Выбрали Беларусь')
         f.click_on_while('//label[text()="Тип дела"]/..//button[text()="Добавление типа услуги"]')
 
-        f.type_in('//h5[text()="Типы дел"]/../..//input[@placeholder="Поиск"]', 'типа С')
-        f.click_on_while('//label[contains(text(),"Заявление о выдаче визы (краткосрочная шенгенская виза типа С)")]')
+        # f.type_in('//h5[text()="Типы дел"]/../..//input[@placeholder="Поиск"]', 'типа С')
+        # f.click_on_while('//label[contains(text(),"Заявление о выдаче визы (краткосрочная шенгенская виза типа С)")]')
+        f.type_in('//h5[text()="Типы дел"]/../..//input[@placeholder="Поиск"]', 'D')
+        f.click_on_while('//label[contains(text(),"разрешение на проживание - D")]')
         f.click_on_while('Сохранить')
         logging.warning('Выбрали Тип услуги')
         f.type_in('//input[@id="label4"]', name)
