@@ -51,8 +51,8 @@ def register(key):
         logging.warning(sys.argv[1])
         logging.warning(sys.argv[2])
         start_time_dict = {'1': '21/59/58.0', '2': '21/59/58.5', '3': '21/59/59.0', '4': '21/59/59.5', '5': '21/59/59.9', '6': '22/00/00.0', '7': '22/00/00.1'}
+        time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/{start_time_dict[key]}', '%m/%d/%Y/%H/%M/%S.%f')
         # time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/{start_time_dict[key]}', '%m/%d/%Y/%H/%M/%S.%f')
-        time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/19/49/59.5', '%m/%d/%Y/%H/%M/%S.%f')
         options = webdriver.ChromeOptions()
         options.headless = True
         options.add_argument('--blink-settings=imagesEnabled=false')
@@ -98,10 +98,10 @@ def register(key):
         logging.warning('Выбрали Беларусь')
         f.click_on_while('//label[text()="Тип дела"]/..//button[text()="Добавление типа услуги"]')
 
-        # f.type_in('//h5[text()="Типы дел"]/../..//input[@placeholder="Поиск"]', 'типа С')
-        # f.click_on_while('//label[contains(text(),"Заявление о выдаче визы (краткосрочная шенгенская виза типа С)")]')
-        f.type_in('//h5[text()="Типы дел"]/../..//input[@placeholder="Поиск"]', 'D')
-        f.click_on_while('//label[contains(text(),"разрешение на проживание - D")]')
+        f.type_in('//h5[text()="Типы дел"]/../..//input[@placeholder="Поиск"]', 'типа С')
+        f.click_on_while('//label[contains(text(),"Заявление о выдаче визы (краткосрочная шенгенская виза типа С)")]')
+        # f.type_in('//h5[text()="Типы дел"]/../..//input[@placeholder="Поиск"]', 'D')
+        # f.click_on_while('//label[contains(text(),"разрешение на проживание - D")]')
         f.click_on_while('Сохранить')
         logging.warning('Выбрали Тип услуги')
         f.type_in('//input[@id="label4"]', name)
@@ -163,21 +163,21 @@ def register(key):
                     sleep(0.1)
             logging.warning(f"Нажали далее в {datetime.strptime(datetime.now(tz=timezone.utc).strftime('%m/%d/%Y/%H/%M/%S.%f'), '%m/%d/%Y/%H/%M/%S.%f')}")
             # telegram.send_message(f'{thread}: {datetime.now()}')
-            telegram.send_doc(f'🟩Венгрия.Перед завершением бронирования {name}', driver.page_source)
+            telegram.send_doc(f'Венгрия.Перед завершением бронирования {name}', driver.page_source)
             sleep(90)
             f.click_on_while('Завершение бронирования')
             dt = datetime.strptime(datetime.now(tz=timezone.utc).strftime('%m/%d/%Y/%H/%M/%S.%f'), '%m/%d/%Y/%H/%M/%S.%f')
             logging.warning(f'ЗАПИСАН:({name}): {dt}')
             sleep(10)
-            telegram.send_doc(f'🟩Венгрия: в {dt} успешно зарегистрирован({name})', driver.page_source)
+            telegram.send_doc(f'🟩Венгрия: в {dt} успешно зарегистрирован({name} {start_time_dict[key]})', driver.page_source)
         else:
             if f.is_element_displayed(
                     '//div[text()="Обращаем Ваше внимание, что у Вас уже есть действующая запись для решения данного вопроса."]'):
-                telegram.send_doc(f'⭕Венгрия {name} уже зареген другим сеансом', driver.page_source)
+                telegram.send_doc(f'⭕Венгрия {name} уже зареген другим сеансом {start_time_dict[key]}', driver.page_source)
                 logging.warning('Уже зареген')
                 driver.close()
             else:
-                telegram.send_doc(f'⭕Венгрия для:{name} нет дат', driver.page_source)
+                telegram.send_doc(f'⭕Венгрия для:{name} нет дат {start_time_dict[key]}', driver.page_source)
                 if f.is_element_displayed('//button[text()="Хорошо"]'):
                     while True:
                         try:
@@ -187,7 +187,7 @@ def register(key):
                             sleep(0.1)
     except Exception as e:
         try:
-            telegram.send_image(driver, f'Венгрия неизвестная ошибка {str(e)}')
+            telegram.send_image(driver, f'Венгрия неизвестная ошибка {str(e)} {start_time_dict[key]}')
         except Exception as e:
             telegram.send_message(f'Венгрия Driver убит {str(e)}')
 
