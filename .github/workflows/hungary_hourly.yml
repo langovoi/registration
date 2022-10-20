@@ -3,7 +3,7 @@ name: Hungary hourly
 on:
   push:
   schedule:
-    - cron: '45 * * * *'
+    - cron: '30 * * * *'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -35,4 +35,4 @@ jobs:
           json: ${{ secrets.CONFIG }}
       - name: Test python
         run: |
-          python3 visa_hungary/hungary.py ${{ matrix.tag }}
+          python3 visa_hungary/hungary_hourly.py

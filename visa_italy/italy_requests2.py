@@ -25,7 +25,7 @@ browser.addheaders = [('User-agent',
                        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36')]
 browser.set_handle_refresh(False)
 
-url = 'https://prenotami.esteri.it/Home'
+url = 'https://consulat.gouv.fr/ru/ambassade-de-france-a-minsk/appointment'
 html = browser.open(url).read()
 print(html.decode('utf-8'))
 browser.select_form(nr=0)  # This is login-password form -> nr = number = 0

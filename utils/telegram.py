@@ -49,8 +49,7 @@ def send_doc(caption, html, debug=True):
 
 def send_image(image_name, caption):
     if type(image_name) is not str:
-        image_name.save_screenshot('screenshot.png')
-        image_name = 'screenshot.png'
+        image_name = image_name.get_screenshot_as_png()
     try:
         bot = telebot.TeleBot("1275523107:AAF_5t_r80J55Pl-JcVeLcVVOsl7kadqAc4")
         chat_id = -745819635
