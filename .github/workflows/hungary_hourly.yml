@@ -1,8 +1,5 @@
 name: Hungary hourly
 
-on:
-  schedule:
-    - cron: '30 * * * *'
 jobs:
   build:
     runs-on: ubuntu-latest
