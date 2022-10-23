@@ -51,6 +51,11 @@ class BasePage:
         # self.get_element(element_name).clear()
         self.get_element(element_name).send_keys(text)
 
+    def type_in_clear(self, element_name, text):
+        self.click_on_while(element_name)
+        self.get_element(element_name).clear()
+        self.get_element(element_name).send_keys(text)
+
     def select_by_text(self, element_name, text):
         select = Select(self.get_element(element_name))
         try:

@@ -21,13 +21,17 @@ class Hungary(BasePage):
 
 
 users = [
+    {'name': 'DALMATAVA MARYNA', 'date': '13/03/1988', 'phone': '+375297982678', 'email': 'maryna.dalmatava@gmail.com',
+     'passport': 'MP4740606'},
+    {'name': 'MIKITSIUK YELIZAVETA', 'date': '03/11/2008', 'phone': '+375297934672', 'email': 'alisa_i78@mail.ru',
+     'passport': 'AB3713299'},
     {'name': 'DOVATOD SERGEY', 'date': '01/01/1986', 'phone': '+375298222998', 'email': 'igor_fomin00@bk.ru',
      'passport': 'AB9756323'},
     {'name': 'PAEEROV VALERY', 'date': '01/10/1999', 'phone': '+375293239918', 'email': 'nikonov.gordei@mail.ru',
      'passport': 'MC1280954', },
     {'name': 'SIDOROV IRYNA', 'date': '10/10/2000', 'phone': '+375296669948', 'email': 'likhachev.yaromir@mail.ru',
      'passport': 'MC3480933', },
-    {'name': 'USACHEV VALERY', 'date': '01/10/1999', 'phone': '+375293239957', 'email': 'nikonov.gordei@mail.ru',
+    {'name': 'USACHEV VALERY', 'date': '01/10/1999', 'phone': '+375293239957', 'email': 'belov.ludvig@mail.ru',
      'passport': 'AB5480944', },
     {'name': 'DAVIDOV ANASTASYA', 'date': '01/10/1999', 'phone': '+375256239328', 'email': 'arkhipov.roman00@mail.ru',
      'passport': 'PD3454476', },
@@ -45,18 +49,22 @@ users = [
 ]
 
 gs = gsheets.GoogleSheets('hungary')
-id_email, email, password, name, date, phone, passport = gs.ws.get_all_values()[int(sys.argv[2])]
+if int(sys.argv[1]) <= 4:
+    user = int(sys.argv[2])
+else:
+    user = int(sys.argv[3])
 
+id_email, email, password, name, date, phone, passport, used, count_person, date_min, date_max = gs.ws.get_all_values()[user]
 
 def register(key):
     try:
         logging.warning(sys.argv[1])
-        logging.warning(sys.argv[2])
-        start_time_dict = {'1': '21/59/58.0', '2': '21/59/58.5', '3': '21/59/59.0', '4': '21/59/59.5', '5': '21/59/59.9', '6': '22/00/00.0', '7': '22/00/00.1'}
+        logging.warning(user)
+        start_time_dict = {'1': '21/59/58.0', '2': '21/59/58.5', '3': '21/59/56.0', '4': '21/59/56.5', '5': '21/59/57.0', '6': '21/59/57.5', '7': '21/59/58.0'}
         time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/{start_time_dict[key]}', '%m/%d/%Y/%H/%M/%S.%f')
         # time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/{start_time_dict[key]}', '%m/%d/%Y/%H/%M/%S.%f')
         options = webdriver.ChromeOptions()
-        options.headless = True
+        # options.headless = True
         options.add_argument('--blink-settings=imagesEnabled=false')
         caps = DesiredCapabilities().CHROME
         caps["pageLoadStrategy"] = "none"
@@ -111,6 +119,8 @@ def register(key):
         logging.warning(f'Ввод имя: {name}')
         f.type_in('//input[@id="birthDate"]', date.replace('.', '/'))
         logging.warning('Ввод рождение')
+        f.type_in_clear('//input[@id="label6"]', count_person)
+        logging.warning('Ввод количество заявителей')
         f.type_in('//input[@id="label9"]', phone)
         logging.warning('Ввод телефон')
         f.type_in('//input[@id="label10"]', email)
@@ -124,10 +134,10 @@ def register(key):
                 break
             except Exception as e:
                 sleep(0.1)
-        try:
-            f.click_on('//button[text()="Перейти  к выбору времени"]')
-        except Exception:
-            pass
+        # try:
+        #     f.click_on('//button[text()="Перейти  к выбору времени"]')
+        # except Exception:
+        #     pass
         while True:
             try:
                 f.click_on('//input[@id="label13"]')
