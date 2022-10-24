@@ -1,7 +1,6 @@
 name: Hungary 106
 
 on:
-  push:
   schedule:
     - cron: '30 21 * * *'
 

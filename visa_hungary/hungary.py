@@ -60,7 +60,7 @@ def register(key):
     try:
         logging.warning(sys.argv[1])
         logging.warning(user)
-        start_time_dict = {'1': '21/59/58.0', '2': '21/59/58.5', '3': '21/59/56.0', '4': '21/59/56.5', '5': '21/59/57.0', '6': '21/59/57.5', '7': '21/59/58.0'}
+        start_time_dict = {'1': '21/59/58.0', '2': '21/59/58.5', '3': '21/59/57.0', '4': '21/59/57.5', '5': '21/59/58.0', '6': '21/59/58.5', '7': '21/59/59.0'}
         time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/{start_time_dict[key]}', '%m/%d/%Y/%H/%M/%S.%f')
         # time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/{start_time_dict[key]}', '%m/%d/%Y/%H/%M/%S.%f')
         options = webdriver.ChromeOptions()
