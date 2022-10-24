@@ -14,6 +14,7 @@ sys.path.append(os.path.dirname(CURRENT_DIR))
 from utils import telegram, gsheets
 from driver.base_page import BasePage
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 
 
 class Hungary(BasePage):
@@ -113,6 +114,7 @@ def register(key):
         f.click_on_while('//label[contains(text(),"Заявление о выдаче визы (краткосрочная шенгенская виза типа С)")]')
         # f.type_in('//h5[text()="Типы дел"]/../..//input[@placeholder="Поиск"]', 'D')
         # f.click_on_while('//label[contains(text(),"разрешение на проживание - D")]')
+
         f.click_on_while('Сохранить')
         logging.warning('Выбрали Тип услуги')
         f.type_in('//input[@id="label4"]', name)
@@ -157,16 +159,23 @@ def register(key):
                 break
             except Exception as e:
                 sleep(0.1)
+        click_span = int(key)
         dt = datetime.strptime(datetime.now(tz=timezone.utc).strftime('%m/%d/%Y/%H/%M/%S.%f'), '%m/%d/%Y/%H/%M/%S.%f')
         logging.warning(f'Нажали выбор даты:{dt}')
         if f.is_element_displayed('//span[text()="Свободно"]'):
-            while True:
+            count_span = len(driver.find_elements(By.XPATH,'//span[text()="Свободно"]'))
+            if count_span < int(key) :
+                click_span = count_span
+                logging.warning(f'меняем дату на слот {count_span} ')
+            for i in range(25):
                 try:
-                    f.click_on(f'(//span[text()="Свободно"])[{key}]')
+                    f.click_on(f'(//span[text()="Свободно"])[{click_span}]')
                     break
                 except Exception as e:
                     logging.warning('click')
                     sleep(0.1)
+            else:
+                raise Exception("Не нажимается дата")
             logging.warning(f"Выбрали дату в {datetime.strptime(datetime.now(tz=timezone.utc).strftime('%m/%d/%Y/%H/%M/%S.%f'), '%m/%d/%Y/%H/%M/%S.%f')}")
             while True:
                 try:
@@ -192,12 +201,15 @@ def register(key):
             else:
                 telegram.send_doc(f'⭕Венгрия для:{name} нет дат {start_time_dict[key]}', driver.page_source)
                 if f.is_element_displayed('//button[text()="Хорошо"]'):
-                    while True:
+                    for i in range(20):
                         try:
                             f.click_on('//button[text()="Хорошо"]')
                             break
                         except Exception as e:
+                            logging.warning('click Хорошо для {name} нет дат {start_time_dict[key]} ')
                             sleep(0.1)
+                    else:
+                        raise Exception("Не нажимается хорошо")
     except Exception as e:
         try:
             telegram.send_image(driver, f'Венгрия неизвестная ошибка {str(e)} {start_time_dict[key]}')
