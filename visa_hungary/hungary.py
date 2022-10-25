@@ -6,7 +6,7 @@ from time import sleep
 
 import os, sys
 
-from selenium.webdriver import DesiredCapabilities
+from selenium.webdriver import DesiredCapabilities, ActionChains
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(CURRENT_DIR))
@@ -20,40 +20,9 @@ from selenium.webdriver.common.by import By
 class Hungary(BasePage):
     pass
 
-
-users = [
-    {'name': 'DALMATAVA MARYNA', 'date': '13/03/1988', 'phone': '+375297982678', 'email': 'maryna.dalmatava@gmail.com',
-     'passport': 'MP4740606'},
-    {'name': 'MIKITSIUK YELIZAVETA', 'date': '03/11/2008', 'phone': '+375297934672', 'email': 'alisa_i78@mail.ru',
-     'passport': 'AB3713299'},
-    {'name': 'DOVATOD SERGEY', 'date': '01/01/1986', 'phone': '+375298222998', 'email': 'igor_fomin00@bk.ru',
-     'passport': 'AB9756323'},
-    {'name': 'PAEEROV VALERY', 'date': '01/10/1999', 'phone': '+375293239918', 'email': 'nikonov.gordei@mail.ru',
-     'passport': 'MC1280954', },
-    {'name': 'SIDOROV IRYNA', 'date': '10/10/2000', 'phone': '+375296669948', 'email': 'likhachev.yaromir@mail.ru',
-     'passport': 'MC3480933', },
-    {'name': 'USACHEV VALERY', 'date': '01/10/1999', 'phone': '+375293239957', 'email': 'belov.ludvig@mail.ru',
-     'passport': 'AB5480944', },
-    {'name': 'DAVIDOV ANASTASYA', 'date': '01/10/1999', 'phone': '+375256239328', 'email': 'arkhipov.roman00@mail.ru',
-     'passport': 'PD3454476', },
-    {'name': 'IVANOVA ANASTASYA', 'date': '01/11/1989', 'phone': '+375446444978',
-     'email': 'ivashchenko.georgii@mail.ru',
-     'passport': 'PD3450976', },
-    {'name': 'DOVATOVA ANASTASYA', 'date': '05/12/1999', 'phone': '+375446239118', 'email': 'pogomii.timofei@mail.ru',
-     'passport': 'AB3220976', },
-    {'name': 'SHPAK ELENA', 'date': '01/10/1999', 'phone': '+375259239985', 'email': 'shufrich.yakov@mail.ru',
-     'passport': 'PD3120976', },
-    {'name': 'PRIVET ELENA', 'date': '22/10/1999', 'phone': '+375297636758', 'email': 'isaev.andrei00@mail.ru',
-     'passport': 'PD3340976', },
-    {'name': 'KOKTYSH ANASTASYA', 'date': '11/10/1999', 'phone': '+375297638912', 'email': 'geletei.renata@mail.ru',
-     'passport': 'PD3432976', }
-]
-
 gs = gsheets.GoogleSheets('hungary')
-if int(sys.argv[1]) <= 4:
-    user = int(sys.argv[2])
-else:
-    user = int(sys.argv[3])
+
+user = int(sys.argv[2])
 
 id_email, email, password, name, date, phone, passport, used, count_person, date_min, date_max = gs.ws.get_all_values()[user]
 
@@ -61,9 +30,8 @@ def register(key):
     try:
         logging.warning(sys.argv[1])
         logging.warning(user)
-        start_time_dict = {'1': '21/59/58.0', '2': '21/59/58.5', '3': '21/59/57.0', '4': '21/59/57.5', '5': '21/59/58.0', '6': '21/59/58.5', '7': '21/59/59.0'}
+        start_time_dict = {'1': '21/59/57.0', '2': '21/59/57.5', '3': '21/59/58.0', '4': '21/59/58.5', '5': '21/59/59.0', '6': '21/59/59.5', '7': '22/00/00.0', '8': '22/00/00.5', '9': '21/59/58.5', '10': '21/59/58.9', '11': '21/59/57.0', '12': '21/59/57.5', '13': '21/59/58.0', '14': '21/59/58.5', '15': '21/59/59.0', '16': '21/59/59.5', '17': '22/00/00.0', '18': '22/00/00.5', '19': '21/59/58.5', '20': '21/59/58.9'}
         time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/{start_time_dict[key]}', '%m/%d/%Y/%H/%M/%S.%f')
-        # time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/{start_time_dict[key]}', '%m/%d/%Y/%H/%M/%S.%f')
         options = webdriver.ChromeOptions()
         options.headless = True
         options.add_argument('--blink-settings=imagesEnabled=false')
@@ -136,10 +104,13 @@ def register(key):
                 break
             except Exception as e:
                 sleep(0.1)
-        # try:
-        #     f.click_on('//button[text()="Перейти  к выбору времени"]')
-        # except Exception:
-        #     pass
+        actions = ActionChains(driver)
+        element = driver.find_element(By.XPATH, '//button[@class="btn btn-primary w-100"]')
+        try:
+            actions.move_to_element(element).perform()
+        except Exception:
+            sleep(2)
+            actions.move_to_element(element).perform()
         while True:
             try:
                 f.click_on('//input[@id="label13"]')
@@ -164,6 +135,7 @@ def register(key):
         logging.warning(f'Нажали выбор даты:{dt}')
         if f.is_element_displayed('//span[text()="Свободно"]'):
             count_span = len(driver.find_elements(By.XPATH,'//span[text()="Свободно"]'))
+            source = driver.page_source
             if count_span < int(key) :
                 click_span = count_span
                 logging.warning(f'меняем дату на слот {count_span} ')
@@ -175,7 +147,7 @@ def register(key):
                     logging.warning('click')
                     sleep(0.1)
             else:
-                raise Exception("Не нажимается дата")
+                raise RuntimeError("Не нажимается дата")
             logging.warning(f"Выбрали дату в {datetime.strptime(datetime.now(tz=timezone.utc).strftime('%m/%d/%Y/%H/%M/%S.%f'), '%m/%d/%Y/%H/%M/%S.%f')}")
             while True:
                 try:
@@ -185,8 +157,9 @@ def register(key):
                     sleep(0.1)
             logging.warning(f"Нажали далее в {datetime.strptime(datetime.now(tz=timezone.utc).strftime('%m/%d/%Y/%H/%M/%S.%f'), '%m/%d/%Y/%H/%M/%S.%f')}")
             # telegram.send_message(f'{thread}: {datetime.now()}')
-            telegram.send_doc(f'Венгрия.Перед завершением бронирования {name}', driver.page_source)
+            telegram.send_doc(f'Венгрия. Даты {name}, {start_time_dict[key]}', source)
             sleep(90)
+            telegram.send_doc(f'Венгрия. Перед завершением бронирования {name}', driver.page_source)
             f.click_on_while('Завершение бронирования')
             dt = datetime.strptime(datetime.now(tz=timezone.utc).strftime('%m/%d/%Y/%H/%M/%S.%f'), '%m/%d/%Y/%H/%M/%S.%f')
             logging.warning(f'ЗАПИСАН:({name}): {dt}')
@@ -200,6 +173,7 @@ def register(key):
                 driver.close()
             else:
                 telegram.send_doc(f'⭕Венгрия для:{name} нет дат {start_time_dict[key]}', driver.page_source)
+                logging.warning(f'Нет дат: {start_time_dict[key]}')
                 if f.is_element_displayed('//button[text()="Хорошо"]'):
                     for i in range(20):
                         try:
@@ -209,12 +183,12 @@ def register(key):
                             logging.warning('click Хорошо для {name} нет дат {start_time_dict[key]} ')
                             sleep(0.1)
                     else:
-                        raise Exception("Не нажимается хорошо")
+                        raise RuntimeError("Не нажимается хорошо")
     except Exception as e:
         try:
             telegram.send_image(driver, f'Венгрия неизвестная ошибка {str(e)} {start_time_dict[key]}')
         except Exception as e:
-            telegram.send_message(f'Венгрия Driver убит {str(e)}')
+            telegram.send_message(f'Венгрия неизвестная ошибка. {str(e)}')
 
 
 if __name__ == "__main__":

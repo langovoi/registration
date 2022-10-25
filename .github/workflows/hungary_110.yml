@@ -1,4 +1,4 @@
-name: Hungary 106
+name: Hungary 110
 
 on:
   schedule:
@@ -34,4 +34,4 @@ jobs:
           json: ${{ secrets.CONFIG }}
       - name: Test python
         run: |
-          python3 visa_hungary/hungary.py ${{ matrix.tag }} "106"
+          python3 visa_hungary/hungary.py ${{ matrix.tag }} "110"
