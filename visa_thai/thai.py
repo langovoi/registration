@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 from time import sleep
@@ -15,6 +16,7 @@ from utils import telegram
 def monitor_thai():
     sleep(1)
     driver.find_element(By.XPATH, '//button[@class="button button--red"]').click()
+    sleep(1)
     soup = BeautifulSoup(driver.page_source, "lxml")
     dates = soup.find_all("a", {'class': 'ui-state-default'})
     dates_str = [d.text for d in dates]
