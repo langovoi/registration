@@ -1,3 +1,5 @@
+import os
+import sys
 from time import sleep
 
 import undetected_chromedriver as uc
@@ -7,6 +9,8 @@ from selenium.webdriver.common.by import By
 
 from utils import telegram
 
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(CURRENT_DIR))
 
 def monitor_thai():
     sleep(1)
