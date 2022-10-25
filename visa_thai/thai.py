@@ -25,12 +25,7 @@ def monitor_thai():
     for date in dates_str:
         xpath = f'//a[text() = "{date}"]'
         logging.warning(xpath)
-        try:
-            driver.find_element(By.XPATH, xpath).click()
-        except Exception:
-            driver.find_element(By.XPATH, '//button[@class="button button--red"]').click()
-            sleep(1)
-            driver.find_element(By.XPATH, xpath).click()
+        driver.find_element(By.XPATH, xpath).click()
         sleep(1)
         times = [time.get_attribute('value').replace('T', ' ') for time in
                  driver.find_elements(By.XPATH, '//input[@class="radio"]')]
@@ -39,28 +34,31 @@ def monitor_thai():
 
 
 if __name__ == '__main__':
-    time_dict_collection = []
-    time_dict_application = []
-    url_collection = 'https://my.linistry.com/Customer/ReserveTime?b=127&serviceMenuItemId=13929'
-    url_application = 'https://my.linistry.com/Customer/ReserveTime?b=127&serviceMenuItemId=1195'
-    options = webdriver.ChromeOptions()
-    options.headless = True
-    driver = webdriver.Chrome(options=options)
-    driver.implicitly_wait(20)
+    try:
+        time_dict_collection = []
+        time_dict_application = []
+        url_collection = 'https://my.linistry.com/Customer/ReserveTime?b=127&serviceMenuItemId=13929'
+        url_application = 'https://my.linistry.com/Customer/ReserveTime?b=127&serviceMenuItemId=1195'
+        options = webdriver.ChromeOptions()
+        options.headless = True
+        driver = webdriver.Chrome(options=options)
+        driver.implicitly_wait(20)
 
-    while True:
-        driver.delete_all_cookies()
-        driver.get(url_collection)
-        date_time_dict = monitor_thai()
-        if date_time_dict != time_dict_collection:
-            message = '\n'.join(date_time_dict)
-            telegram.send_message(f'🇹🇭Таиланд даты collection:\n {message}')
-            time_dict_collection = date_time_dict
-        driver.delete_all_cookies()
-        driver.get(url_application)
-        date_time_dict = monitor_thai()
-        if date_time_dict != time_dict_application:
-            message = '\n'.join(date_time_dict)
-            telegram.send_message(f'🇹🇭Таиланд даты application:\n {message}')
-            time_dict_application = date_time_dict
-        sleep(10)
+        while True:
+            driver.delete_all_cookies()
+            driver.get(url_collection)
+            date_time_dict = monitor_thai()
+            if date_time_dict != time_dict_collection:
+                message = '\n'.join(date_time_dict)
+                telegram.send_message(f'🇹🇭Таиланд даты collection:\n {message}')
+                time_dict_collection = date_time_dict
+            driver.delete_all_cookies()
+            driver.get(url_application)
+            date_time_dict = monitor_thai()
+            if date_time_dict != time_dict_application:
+                message = '\n'.join(date_time_dict)
+                telegram.send_message(f'🇹🇭Таиланд даты application:\n {message}')
+                time_dict_application = date_time_dict
+            sleep(10)
+    except Exception as e:
+        telegram.send_doc(f'Таиланд Неизвестная ошибка: {str(e)}', driver.page_source)
