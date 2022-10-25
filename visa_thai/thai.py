@@ -7,10 +7,10 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-from utils import telegram
-
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(CURRENT_DIR))
+
+from utils import telegram
 
 def monitor_thai():
     sleep(1)

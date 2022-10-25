@@ -30,7 +30,7 @@ def register(key):
     try:
         logging.warning(sys.argv[1])
         logging.warning(user)
-        start_time_dict = {'1': '21/59/57.0', '2': '21/59/57.5', '3': '21/59/58.0', '4': '21/59/58.5', '5': '21/59/59.0', '6': '21/59/59.5', '7': '22/00/00.0', '8': '22/00/00.5', '9': '21/59/58.5', '10': '21/59/58.9', '11': '21/59/57.0', '12': '21/59/57.5', '13': '21/59/58.0', '14': '21/59/58.5', '15': '21/59/59.0', '16': '21/59/59.5', '17': '22/00/00.0', '18': '22/00/00.5', '19': '21/59/58.5', '20': '21/59/58.9'}
+        start_time_dict = {'1': '21/59/57.0', '2': '21/59/57.5', '3': '21/59/58.0', '4': '21/59/58.5', '5': '21/59/59.0', '6': '21/59/59.5', '7': '22/00/00.0', '8': '22/00/00.5', '9': '21/59/58.5', '10': '21/59/58.9'}
         time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/{start_time_dict[key]}', '%m/%d/%Y/%H/%M/%S.%f')
         options = webdriver.ChromeOptions()
         options.headless = True
@@ -187,7 +187,7 @@ def register(key):
     except Exception as e:
         try:
             telegram.send_image(driver, f'Венгрия неизвестная ошибка {str(e)} {start_time_dict[key]}')
-        except Exception as e:
+        except Exception:
             telegram.send_message(f'Венгрия неизвестная ошибка. {str(e)}')
 
 
