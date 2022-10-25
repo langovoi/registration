@@ -61,4 +61,4 @@ if __name__ == '__main__':
                 time_dict_application = date_time_dict
             sleep(10)
     except Exception as e:
-        telegram.send_doc(f'Таиланд Неизвестная ошибка: {str(e)}', driver.page_source)
+        telegram.send_image(driver, f'Таиланд Неизвестная ошибка: {str(e)}')
