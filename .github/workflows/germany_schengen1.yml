@@ -29,7 +29,6 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install git+https://github.com/behave/behave
       - name: create-json
         id: create-json
         uses: jsdaniell/create-json@1.1.2
