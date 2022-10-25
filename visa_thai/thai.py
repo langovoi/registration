@@ -41,6 +41,7 @@ if __name__ == '__main__':
         url_application = 'https://my.linistry.com/Customer/ReserveTime?b=127&serviceMenuItemId=1195'
         options = webdriver.ChromeOptions()
         options.headless = True
+        options.add_argument("--window-size=1920,1080")
         driver = webdriver.Chrome(options=options)
         driver.implicitly_wait(20)
 
