@@ -21,8 +21,11 @@ def monitor_thai():
     dates = soup.find_all("a", {'class': 'ui-state-default'})
     dates_str = [d.text for d in dates]
     date_time_dict = []
+    logging.warning(dates_str)
     for date in dates_str:
-        driver.find_element(By.XPATH, f'//a[text() = "{date}"]').click()
+        xpath = f'//a[text() = "{date}"]'
+        logging.warning(xpath)
+        driver.find_element(By.XPATH, xpath).click()
         sleep(1)
         times = [time.get_attribute('value').replace('T', ' ') for time in
                  driver.find_elements(By.XPATH, '//input[@class="radio"]')]
