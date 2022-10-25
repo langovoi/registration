@@ -37,7 +37,7 @@ def register(key):
         options.add_argument('--blink-settings=imagesEnabled=false')
         caps = DesiredCapabilities().CHROME
         caps["pageLoadStrategy"] = "none"
-        driver = uc.Chrome(desired_capabilities=caps, options=options)
+        driver = webdriver.Chrome(desired_capabilities=caps, options=options)
         driver.delete_all_cookies()
         driver.get('https://konzinfoidopont.mfa.gov.hu/')
         f = Hungary(driver)
