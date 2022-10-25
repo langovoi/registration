@@ -25,7 +25,12 @@ def monitor_thai():
     for date in dates_str:
         xpath = f'//a[text() = "{date}"]'
         logging.warning(xpath)
-        driver.find_element(By.XPATH, xpath).click()
+        try:
+            driver.find_element(By.XPATH, xpath).click()
+        except Exception:
+            driver.find_element(By.XPATH, '//button[@class="button button--red"]').click()
+            sleep(1)
+            driver.find_element(By.XPATH, xpath).click()
         sleep(1)
         times = [time.get_attribute('value').replace('T', ' ') for time in
                  driver.find_elements(By.XPATH, '//input[@class="radio"]')]
