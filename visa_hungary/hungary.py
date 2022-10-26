@@ -30,10 +30,10 @@ def register(key):
     try:
         logging.warning(sys.argv[1])
         logging.warning(user)
-        start_time_dict = {'1': '21/59/57.0', '2': '21/59/57.5', '3': '21/59/58.0', '4': '21/59/58.5', '5': '21/59/59.0', '6': '21/59/59.5', '7': '22/00/00.0', '8': '22/00/00.5', '9': '21/59/58.5', '10': '21/59/58.9'}
+        start_time_dict = {'1': '21/59/56.0', '2': '21/59/56.5', '3': '21/59/57.0', '4': '21/59/57.5', '5': '21/59/58.0', '6': '21/59/58.5', '7': '21/59/59.0', '8': '21/59/59.5', '9': '22/00/00'}
         time = datetime.strptime(f'{datetime.utcnow().date().strftime("%m/%d/%Y")}/{start_time_dict[key]}', '%m/%d/%Y/%H/%M/%S.%f')
         options = webdriver.ChromeOptions()
-        options.headless = True
+        # options.headless = True
         options.add_argument('--blink-settings=imagesEnabled=false')
         caps = DesiredCapabilities().CHROME
         caps["pageLoadStrategy"] = "none"

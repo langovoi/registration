@@ -1,4 +1,4 @@
-name: Hungary 105
+name: Hungary 106
 
 on:
   schedule:
@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        tag: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+        tag: ['1', '2', '3', '4', '5', '6', '7', '8', '9']
     steps:
       - uses: actions/checkout@v2
       - name: Cache requirements
@@ -34,4 +34,4 @@ jobs:
           json: ${{ secrets.CONFIG }}
       - name: Test python
         run: |
-          python3 visa_hungary/hungary.py ${{ matrix.tag }} "105"
+          python3 visa_hungary/hungary.py ${{ matrix.tag }} "106"
