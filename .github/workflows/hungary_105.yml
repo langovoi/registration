@@ -1,7 +1,8 @@
 name: Hungary 105
 
 on:
-  push:
+  schedule:
+    - cron: '30 21 * * *'
 
 jobs:
   build:
