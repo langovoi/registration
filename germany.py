@@ -241,8 +241,8 @@ class Germany():
             soup = BeautifulSoup(html, "lxml")
             if not (soup.find("captcha") or soup.find("div", {"class": "global-error"}) or 'An error occured while processing your appointment' in str(soup)):
                 telegram.send_doc(caption=f'🟢 🇩🇪 Германия {self.categories[self.category]}: Успешно записан: {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]}) на {str(time_text)}\nЖду письмо... ', html=str(html), debug=False)
-                for user in family:
-                    users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='3')
+                # for user in family:
+                #     users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='3')
                 all_emails = self.gs.ws.get_all_values()
                 email = [email for email in all_emails if email[1] == family[0]["vc_mail"]][0]
                 # Select a range
@@ -253,8 +253,8 @@ class Germany():
                 if "The entered text was wrong" in error.text:
                     code = captcha.get_code(str(soup), f'The entered text was wrong {self.category}')
                 elif "This entry needs to be unique" in error.text:
-                    for user in family:
-                        users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='3')
+                    # for user in family:
+                    #     users.update_status(url=f'{sys.argv[2]}', id=user["id"], status='3')
                     telegram.send_doc(
                         caption=f'⭕ 🇩🇪 Германия: {self.categories[self.category]}: Уже зарегистрирован ({str(time_text)}): {family[0]["vc_surname"]} {family[0]["vc_name"]}({family[0]["vc_mail"]})\nОшибка: {error.text.strip()}', html=str(soup), debug=False)
                     success = True
