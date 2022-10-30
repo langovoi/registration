@@ -26,9 +26,11 @@ def register_german_visa(termin, category, vc_type):
                     families = [f for i, f in family_list.items()]
                     families.sort(key=len, reverse=True)
                     fam_str = '\n'.join([f'{family[0]["vc_surname"]} {family[0]["vc_name"]} из {len(family)} членов на {family[0]["dates"]}' for family in families])
-                    telegram.send_message(f'🟡 Германия {g.categories[category]}: Начинаю регистрировать:\n{fam_str}', debug=False)
+                    g.message = g.message + f'🟡 Германия {g.categories[category]}: Начинаю регистрировать:\n{fam_str}'
                     with Pool(len(families) if len(families) < 9 else 8) as p:
                         p.map(register, families)
+                    if g.message:
+                        telegram.send_message(g.message)
                 else:
                     sleep(3600 if sys.argv[5] == 'National' else 60)
             else:
